@@ -1,3 +1,4 @@
+```markdown
 # Eatsy
 
 Eatsy es una aplicación móvil desarrollada en **React Native** con **Expo**, diseñada para facilitar la experiencia de los usuarios en la gestión de sus comidas.
@@ -9,8 +10,6 @@ Eatsy es una aplicación móvil desarrollada en **React Native** con **Expo**, d
    ```bash
    curl -fsSL https://bun.sh/install | bash
    ```
-````
-
 3. Configuración del entorno para emuladores Android o iOS (opcional, ver más abajo).
 
 ## Instalación
@@ -40,7 +39,6 @@ Eatsy es una aplicación móvil desarrollada en **React Native** con **Expo**, d
    bun start
    ```
 2. Para ejecutarla en un emulador:
-
    - **Android**:
      ```bash
      bun android
@@ -49,7 +47,7 @@ Eatsy es una aplicación móvil desarrollada en **React Native** con **Expo**, d
      ```bash
      bun ios
      ```
-     Nota: Configura el entorno del emulador siguiendo [esta guía](https://docs.expo.dev/workflow/android-studio-emulator/).
+   Nota: Configura el entorno del emulador siguiendo [esta guía](https://docs.expo.dev/workflow/android-studio-emulator/).
 
 3. Como alternativa, puedes usar la app **Expo Go**:
    - Descarga Expo Go desde [Google Play Store](https://play.google.com/store/apps/details?id=host.exp.exponent) o [App Store](https://apps.apple.com/app/expo-go/id982107779).
@@ -58,4 +56,3 @@ Eatsy es una aplicación móvil desarrollada en **React Native** con **Expo**, d
 ## Configuración del entorno del emulador
 
 - Sigue la guía oficial de Expo para configurar el emulador Android o iOS: [Configurar emuladores](https://docs.expo.dev/workflow/android-studio-emulator/).
-- Si estás usando **Expo Go**, puedes configurar el entorno del emulador siguiendo [esta guía](https://docs.expo.dev/workflow/android-studio-emulator/).
