@@ -91,9 +91,9 @@ La estructura de directorios y archivos de tu proyecto se muestra a continuació
 
 <!-- podrías hacer una sección de las reglas de estilo de la estructura de directorios -->
 
-## 📝 Reglas de estilo
+> 📝 Reglas de estilo
 
-- Nombres de archivos y directorios en kebab-case, separados por guiones (**-**).
+> - Nombres de archivos y directorios en kebab-case, separados por guiones (**-**).
 
 ---
 
