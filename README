@@ -1,58 +1,106 @@
-```markdown
-# Eatsy
+# 🍽️ Eatsy - Mobile App
 
-Eatsy es una aplicación móvil desarrollada en **React Native** con **Expo**, diseñada para facilitar la experiencia de los usuarios en la gestión de sus comidas.
+**Eatsy** es una aplicación móvil desarrollada con **React Native** y **Expo**, pensada para ofrecer una experiencia intuitiva, rápida y multiplataforma. Utiliza **Bun** como gestor de paquetes moderno y eficiente.
 
-## Requisitos previos
+---
 
-1. **Node.js** y **npm** instalados.
-2. **Bun** instalado. Puedes instalarlo ejecutando:
-   ```bash
-   curl -fsSL https://bun.sh/install | bash
-   ```
-3. Configuración del entorno para emuladores Android o iOS (opcional, ver más abajo).
+## ✨ Requisitos Previos
 
-## Instalación
+1. Tener instalado [Bun](https://bun.sh/)
+2. Tener configurado un emulador Android o iOS  
+   👉 Consulta la guía oficial de Expo para configurar tu entorno:  
+   [Configurar entornos de desarrollo en Expo](https://docs.expo.dev/workflow/android-studio-emulator/)
 
-1. Clona este repositorio:
-   ```bash
-   git clone <URL_DEL_REPOSITORIO>
-   cd Eatsy
-   ```
-2. Instala las dependencias usando **bun**:
-   ```bash
-   bun install
-   ```
+---
 
-## Scripts disponibles
+## 📦 Instalación
 
-- `bun start`: Inicia el proyecto con Expo.
-- `bun android`: Inicia el proyecto en un emulador Android.
-- `bun ios`: Inicia el proyecto en un emulador iOS.
-- `bun web`: Inicia el proyecto en el navegador.
-- `bun lint`: Ejecuta ESLint para analizar el código.
+```bash
+bun install
+```
 
-## Ejecución
+---
 
-1. Para iniciar la app:
-   ```bash
-   bun start
-   ```
-2. Para ejecutarla en un emulador:
-   - **Android**:
-     ```bash
-     bun android
-     ```
-   - **iOS**:
-     ```bash
-     bun ios
-     ```
-   Nota: Configura el entorno del emulador siguiendo [esta guía](https://docs.expo.dev/workflow/android-studio-emulator/).
+## ▶️ Ejecución
 
-3. Como alternativa, puedes usar la app **Expo Go**:
-   - Descarga Expo Go desde [Google Play Store](https://play.google.com/store/apps/details?id=host.exp.exponent) o [App Store](https://apps.apple.com/app/expo-go/id982107779).
-   - Escanea el código QR que aparece al ejecutar `bun start`.
+### Iniciar la app:
 
-## Configuración del entorno del emulador
+```bash
+bun run start
+```
 
-- Sigue la guía oficial de Expo para configurar el emulador Android o iOS: [Configurar emuladores](https://docs.expo.dev/workflow/android-studio-emulator/).
+### Ejecutar en emuladores (requiere configuración previa):
+
+```bash
+bun run android     # Android
+bun run ios         # iOS
+bun run web         # Web
+```
+
+> 📱 Alternativa rápida: Escanea el código QR con la app **Expo Go** en tu dispositivo móvil para ver la app sin emulador.
+
+---
+
+## 🩹 Comandos Útiles
+
+```bash
+bun run lint        # Ejecuta ESLint para verificar errores de estilo y sintaxis
+```
+
+---
+
+## 👨‍💻 Scripts disponibles
+
+```json
+"scripts": {
+  "start": "expo start",
+  "android": "expo start --android",
+  "ios": "expo start --ios",
+  "web": "expo start --web",
+  "lint": "eslint ."
+}
+```
+
+---
+
+## 📂 Estructura del Proyecto
+
+(Agrega esta sección si deseas explicar cómo está organizado tu código. Ejemplo:)
+
+```
+/src
+  /components
+  /screens
+  /assets
+  /hooks
+App.tsx
+```
+
+---
+
+## 📲 Tecnologías Usadas
+
+- [React Native](https://reactnative.dev/)
+- [Expo](https://expo.dev/)
+- [Bun](https://bun.sh/)
+- [TypeScript](https://www.typescriptlang.org/) (opcional)
+- [ESLint](https://eslint.org/)
+
+---
+
+## 📌 Notas
+
+- Asegúrate de tener tu emulador funcionando antes de usar `bun run android` o `bun run ios`.
+- Usa **Expo Go** para probar rápidamente en dispositivos reales.
+
+---
+
+## 💡 Contribuciones
+
+¡Contribuciones son bienvenidas! Siéntete libre de abrir issues o pull requests.
+
+---
+
+## 📝 Licencia
+
+(Menciona la licencia si tienes una, o elimina esta sección si no aplica.)
