@@ -111,14 +111,3 @@ La estructura de directorios y archivos de tu proyecto se muestra a continuació
 - Asegúrate de tener tu emulador funcionando antes de usar `bun run android` o `bun run ios`.
 - Usa **Expo Go** para probar rápidamente en dispositivos reales.
 
----
-
-## 💡 Contribuciones
-
-¡Contribuciones son bienvenidas! Siéntete libre de abrir issues o pull requests.
-
----
-
-## 📝 Licencia
-
-(Menciona la licencia si tienes una, o elimina esta sección si no aplica.)
