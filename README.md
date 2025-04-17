@@ -65,16 +65,35 @@ bun run lint        # Ejecuta ESLint para verificar errores de estilo y sintaxis
 
 ## 📂 Estructura del Proyecto
 
-(Agrega esta sección si deseas explicar cómo está organizado tu código. Ejemplo:)
+La estructura de directorios y archivos de tu proyecto se muestra a continuación:
 
 ```
 /src
-  /components
-  /screens
+  /app
+    / (tabs)           # Vistas principales de la app
+      index.tsx        # Vista principal de la app
+    / (screen)         # Ejemplo de otras vistas agrupadas por contexto
+    _layout.tsx        # Layout general de la app
+    not-found.tsx      # Pantalla para rutas no encontradas
+
   /assets
-  /hooks
-App.tsx
+    /images
+    /icons
+    ...
+
+  /components
+    /ui                # Componentes reutilizables de interfaz
+    /svg               # Iconos SVG personalizados
+    ...
+
+  /hooks               # Custom hooks
 ```
+
+<!-- podrías hacer una sección de las reglas de estilo de la estructura de directorios -->
+
+## 📝 Reglas de estilo
+
+- Nombres de archivos y directorios en kebab-case, separados por guiones (**-**).
 
 ---
 
