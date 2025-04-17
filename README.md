@@ -7,7 +7,7 @@
 ## ✨ Requisitos Previos
 
 1. Tener instalado [Bun](https://bun.sh/)
-2. Tener configurado un emulador Android o iOS (opcional)
+2. (Opcional) Tener configurado un emulador Android o iOS 
    👉 Consulta la guía oficial de Expo para configurar tu entorno:  
    [Configurar entornos de desarrollo en Expo](https://docs.expo.dev/workflow/android-studio-emulator/)
 
