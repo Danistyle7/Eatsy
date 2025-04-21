@@ -54,39 +54,7 @@ const __authStoreMiddleware = (
  * @example
  * const { token } = useAuthStore.getState();
  *
- * 3. Login (actualiza estado y SecureStore automáticamente):
- * @example
- * const handleLogin = async () => {
- *   try {
- *     const apiToken = await loginAPI(email, password);
- *     useAuthStore.getState().login(apiToken);
- *   } catch (error) {
- *     console.error(error);
- *   }
- * };
- *
- * 4. Logout (limpia estado y SecureStore):
- * @example
- * <Button
- *   onPress={() => useAuthStore.getState().logout()}
- *   title="Cerrar sesión"
- * />
- *
- * 5. Acceder a múltiples valores con rerender optimizado:
- * @example
- * import { shallow } from 'zustand/shallow';
- * const { token, isLoading } = useAuthStore(
- *   (state) => ({ token: state.token, isLoading: state.isLoading }),
- *   shallow
- * );
- *
- * 6. Uso en interceptors API (fuera de componentes):
- * @example
- * api.interceptors.request.use((config) => {
- *   const { token } = useAuthStore.getState();
- *   if (token) config.headers.Authorization = `Bearer ${token}`;
- *   return config;
- * });
+ * @see https://github.com/Danistyle7/Eatsy/blob/feature/store/src/store/README.md
  */
 export const useAuthStore = create<AuthState>()(
   __authStoreMiddleware((set) => ({

@@ -5,7 +5,7 @@
 ```typescript
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import * as SecureStore from "expo-secure-store";
+importas SecureStore from "expo-secure-store";
 
 interface AuthState {
   token: string | null;
@@ -103,6 +103,47 @@ function ProtectedScreen() {
 ```
 
 ### Interceptor de API
+
+```typescript
+api.interceptors.request.use((config) => {
+  const { token } = useAuthStore.getState();
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
+```
+
+### Login (actualiza estado y SecureStore automáticamente):
+
+```typescript
+const handleLogin = async () => {
+  try {
+    const apiToken = await loginAPI(email, password);
+    useAuthStore.getState().login(apiToken);
+  } catch (error) {
+    console.error(error);
+  }
+```
+
+### Logout (limpia estado y SecureStore):
+
+```typescript
+<Button
+  onPress={() => useAuthStore.getState().logout()}
+  title="Cerrar sesión"
+/>
+```
+
+### Acceder a múltiples valores con rerender optimizado:
+
+```typescript
+import { shallow } from "zustand/shallow";
+const { token, isLoading } = useAuthStore(
+  (state) => ({ token: state.token, isLoading: state.isLoading }),
+  shallow
+);
+```
+
+### Uso en interceptors API (fuera de componentes):
 
 ```typescript
 api.interceptors.request.use((config) => {
