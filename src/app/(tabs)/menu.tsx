@@ -27,7 +27,7 @@ const sampleData = [
     disponible: true,
     categoria: "bebida",
     imagen: {
-      uri: "https://example.com/mocochinchi.jpg",
+      uri: "https://picsum.photos/200/300",
     },
     tiempoCocion: "5 min",
   },
