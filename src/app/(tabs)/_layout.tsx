@@ -1,6 +1,6 @@
 import { Tabs } from "expo-router";
 
-import { Entypo, FontAwesome } from "@expo/vector-icons";
+import { MaterialCommunityIcons, FontAwesome } from "@expo/vector-icons";
 
 export default function TabLayout() {
   return (
@@ -32,11 +32,11 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="recipes"
+        name="menu"
         options={{
-          title: "Recetas",
+          title: "menu",
           tabBarIcon: ({ color, size }: { color: string; size: number }) => (
-            <Entypo name="list" size={size} color={color} />
+            <MaterialCommunityIcons name="chef-hat" size={size} color={color} />
           ),
         }}
       />
