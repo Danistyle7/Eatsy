@@ -1,0 +1,5 @@
+blank_issues_enabled: false # Obliga a usar plantillas
+contact_links:
+  - name: 💬 Soporte en Discord
+    url: https://discord.gg/tu-link
+    about: Preguntas técnicas en vivo
