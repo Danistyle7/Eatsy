@@ -1,7 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, Modal, Image, StyleSheet, Pressable, TouchableWithoutFeedback, Switch } from 'react-native';
-import BotonNaranja from './boton';
-
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  Modal,
+  Image,
+  StyleSheet,
+  Pressable,
+  TouchableWithoutFeedback,
+  Switch,
+} from "react-native";
+import BotonNaranja from "./ui/button";
 
 const ModalDetalle = ({ visible, onClose, item }) => {
   const [disponible, setDisponible] = useState(false);
@@ -14,7 +22,7 @@ const ModalDetalle = ({ visible, onClose, item }) => {
 
   if (!item) return null;
 
-  const toggleSwitch = () => setDisponible(previous => !previous);
+  const toggleSwitch = () => setDisponible((previous) => !previous);
 
   return (
     <Modal
@@ -32,8 +40,8 @@ const ModalDetalle = ({ visible, onClose, item }) => {
                 <Text style={styles.title}>Plato</Text>
                 <Text style={styles.etiqueta}>{item.nombre}</Text>
               </View>
-              <View >
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <View>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <Text style={styles.title}>Disp.</Text>
                   <Switch
                     value={disponible}
@@ -52,7 +60,11 @@ const ModalDetalle = ({ visible, onClose, item }) => {
 
             {/* Imagen */}
             <View style={styles.imageContainer}>
-              <Image source={item.imagen} style={styles.image} resizeMode="cover" />
+              <Image
+                source={item.imagen}
+                style={styles.image}
+                resizeMode="cover"
+              />
             </View>
 
             {/* Preparación y botón */}
@@ -61,7 +73,9 @@ const ModalDetalle = ({ visible, onClose, item }) => {
               <Text style={styles.time}>30 min</Text>
               <BotonNaranja
                 titulo="Editar"
-                onPress={() => console.log("Editar disponibilidad (futuro modal)")}
+                onPress={() =>
+                  console.log("Editar disponibilidad (futuro modal)")
+                }
               />
             </View>
           </Pressable>
@@ -76,60 +90,60 @@ export default ModalDetalle;
 const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: 'rgba(175, 166, 166, 0.5)',
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(175, 166, 166, 0.5)",
   },
   modalContainer: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     padding: 20,
     borderTopRightRadius: 20,
     borderTopLeftRadius: 20,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 15,
   },
 
   etiqueta: {
     fontSize: 22,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   title: {
     fontSize: 22,
-    fontWeight: 'bold',
-    color: '#FF9800',
+    fontWeight: "bold",
+    color: "#FF9800",
   },
   price: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     marginTop: 5,
   },
   description: {
     fontSize: 16,
-    color: '#333',
+    color: "#333",
     marginBottom: 10,
   },
   imageContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 10,
     paddingHorizontal: 48,
   },
   image: {
-    width: '100%',
+    width: "100%",
     height: 200,
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: 'black',
+    borderColor: "black",
   },
   footer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   time: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });
