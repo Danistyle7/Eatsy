@@ -1,13 +1,19 @@
+import { QueryClientProvider } from "@tanstack/react-query";
 import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
   Image,
+  ScrollView,
+  StyleSheet,
+  Text,
   TouchableOpacity,
+  View,
 } from "react-native";
 
+import { queryClient } from "@/lib/query-client";
+import { useAuthStore } from "@/store/auth";
+
 import "@/global.css";
+
+useAuthStore.getState().initialize();
 
 export default function HomeScreen() {
   const featuredRecipe = {
@@ -26,45 +32,47 @@ export default function HomeScreen() {
   ];
 
   return (
-    <ScrollView className="flex-1 bg-[#F7FAFC]">
-      <View className="p-5 pt-10">
-        <Text className="text-2xl font-bold">¡Bienvenido a Eatsy!</Text>
-        <Text className="text-xl mt-5">
-          ¡Disfruta de nuestras recetas deliciosas y fáciles de preparar!
-        </Text>
-      </View>
-
-      <View style={styles.featuredContainer}>
-        <Text style={styles.sectionTitle}>Receta Destacada</Text>
-        <TouchableOpacity style={styles.featuredCard}>
-          <Image
-            source={{ uri: featuredRecipe.image }}
-            style={styles.featuredImage}
-          />
-          <View style={styles.featuredInfo}>
-            <Text style={styles.featuredTitle}>{featuredRecipe.title}</Text>
-            <View style={styles.featuredMeta}>
-              <Text style={styles.metaText}>⏱ {featuredRecipe.time}</Text>
-              <Text style={styles.metaText}>
-                📊 {featuredRecipe.difficulty}
-              </Text>
-            </View>
-          </View>
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.categoriesContainer}>
-        <Text style={styles.sectionTitle}>Categorías</Text>
-        <View style={styles.categoriesGrid}>
-          {categories.map((category, index) => (
-            <TouchableOpacity key={index} style={styles.categoryCard}>
-              <Text style={styles.categoryIcon}>{category.icon}</Text>
-              <Text style={styles.categoryName}>{category.name}</Text>
-            </TouchableOpacity>
-          ))}
+    <QueryClientProvider client={queryClient}>
+      <ScrollView className="flex-1 bg-[#F7FAFC]">
+        <View className="p-5 pt-10">
+          <Text className="text-2xl font-bold">¡Bienvenido a Eatsy!</Text>
+          <Text className="text-xl mt-5">
+            ¡Disfruta de nuestras recetas deliciosas y fáciles de preparar!
+          </Text>
         </View>
-      </View>
-    </ScrollView>
+
+        <View style={styles.featuredContainer}>
+          <Text style={styles.sectionTitle}>Receta Destacada</Text>
+          <TouchableOpacity style={styles.featuredCard}>
+            <Image
+              source={{ uri: featuredRecipe.image }}
+              style={styles.featuredImage}
+            />
+            <View style={styles.featuredInfo}>
+              <Text style={styles.featuredTitle}>{featuredRecipe.title}</Text>
+              <View style={styles.featuredMeta}>
+                <Text style={styles.metaText}>⏱ {featuredRecipe.time}</Text>
+                <Text style={styles.metaText}>
+                  📊 {featuredRecipe.difficulty}
+                </Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.categoriesContainer}>
+          <Text style={styles.sectionTitle}>Categorías</Text>
+          <View style={styles.categoriesGrid}>
+            {categories.map((category, index) => (
+              <TouchableOpacity key={index} style={styles.categoryCard}>
+                <Text style={styles.categoryIcon}>{category.icon}</Text>
+                <Text style={styles.categoryName}>{category.name}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+      </ScrollView>
+    </QueryClientProvider>
   );
 }
 
