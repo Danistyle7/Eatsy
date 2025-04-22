@@ -6,10 +6,12 @@
 
 - [ ] Bugfix
 - [ ] Feature
+- [ ] Refactor
 - [ ] Documentación
 
 ## Checklist
 
-- [ ] Tests actualizados/pasando
-- [ ] Documentación actualizada
-- [ ] Código revisado por pares
+- [ ] Código probado localmente
+- [ ] Tests actualizados
+- [ ] Documentación actualizada (README, comentarios)
+- [ ] No introduce breaking changes
