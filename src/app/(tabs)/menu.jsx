@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, TextInput } from 'react-native';
 import { FishSymbol, User } from 'lucide-react-native';
-import BotonNaranja from '../../components/Boton';
-import Section from '../../components/Section';
+import BotonNaranja from '../../components/boton';
+import Section from '../../components/section';
 
 const sampleData = [
   {

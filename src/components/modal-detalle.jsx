@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Modal, Image, StyleSheet, Pressable, TouchableWithoutFeedback, Switch } from 'react-native';
-import BotonNaranja from './Boton';
+import BotonNaranja from './boton';
 
-const ModalDetalle = ({ visible, onClose, item, }) => {
+
+const ModalDetalle = ({ visible, onClose, item }) => {
   const [disponible, setDisponible] = useState(false);
 
   useEffect(() => {
