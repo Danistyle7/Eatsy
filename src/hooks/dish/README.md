@@ -118,5 +118,5 @@ sequenceDiagram
 graph TD
     A[hooks/dish] --> B[api/dish.ts]
     A --> C[schemas/dish.ts]
-    A --> D[components/DishForm.tsx]
+    A --> D[components/dish-form.tsx]
 ```
