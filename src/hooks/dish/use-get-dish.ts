@@ -28,7 +28,7 @@ export const useGetAllDishes = (params?: DishParams) => {
 /**
  * Obtiene un plato específico por ID con manejo de caché automático.
  *
- * @param {number} id - ID del plato a recuperar.
+ * @param {DishResponse["id"]} id - ID del plato a recuperar.
  * @param {?Object} options - Opciones adicionales de React Query.
  * @param {?boolean} options.enabled - Si es `false`, pausa la consulta (útil para dependencias).
  *
@@ -45,7 +45,7 @@ export const useGetAllDishes = (params?: DishParams) => {
  * if (isLoading) return <Spinner />;
  * return <DishDetail dish={dish} />;
  */
-export const useGetDishById = (id: number, options = {}) => {
+export const useGetDishById = (id: DishResponse["id"], options = {}) => {
   return useQuery<DishResponse, Error>({
     queryKey: ["dish", id],
     queryFn: () => getDishById(id),

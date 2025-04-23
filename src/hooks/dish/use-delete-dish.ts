@@ -3,10 +3,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteDishById } from "@/api/dish";
 import { DishResponse } from "@/schemas/dish";
 
+type Context = { previousDishes?: DishResponse[] };
+
 /**
  * Elimina un plato por ID con actualización optimista de la UI.
  *
- * @returns {UseMutationResult<void, Error, number>} - Mutación con:
+ * @returns {UseMutationResult<void, Error, DishResponse["id"]>} - Mutación con:
  *   - `mutate`: Función que recibe el ID a eliminar.
  *   - `status`: Estado actual ('idle', 'pending', 'error', 'success').
  *
@@ -26,7 +28,7 @@ import { DishResponse } from "@/schemas/dish";
 export const useDeleteDishById = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<void, Error, number, { previousDishes?: DishResponse[] }>({
+  return useMutation<void, Error, DishResponse["id"], Context>({
     mutationFn: deleteDishById,
     onMutate: async (id) => {
       await queryClient.cancelQueries({ queryKey: ["dishes"] });
