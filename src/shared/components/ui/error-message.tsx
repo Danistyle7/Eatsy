@@ -1,6 +1,6 @@
 import { Text } from "react-native";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 
 interface ErrorMessageProps {
   message?: string | null;

@@ -1,9 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { deleteDishById } from "@/api/dish";
-import { DishResponse } from "@/schemas/dish";
+import { deleteDishById } from "@/features/dish/api";
+import { DishResponse } from "../types";
+import { DISH_QUERY_KEYS } from "../constants";
 
-type Context = { previousDishes?: DishResponse[] };
+type Context = { previous?: DishResponse[] };
 
 /**
  * Elimina un plato por ID con actualización optimista de la UI.
@@ -31,24 +32,25 @@ export const useDeleteDishById = () => {
   return useMutation<void, Error, DishResponse["id"], Context>({
     mutationFn: deleteDishById,
     onMutate: async (id) => {
-      await queryClient.cancelQueries({ queryKey: ["dishes"] });
-      const previousDishes = queryClient.getQueryData<DishResponse[]>([
-        "dishes",
-      ]);
-
-      queryClient.setQueryData(["dishes"], (old: DishResponse[] = []) =>
-        old.filter((dish) => dish.id !== id)
+      await queryClient.cancelQueries({ queryKey: DISH_QUERY_KEYS.lists() });
+      const previous = queryClient.getQueryData<DishResponse[]>(
+        DISH_QUERY_KEYS.lists()
       );
 
-      return { previousDishes };
+      queryClient.setQueryData(
+        DISH_QUERY_KEYS.lists(),
+        (old: DishResponse[] = []) => old.filter((dish) => dish.id !== id)
+      );
+
+      return { previous };
     },
     onError: (_, __, context) => {
-      if (context?.previousDishes) {
-        queryClient.setQueryData(["dishes"], context.previousDishes);
+      if (context?.previous) {
+        queryClient.setQueryData(DISH_QUERY_KEYS.lists(), context.previous);
       }
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["dishes"] });
+      queryClient.invalidateQueries({ queryKey: DISH_QUERY_KEYS.lists() });
     },
   });
 };

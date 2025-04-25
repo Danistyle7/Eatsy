@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { getAllDishes, getDishById } from "@/api/dish";
-import { DishParams, DishResponse } from "@/schemas/dish";
+import { getAllDishes, getDishById } from "@/features/dish/api";
+import { DishParams, DishResponse } from "../types";
 
 /**
  * Recupera todos los platos con soporte para filtrado y paginación.

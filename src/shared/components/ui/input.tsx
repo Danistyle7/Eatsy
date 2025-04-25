@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 import { forwardRef } from "react";
 import { TextInput } from "react-native";
 

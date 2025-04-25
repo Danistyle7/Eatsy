@@ -1,10 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { updateDishById } from "@/api/dish";
-import { DishResponse, DishUpdate } from "@/schemas/dish";
+import { updateDishById } from "@/features/dish/api";
+import { DishResponse, DishUpdate } from "../types";
+import { DISH_QUERY_KEYS } from "../constants";
 
 type MutationVariables = { id: DishResponse["id"]; data: DishUpdate };
-type Context = { previousDish?: DishResponse };
+type Context = { previous?: DishResponse };
 
 /**
  * Actualiza un plato existente con rollback automático en errores.
@@ -28,21 +29,26 @@ export const useUpdateDishById = () => {
   return useMutation<DishResponse, Error, MutationVariables, Context>({
     mutationFn: ({ id, data }) => updateDishById(id, data),
     onMutate: async ({ id, data }) => {
-      await queryClient.cancelQueries({ queryKey: ["dish", id] });
-      const previousDish = queryClient.getQueryData<DishResponse>(["dish", id]);
+      await queryClient.cancelQueries({ queryKey: DISH_QUERY_KEYS.detail(id) });
+      const previous = queryClient.getQueryData<DishResponse>(
+        DISH_QUERY_KEYS.detail(id)
+      );
 
-      queryClient.setQueryData(["dish", id], (old?: DishResponse) => {
-        if (!old) return;
-        return { ...old, ...data };
-      });
+      queryClient.setQueryData(
+        DISH_QUERY_KEYS.detail(id),
+        (old?: DishResponse) => {
+          if (!old) return;
+          return { ...old, ...data };
+        }
+      );
 
-      return { previousDish };
+      return { previous };
     },
     onError: (_, { id }, context) => {
-      queryClient.setQueryData(["dish", id], context?.previousDish);
+      queryClient.setQueryData(DISH_QUERY_KEYS.detail(id), context?.previous);
     },
     onSettled: (_, __, { id }) => {
-      queryClient.invalidateQueries({ queryKey: ["dish", id] });
+      queryClient.invalidateQueries({ queryKey: DISH_QUERY_KEYS.detail(id) });
     },
   });
 };

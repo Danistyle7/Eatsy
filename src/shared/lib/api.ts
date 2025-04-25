@@ -1,7 +1,7 @@
 import axios, { isAxiosError } from "axios";
 import { z } from "zod";
 
-import { useAuthStore } from "@/store/auth";
+import { useAuthStore } from "@/features/auth";
 
 const api = axios.create({
   baseURL: process.env.API_URL || "http://localhost:8001",
@@ -40,14 +40,14 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    const config = error.config as { _retry?: boolean };
+    const originalRequest = error.config as { _retry?: boolean };
     const { logout, token } = useAuthStore.getState();
 
-    if (error.response?.status === 401 && !config._retry && token) {
-      config._retry = true;
+    if (error.response?.status === 401 && !originalRequest._retry && token) {
+      originalRequest._retry = true;
       try {
         // await refreshToken();  // 🚨 TODO: Implementar refreshToken
-        return api(config);
+        return api(originalRequest);
       } catch (refreshError) {
         await logout();
       }

@@ -7,9 +7,9 @@ import {
   View,
 } from "react-native";
 
-import { useGetAllDishes } from "@/hooks/dish/use-get-dish";
+import { useGetAllDishes } from "@/features/dish/hooks/use-get-dish";
 
-import "@/global.css";
+import "@/styles.css";
 
 export default function HomeScreen() {
   const { data: dishes, isLoading } = useGetAllDishes();

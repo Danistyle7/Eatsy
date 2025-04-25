@@ -32,10 +32,8 @@ export const passwordSchema = z
 export const dateSchema = z
   .string()
   .regex(/^\d{4}-\d{2}-\d{2}$/, "Formato inválido (YYYY-MM-DD)");
-
 /** Valida IDs numéricos positivos (para APIs) */
 export const idSchema = z.number().int().positive();
-
 /** Valida opciones de selección (ej: dropdowns) */
 export const selectOptionSchema = z.object({
   label: z.string(),

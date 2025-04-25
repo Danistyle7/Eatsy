@@ -1,17 +1,19 @@
 import { isAxiosError } from "axios";
 import { z } from "zod";
 
-import api from "@/lib/api";
+import api from "@/shared/lib/api";
+import {
+  dishCreateSchema,
+  dishParamsSchema,
+  dishResponseSchema,
+  dishUpdateSchema,
+} from "@/features/dish/schema";
 import {
   DishCreate,
-  dishCreateSchema,
   DishParams,
-  dishParamsSchema,
   DishResponse,
-  dishResponseSchema,
   DishUpdate,
-  dishUpdateSchema,
-} from "@/schemas/dish";
+} from "@/features/dish/types";
 
 /**
  * Obtiene un plato por ID. Lanza error 404 si no existe.
