@@ -12,8 +12,8 @@ import { useGetAllDishes } from "@/hooks/dish/use-get-dish";
 import "@/global.css";
 
 export default function HomeScreen() {
-  const { data: dishes, isLoading } = useGetAllDishes();
-  console.log(isLoading, dishes);
+  const { data: dishes, isLoading, error } = useGetAllDishes();
+  console.log("error",isLoading, dishes,error);
 
   const featuredRecipe = {
     title: "Pasta Carbonara",

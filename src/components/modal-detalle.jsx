@@ -11,18 +11,23 @@ import {
 } from "react-native";
 import BotonNaranja from "./ui/button";
 
-const ModalDetalle = ({ visible, onClose, item }) => {
+const ModalDetalle = ({ visible, onClose, item,  modoCliente }) => {
   const [disponible, setDisponible] = useState(false);
 
   useEffect(() => {
     if (item) {
-      setDisponible(item.disponible); // Sincronizar con el prop al abrir el modal
+      setDisponible(item.isAvailable); // Cambia a item.disponible si tu objeto usa así
     }
   }, [item]);
 
   if (!item) return null;
 
-  const toggleSwitch = () => setDisponible((previous) => !previous);
+  const toggleSwitch = () => setDisponible(prev => !prev);
+
+  const pedirPlato = () => {
+    console.log("Pedido realizado del plato:", item.name);
+    onClose();
+  };
 
   return (
     <Modal
@@ -32,53 +37,72 @@ const ModalDetalle = ({ visible, onClose, item }) => {
       onRequestClose={onClose}
     >
       <TouchableWithoutFeedback onPress={onClose}>
-        <View style={styles.modalOverlay}>
-          <Pressable style={styles.modalContainer} onPress={() => {}}>
-            {/* Header con nombre, precio y switch */}
-            <View style={styles.header}>
-              <View>
-                <Text style={styles.title}>Plato</Text>
-                <Text style={styles.etiqueta}>{item.nombre}</Text>
-              </View>
-              <View>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Text style={styles.title}>Disp.</Text>
-                  <Switch
-                    value={disponible}
-                    onValueChange={toggleSwitch}
-                    thumbColor={disponible ? "#fff" : "#fff"}
-                    trackColor={{ false: "#ccc", true: "#FF9800" }}
-                  />
+        <View style={{ flex: 1 }}>
+          <View style={styles.modalOverlay}>
+            <Pressable style={styles.modalContainer} onPress={() => {}}>
+              
+              {/* Header */}
+              <View style={styles.header}>
+                <View>
+                  <Text style={styles.title}>{item.category}</Text>
+                  <Text style={styles.etiqueta}>{item.name}</Text>
                 </View>
-                <Text style={styles.price}>Bs. {item.precio}</Text>
+
+                {!modoCliente && (
+                  <View style={{ alignItems: "flex-end" }}>
+                    <View style={{ flexDirection: "row", alignItems: "center" }}>
+                      <Text style={styles.title}>Disp.</Text>
+                      <Switch
+                        value={disponible}
+                        onValueChange={toggleSwitch}
+                        thumbColor={disponible ? "#fff" : "#fff"}
+                        trackColor={{ false: "#ccc", true: "#FF9800" }}
+                      />
+                    </View>
+                    <Text style={styles.price}>Bs. {item.price}</Text>
+                  </View>
+                )}
+
+                {modoCliente && (
+                  
+                  <View style={{ alignItems: "flex-end" }}>
+                      <BotonNaranja
+                    titulo="Pedir"
+                    onPress={pedirPlato}
+                  />
+                    <Text style={styles.price}>Bs. {item.price}</Text>
+                  </View>
+                )}
               </View>
-            </View>
 
-            {/* Descripción */}
-            <Text style={styles.title}>Descripción</Text>
-            <Text style={styles.description}>{item.descripcion}</Text>
+              {/* Descripción */}
+              <Text style={styles.title}>Descripción</Text>
+              <Text style={styles.description}>{item.description}</Text>
 
-            {/* Imagen */}
-            <View style={styles.imageContainer}>
-              <Image
-                source={item.imagen}
-                style={styles.image}
-                resizeMode="cover"
-              />
-            </View>
+              {/* Imagen */}
+              <View style={styles.imageContainer}>
+                <Image
+                  source={item.imageUrl}
+                  style={styles.image}
+                  resizeMode="cover"
+                />
+              </View>
 
-            {/* Preparación y botón */}
-            <Text style={styles.title}>Preparación</Text>
-            <View style={styles.footer}>
-              <Text style={styles.time}>30 min</Text>
-              <BotonNaranja
-                titulo="Editar"
-                onPress={() =>
-                  console.log("Editar disponibilidad (futuro modal)")
-                }
-              />
-            </View>
-          </Pressable>
+              {/* Preparación y Botón */}
+              <Text style={styles.title}>Preparación</Text>
+              <View style={styles.footer}>
+                <Text style={styles.time}>{item.prepTime}</Text>
+
+                {!modoCliente && (
+                  <BotonNaranja
+                    titulo="Editar"
+                    onPress={() => console.log("Editar disponibilidad")}
+                  />
+                )}
+              </View>
+
+            </Pressable>
+          </View>
         </View>
       </TouchableWithoutFeedback>
     </Modal>
@@ -87,6 +111,7 @@ const ModalDetalle = ({ visible, onClose, item }) => {
 
 export default ModalDetalle;
 
+// Estilos
 const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
@@ -105,7 +130,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 15,
   },
-
   etiqueta: {
     fontSize: 22,
     fontWeight: "bold",

@@ -1,38 +1,36 @@
 import React, { useState } from "react";
-import { ScrollView,Text,Button  } from "react-native";
+import { ScrollView,Text } from "react-native";
 import { queryClient } from "@/lib/query-client";
 import Section from "@/components/ui/section";
 import Header from "@/components/ui/header";
 import { useGetAllDishes } from "@/hooks/dish/use-get-dish";
+import { QueryClientProvider } from "@tanstack/react-query";
 
 
-import { useRouter } from "expo-router";
-
-export const MenuScreen = () => {
+export const BebidaScreen  = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [busqueda, setBusqueda] = useState("");
-  const [esCliente, setEsCliente] = useState(true); 
   const queryResult = useGetAllDishes();
+    const [esCliente, setEsCliente] = useState(false); 
 
-  console.log(queryResult.data);
-
-  const sampleData = queryResult.data ?? [];
+console.log(queryResult.data);
+const sampleData = queryResult.data ?? [];
 
   const tiposUnicos = Array.from(
     new Set(
       sampleData
         .map((item) => item.category)
-        .filter((categoria) =>
+        .filter((category) =>
           sampleData.some(
             (item) =>
-              item.category === categoria &&
+              item.category === category &&
               item.name.toLowerCase().includes(busqueda.toLowerCase())
           )
         )
     )
   );
-  const router = useRouter();
+
   // Función para filtrar por tipo y búsqueda
   const filtrarPorTipo = (category: string) =>
     sampleData.filter(
@@ -42,18 +40,18 @@ export const MenuScreen = () => {
     );
 
   return (
-
+    <QueryClientProvider client={queryClient}>
     <ScrollView
       style={{
         flex: 1,
         backgroundColor: "white",
         paddingHorizontal: 16,
         paddingTop: 8,
-      }}> 
- 
+      }}
+    >
       {/* Header */}
       <Header
-        titulo="Menú"
+        titulo="Bebidas"
         busqueda={busqueda}
         setBusqueda={setBusqueda}
         onAgregarPress={() => console.log("Agregar presionado")}
@@ -76,8 +74,8 @@ export const MenuScreen = () => {
       })}
       
     </ScrollView>
- 
+    </QueryClientProvider>
   );
 };
 
-export default MenuScreen;
+export default BebidaScreen ;
