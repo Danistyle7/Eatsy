@@ -1,36 +1,18 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-
-import { deleteDishById } from "@/features/dish/api";
-import { DishResponse } from "../types";
+import { dishService } from "../api";
 import { DISH_QUERY_KEYS } from "../constants";
+import type { DishResponse } from "../types";
 
 type Context = { previous?: DishResponse[] };
 
-/**
- * Elimina un plato por ID con actualización optimista de la UI.
- *
- * @returns {UseMutationResult<void, Error, DishResponse["id"]>} - Mutación con:
- *   - `mutate`: Función que recibe el ID a eliminar.
- *   - `status`: Estado actual ('idle', 'pending', 'error', 'success').
- *
- * @errorHandling
- * - Muestra toast.error si falla.
- * - Revierte cambios en la caché automáticamente.
- *
- * @note
- * Para confirmación antes de eliminar, envolver en un modal:
- *
- * @example
- * const { mutate } = useDeleteDishById();
- * <Button onClick={() => confirmModal(() => mutate(1))}>
- *   Eliminar
- * </Button>
- */
 export const useDeleteDishById = () => {
   const queryClient = useQueryClient();
 
   return useMutation<void, Error, DishResponse["id"], Context>({
-    mutationFn: deleteDishById,
+    mutationFn: async (id) => {
+      const result = await dishService.delete(id);
+      if (!result.success) throw new Error(result.error);
+    },
     onMutate: async (id) => {
       await queryClient.cancelQueries({ queryKey: DISH_QUERY_KEYS.lists() });
       const previous = queryClient.getQueryData<DishResponse[]>(
@@ -45,9 +27,7 @@ export const useDeleteDishById = () => {
       return { previous };
     },
     onError: (_, __, context) => {
-      if (context?.previous) {
-        queryClient.setQueryData(DISH_QUERY_KEYS.lists(), context.previous);
-      }
+      queryClient.setQueryData(DISH_QUERY_KEYS.lists(), context?.previous);
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: DISH_QUERY_KEYS.lists() });

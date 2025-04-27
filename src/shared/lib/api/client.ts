@@ -1,9 +1,9 @@
 import axios, { isAxiosError } from "axios";
-import { z } from "zod";
 
 import { useAuthStore } from "@/features/auth";
+import { apiResponseSchema } from "@/shared/schemas";
 
-const api = axios.create({
+const apiClient = axios.create({
   baseURL: process.env.API_URL || "http://localhost:8001",
   timeout: 30_000, // 30 segundos
   headers: {
@@ -13,22 +13,25 @@ const api = axios.create({
   },
 });
 
-api.interceptors.request.use((config) => {
+apiClient.interceptors.request.use((config) => {
   if (typeof config.url !== "string") throw new Error("URL must be a string");
   const { token } = useAuthStore.getState();
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
 
-api.interceptors.response.use(
+apiClient.interceptors.response.use(
   (response) => {
-    const schema = z.union([
-      z.object({ success: z.literal(true), data: z.unknown() }),
-      z.object({ success: z.literal(false), message: z.string() }),
-    ]);
-    const result = schema.safeParse(response.data);
+    const result = apiResponseSchema.safeParse(response.data);
 
-    if (!result.success) throw new Error("Estructura de respuesta inválida");
+    if (!result.success) {
+      throw new Error(
+        `Estructura inválida: ${result.error.errors
+          .map((e) => `${e.path.join(".")} (${e.message})`)
+          .join(", ")}`
+      );
+    }
+
     if (!result.data.success)
       throw new Error(result.data.message || "Error desconocido");
 
@@ -47,15 +50,18 @@ api.interceptors.response.use(
       originalRequest._retry = true;
       try {
         // await refreshToken();  // 🚨 TODO: Implementar refreshToken
-        return api(originalRequest);
+        return apiClient(originalRequest);
       } catch (refreshError) {
         await logout();
       }
     }
 
+    const apiError =
+      error.response?.data?.message || error.message || "Error desconocido";
     // error.message = REQUEST_ERROR_CODES[error.code || ""] || error.message;
-    return Promise.reject(error);
+
+    return Promise.reject(new Error(`[${error.response?.status}] ${apiError}`));
   }
 );
 
-export default api;
+export default apiClient;

@@ -1,77 +1,78 @@
-import { isAxiosError } from "axios";
 import { z } from "zod";
 
-import api from "@/shared/lib/api";
 import {
   dishCreateSchema,
   dishParamsSchema,
   dishResponseSchema,
   dishUpdateSchema,
 } from "@/features/dish/schema";
-import {
+import type {
   DishCreate,
   DishParams,
   DishResponse,
   DishUpdate,
 } from "@/features/dish/types";
+import { BaseService } from "@/shared/lib/api/base-service";
+import apiClient from "@/shared/lib/api/client";
+import type { APIResponse } from "@/shared/types/api-response";
 
 /**
- * Obtiene un plato por ID. Lanza error 404 si no existe.
- * @throws {Error} Si el plato no se encuentra.
+ * Servicio para operaciones CRUD de platos
+ * @throws {APIError} - Error estandarizado con código y mensaje
  */
-export const getDishById = async (id: number): Promise<DishResponse> => {
-  try {
-    const response = await api.get(`/dish/only/${id}`);
-    return dishResponseSchema.parse(response.data);
-  } catch (error) {
-    if (isAxiosError(error) && error.response?.status === 404) {
-      throw new Error("Plato no encontrado");
+export class DishService extends BaseService {
+  async getById(id: DishResponse["id"]): Promise<APIResponse<DishResponse>> {
+    try {
+      const response = await apiClient.get(`/dish/only/${id}`);
+      return this.validateResponse(response.data, dishResponseSchema);
+    } catch (error) {
+      return this.handleError(error, "Plato no encontrado");
     }
-    throw error;
   }
-};
 
-/**
- * Obtiene todos los platos, con filtros opcionales.
- */
-export const getAllDishes = async (
-  params?: DishParams
-): Promise<DishResponse[]> => {
-  const validatedParams = dishParamsSchema.parse(params || {});
-  const response = await api.get("/dish/all", { params: validatedParams });
-  return z.array(dishResponseSchema).parse(response.data);
-};
-
-/**
- * Crea un nuevo plato.
- */
-export const createDish = async (dish: DishCreate): Promise<DishResponse> => {
-  const validatedData = dishCreateSchema.parse(dish);
-  const response = await api.post("/dish/create", validatedData);
-  return dishResponseSchema.parse(response.data);
-};
-
-/**
- * Actualiza un plato existente.
- */
-export const updateDishById = async (
-  id: number,
-  dish: DishUpdate
-): Promise<DishResponse> => {
-  const validatedData = dishUpdateSchema.parse(dish);
-  const response = await api.put(`/dish/update/${id}`, validatedData);
-  return dishResponseSchema.parse(response.data);
-};
-
-/**
- * Elimina un plato por ID.
- */
-export const deleteDishById = async (id: number): Promise<void> => {
-  try {
-    await api.delete(`/dish/delete/${id}`);
-  } catch (error) {
-    if (isAxiosError(error) && error.response?.status === 404)
-      throw new Error("No se pudo eliminar: Plato no encontrado");
-    throw error;
+  async getAll(params?: DishParams): Promise<APIResponse<DishResponse[]>> {
+    try {
+      const validatedParams = dishParamsSchema.parse(params || {});
+      const response = await apiClient.get("/dish/all", {
+        params: validatedParams,
+      });
+      return this.validateResponse(response.data, z.array(dishResponseSchema));
+    } catch (error) {
+      return this.handleError(error, "Error al obtener platos");
+    }
   }
-};
+
+  async create(dish: DishCreate): Promise<APIResponse<DishResponse>> {
+    try {
+      const validatedData = dishCreateSchema.parse(dish);
+      const response = await apiClient.post("/dish/create", validatedData);
+      return this.validateResponse(response.data, dishResponseSchema);
+    } catch (error) {
+      return this.handleError(error, "Error al crear plato");
+    }
+  }
+
+  async update(
+    id: DishResponse["id"],
+    dish: DishUpdate
+  ): Promise<APIResponse<DishResponse>> {
+    try {
+      const validatedData = dishUpdateSchema.parse(dish);
+      const response = await apiClient.put(`/dish/update/${id}`, validatedData);
+      return this.validateResponse(response.data, dishResponseSchema);
+    } catch (error) {
+      return this.handleError(error, "Error al actualizar plato");
+    }
+  }
+
+  async delete(id: DishResponse["id"]): Promise<APIResponse<void>> {
+    try {
+      await apiClient.delete(`/dish/delete/${id}`);
+      return { success: true, data: undefined };
+    } catch (error) {
+      return this.handleError(error, "Error al eliminar plato");
+    }
+  }
+}
+
+export const dishService = new DishService();

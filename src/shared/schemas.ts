@@ -4,6 +4,11 @@ import { z } from "zod";
 // 🏷️ Esquemas Básicos
 // ========================
 
+export const apiResponseSchema = z.object({
+  success: z.boolean(),
+  data: z.unknown().optional(),
+  message: z.string().optional(),
+});
 /** Valida URLs de imágenes (con opcional placeholder) */
 export const imageUrlSchema = z
   .string()
@@ -42,7 +47,7 @@ export const selectOptionSchema = z.object({
 export type SelectOption = z.infer<typeof selectOptionSchema>;
 
 // ========================
-// 🛠️ Funciones Utiles
+// 🛠️ Funciones Útiles
 // ========================
 
 /**
