@@ -8,7 +8,7 @@ import {
   StyleSheet,
 } from "react-native";
 import ModalDetalle from "../modal-detalle";
-
+import { router } from "expo-router";
 const Section = ({
   title,
   data,
@@ -16,12 +16,20 @@ const Section = ({
   setSelectedItem,
   modalVisible,
   selectedItem,
+  esCliente,
 }) => (
   <View style={styles.sectionBox}>
     <View style={styles.sectionHeader}>
       <Text className="text-2xl font-bold">{title}</Text>
-      <TouchableOpacity>
-        <Text style={{ color: "orange", fontSize: 20 }}>Ver todos &gt;</Text>
+      <TouchableOpacity
+        onPress={() =>
+          router.push({
+            pathname: "/menupag/ver-todos", // ruta a donde quieres ir
+            params: { title }, // los parámetros que quieres enviar
+          })
+        }
+      >
+        <Text style={{ color: "orange", fontSize: 16 }}>Ver todos &gt;</Text>
       </TouchableOpacity>
     </View>
 
@@ -40,7 +48,7 @@ const Section = ({
         >
           <View style={styles.cardBox}>
             <Image
-              source={item.imagen}
+              source={item.imageUrl}
               style={styles.cardImage}
               resizeMode="cover"
             />
@@ -49,12 +57,12 @@ const Section = ({
                 <View
                   style={{ flexDirection: "row", justifyContent: "flex-end" }}
                 >
-                  <Text style={styles.cardPrice}>Bs. {item.precio}</Text>
+                  <Text style={styles.cardPrice}>Bs. {item.price}</Text>
                 </View>
-                <Text style={styles.cardTitle}>{item.nombre}</Text>
+                <Text style={styles.cardTitle}>{item.name}</Text>
               </View>
               <Text style={styles.cardDescription} numberOfLines={1}>
-                {item.descripcion}
+                {item.description}
               </Text>
             </View>
           </View>
@@ -66,6 +74,7 @@ const Section = ({
       visible={modalVisible}
       onClose={() => setModalVisible(false)}
       item={selectedItem}
+      modoCliente={esCliente}
     />
   </View>
 );
