@@ -1,6 +1,6 @@
 import { Tabs } from "expo-router";
 
-import { MaterialCommunityIcons, FontAwesome } from "@expo/vector-icons";
+import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 
 export default function TabLayout() {
   return (
@@ -20,13 +20,14 @@ export default function TabLayout() {
           color: "#2D3748",
           fontWeight: "bold",
         },
+        tabBarLabelPosition: "below-icon",
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
           title: "Inicio",
-          tabBarIcon: ({ color, size }: { color: string; size: number }) => (
+          tabBarIcon: ({ color, size }) => (
             <FontAwesome name="home" size={size} color={color} />
           ),
         }}
@@ -34,9 +35,18 @@ export default function TabLayout() {
       <Tabs.Screen
         name="menu"
         options={{
-          title: "menu",
-          tabBarIcon: ({ color, size }: { color: string; size: number }) => (
-            <MaterialCommunityIcons name="chef-hat" size={size} color={color} />
+          title: "Menú",
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons name="restaurant-menu" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="bebidas"
+        options={{
+          title: "Bebidas",
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons name="local-drink" size={size} color={color} />
           ),
         }}
       />

@@ -1,10 +1,10 @@
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 
-import { useFrameworkReady } from "@/hooks/use-framework-ready";
-import { useAuthStore } from "@/store/auth";
+import { useFrameworkReady } from "@/shared/hooks/use-framework-ready";
+import { useAuthStore } from "@/features/auth/store";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { queryClient } from "@/lib/query-client";
+import { queryClient } from "@/shared/lib/query-client";
 
 useAuthStore.getState().initialize();
 

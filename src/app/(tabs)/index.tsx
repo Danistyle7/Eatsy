@@ -1,19 +1,14 @@
-import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
-import { useGetAllDishes } from "@/hooks/dish/use-get-dish";
+import { useGetAllDishes } from "@/features/dish/hooks";
 
-import "@/global.css";
+import "@/shared/styles.css";
+import { Link } from "expo-router";
+import { Button } from "@/shared/components/ui/button";
 
 export default function HomeScreen() {
-  const { data: dishes, isLoading } = useGetAllDishes();
-  console.log(isLoading, dishes);
+  const { data: dishes, isLoading, error } = useGetAllDishes({});
+  console.log(dishes, isLoading, error);
 
   const featuredRecipe = {
     title: "Pasta Carbonara",
@@ -32,6 +27,10 @@ export default function HomeScreen() {
 
   return (
     <ScrollView className="flex-1 bg-[#F7FAFC]">
+      <Link href="/dish/new" asChild>
+        <Button title="Agregar" />
+      </Link>
+
       <View className="p-5 pt-10">
         <Text className="text-2xl font-bold">¡Bienvenido a Eatsy!</Text>
         <Text className="text-xl mt-5">
@@ -39,18 +38,26 @@ export default function HomeScreen() {
         </Text>
       </View>
 
-      <View style={styles.featuredContainer}>
-        <Text style={styles.sectionTitle}>Receta Destacada</Text>
-        <TouchableOpacity style={styles.featuredCard}>
+      <View className="p-5">
+        <Text className="text-xl font-bold text-gray-800 mb-4">
+          Receta Destacada
+        </Text>
+
+        <TouchableOpacity className="bg-white rounded-xl overflow-hidden shadow-md">
           <Image
             source={{ uri: featuredRecipe.image }}
-            style={styles.featuredImage}
+            className="w-full h-52"
+            resizeMode="cover"
           />
-          <View style={styles.featuredInfo}>
-            <Text style={styles.featuredTitle}>{featuredRecipe.title}</Text>
-            <View style={styles.featuredMeta}>
-              <Text style={styles.metaText}>⏱ {featuredRecipe.time}</Text>
-              <Text style={styles.metaText}>
+          <View className="p-4">
+            <Text className="text-lg font-bold text-gray-800">
+              {featuredRecipe.title}
+            </Text>
+            <View className="flex-row mt-2">
+              <Text className="text-gray-500 mr-4">
+                ⏱ {featuredRecipe.time}
+              </Text>
+              <Text className="text-gray-500">
                 📊 {featuredRecipe.difficulty}
               </Text>
             </View>
@@ -58,13 +65,19 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.categoriesContainer}>
-        <Text style={styles.sectionTitle}>Categorías</Text>
-        <View style={styles.categoriesGrid}>
+      <View className="p-5">
+        <Text className="text-xl font-bold text-gray-800 mb-4">Categorías</Text>
+
+        <View className="flex-row flex-wrap justify-between">
           {categories.map((category, index) => (
-            <TouchableOpacity key={index} style={styles.categoryCard}>
-              <Text style={styles.categoryIcon}>{category.icon}</Text>
-              <Text style={styles.categoryName}>{category.name}</Text>
+            <TouchableOpacity
+              key={index}
+              className="w-[48%] bg-white p-5 rounded-lg items-center mb-4 shadow-sm"
+            >
+              <Text className="text-3xl mb-2">{category.icon}</Text>
+              <Text className="text-sm font-medium text-gray-800">
+                {category.name}
+              </Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -72,81 +85,3 @@ export default function HomeScreen() {
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  featuredContainer: {
-    padding: 20,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#2D3748",
-    marginBottom: 15,
-  },
-  featuredCard: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 15,
-    overflow: "hidden",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  featuredImage: {
-    width: "100%",
-    height: 200,
-  },
-  featuredInfo: {
-    padding: 15,
-  },
-  featuredTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#2D3748",
-  },
-  featuredMeta: {
-    flexDirection: "row",
-    marginTop: 8,
-  },
-  metaText: {
-    color: "#718096",
-    marginRight: 15,
-  },
-  categoriesContainer: {
-    padding: 20,
-  },
-  categoriesGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-  },
-  categoryCard: {
-    width: "48%",
-    backgroundColor: "#FFFFFF",
-    padding: 20,
-    borderRadius: 12,
-    alignItems: "center",
-    marginBottom: 15,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 2.22,
-    elevation: 3,
-  },
-  categoryIcon: {
-    fontSize: 32,
-    marginBottom: 8,
-  },
-  categoryName: {
-    fontSize: 14,
-    color: "#2D3748",
-    fontWeight: "500",
-  },
-});
