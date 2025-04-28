@@ -9,12 +9,6 @@ export const apiResponseSchema = z.object({
   data: z.unknown().optional(),
   message: z.string().optional(),
 });
-/** Valida URLs de imágenes (con opcional placeholder) */
-export const imageUrlSchema = z
-  .string()
-  .url("URL inválida")
-  .optional()
-  .or(z.literal("")); // Permite strings vacíos
 
 /** Valida emails (reutilizable en auth/user) */
 export const emailSchema = z

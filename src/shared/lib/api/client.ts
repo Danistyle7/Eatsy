@@ -17,6 +17,8 @@ apiClient.interceptors.request.use((config) => {
   if (typeof config.url !== "string") throw new Error("URL must be a string");
   const { token } = useAuthStore.getState();
   if (token) config.headers.Authorization = `Bearer ${token}`;
+  if (!(config.data instanceof FormData))
+    config.headers["Content-Type"] = "application/json";
   return config;
 });
 

@@ -1,6 +1,7 @@
 import { z } from "zod";
 
-import { idSchema, imageUrlSchema } from "@/shared/schemas";
+import { idSchema } from "@/shared/schemas";
+import { imageUrlSchema } from "@/features/file/schemas";
 import { DISH_CATEGORIES, DISH_TYPES } from "./constants";
 import { DishCategoryValue, DishTypeValue } from "./types";
 

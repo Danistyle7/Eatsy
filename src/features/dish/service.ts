@@ -13,7 +13,7 @@ import type {
   DishUpdate,
 } from "@/features/dish/types";
 import { BaseService } from "@/shared/lib/api/base-service";
-import apiClient from "@/shared/lib/api/core";
+import apiClient from "@/shared/lib/api/client";
 import type { APIResponse } from "@/shared/types/api-response";
 
 /**
@@ -33,7 +33,7 @@ export class DishService extends BaseService {
   async getAll(params?: DishParams): Promise<APIResponse<DishResponse[]>> {
     try {
       const validatedParams = dishParamsSchema.parse(params || {});
-      const response = await apiClient.get("/dish/all", {
+      const response = await apiClient.get("/dish/filter", {
         params: validatedParams,
       });
       return this.validateResponse(response.data, z.array(dishResponseSchema));
