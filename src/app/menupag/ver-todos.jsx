@@ -8,10 +8,10 @@ import {
   Image,
   StyleSheet,
 } from "react-native";
-import BotonNaranja from "../../components/ui/button";
-import Header from "@/components/ui/header";
-import { useGetAllDishes } from "@/hooks/dish/use-get-dish";
-import ModalDetalle from "../../components/modal-detalle";
+import BotonNaranja from "@/shared/components/ui/button";
+import Header from "@/shared/components/ui/header";
+import { useGetAllDishes } from "@/features/dish/hooks/use-get-dish";
+import ModalDetalle from "@/shared/components/modal-detalle";
 
 const VerTodos = () => {
   const router = useRouter();
