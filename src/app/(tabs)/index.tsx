@@ -5,9 +5,17 @@ import { useGetAllDishes } from "@/features/dish/hooks";
 import "@/shared/styles.css";
 import { Link } from "expo-router";
 import { Button } from "@/shared/components/ui/button";
+import { DishParams } from "@/features/dish/types";
 
 export default function HomeScreen() {
-  const { data: dishes, isLoading, error } = useGetAllDishes({});
+  // Example of params
+  const params: DishParams = {
+    search: "pasta",
+    category: "MAIN_COURSE",
+    type: "FOOD",
+    isAvailable: true,
+  };
+  const { data: dishes, isLoading, error } = useGetAllDishes(params);
   console.log(dishes, isLoading, error);
 
   const featuredRecipe = {
