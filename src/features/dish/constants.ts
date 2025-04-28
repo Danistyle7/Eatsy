@@ -8,19 +8,19 @@ export const DISH_QUERY_KEYS = {
 };
 
 export const DISH_CATEGORIES = {
-  APPETIZER: { value: "APPETIZER", label: "Entrada", icon: "🍞" },
-  SALAD: { value: "SALAD", label: "Ensalada", icon: "🥗" },
-  MAIN_COURSE: { value: "MAIN_COURSE", label: "Plato Principal", icon: "🍛" },
-  DESSERT: { value: "DESSERT", label: "Postre", icon: "🍰" },
-  BURGERS: { value: "BURGERS", label: "Hamburguesas", icon: "🍔" },
-  TEA: { value: "TEA", label: "Té", icon: "🍵" },
-  SODA: { value: "SODA", label: "Refresco", icon: "🥤" },
-  JUICE: { value: "JUICE", label: "Jugo Natural", icon: "🧃" },
-  COFFEE: { value: "COFFEE", label: "Café", icon: "☕" },
-  OTHER: { value: "OTHER", label: "Otro", icon: "❓" },
+  APPETIZER: { value: "appetizer", label: "Entrada", icon: "🍞" },
+  SALAD: { value: "salad", label: "Ensalada", icon: "🥗" },
+  MAIN_COURSE: { value: "main_course", label: "Plato Principal", icon: "🍛" },
+  DESSERT: { value: "dessert", label: "Postre", icon: "🍰" },
+  BURGERS: { value: "burgers", label: "Hamburguesas", icon: "🍔" },
+  TEA: { value: "tea", label: "Té", icon: "🍵" },
+  SODA: { value: "soda", label: "Refresco", icon: "🥤" },
+  JUICE: { value: "juice", label: "Jugo Natural", icon: "🧃" },
+  COFFEE: { value: "coffee", label: "Café", icon: "☕" },
+  OTHER: { value: "other", label: "Otro", icon: "❓" },
 } as const;
 
 export const DISH_TYPES = {
-  FOOD: { value: "FOOD", label: "Comida", icon: "🍔" },
-  DRINK: { value: "DRINK", label: "Bebida", icon: "🍹" },
+  FOOD: { value: "food", label: "Comida", icon: "🍔" },
+  DRINK: { value: "drink", label: "Bebida", icon: "🍹" },
 };

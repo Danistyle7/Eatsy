@@ -10,7 +10,11 @@ import {
 } from "react-native";
 import BotonNaranja from "@/shared/components/ui/button";
 import Header from "@/shared/components/ui/header";
+<<<<<<< HEAD:src/app/menupag/ver-todos.jsx
 import { useGetAllDishes } from "@/features/dish/hooks/use-get-dish";
+=======
+import { useGetAllDishes } from "@/features/dish/hooks";
+>>>>>>> 98f3331ca62eb8bbeb3ea0b897be65106af2768e:src/app/menupag/ver-todos.tsx
 import ModalDetalle from "@/shared/components/modal-detalle";
 
 const VerTodos = () => {
