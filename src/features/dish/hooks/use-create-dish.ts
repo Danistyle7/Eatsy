@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { dishService } from "../api";
+import { dishService } from "../service";
 import { DISH_QUERY_KEYS } from "../constants";
 import type { DishCreate, DishResponse } from "../types";
 

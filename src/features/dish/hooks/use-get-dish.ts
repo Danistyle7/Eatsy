@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { dishService, DishService } from "../api";
+import { dishService, DishService } from "../service";
 import { DISH_QUERY_KEYS } from "../constants";
 import type { DishParams, DishResponse } from "../types";
 
