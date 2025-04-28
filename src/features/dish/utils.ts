@@ -18,7 +18,7 @@ export const getDishCategory = (value: DishCategoryValue): DishCategory => {
  * Genera opciones para componentes UI
  * @returns Array de opciones { label, value, icon }
  */
-export const getCategoryOptions = () => {
+export const getDishCategories = () => {
   return Object.values(DISH_CATEGORIES);
 };
 

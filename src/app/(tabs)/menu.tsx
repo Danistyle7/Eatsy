@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { View, Text, ScrollView, TextInput } from "react-native";
 import { Ionicons as FishSymbol, AntDesign as User } from "@expo/vector-icons";
-import BotonNaranja from "@/components/ui/button";
-import Section from "@/components/ui/section";
+import BotonNaranja from "@/shared/components/ui/button";
+import Section from "@/shared/components/ui/section";
 
 const sampleData = [
   {

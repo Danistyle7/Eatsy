@@ -13,7 +13,7 @@ import type {
   DishUpdate,
 } from "@/features/dish/types";
 import { BaseService } from "@/shared/lib/api/base-service";
-import apiClient from "@/shared/lib/api/client";
+import apiClient from "@/shared/lib/api/core";
 import type { APIResponse } from "@/shared/types/api-response";
 
 /**
