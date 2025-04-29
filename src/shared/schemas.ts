@@ -4,18 +4,6 @@ import { z } from "zod";
 // 🏷️ Esquemas Básicos
 // ========================
 
-export const apiResponseSchema = z.object({
-  success: z.boolean(),
-  data: z.unknown().optional(),
-  message: z.string().optional(),
-});
-/** Valida URLs de imágenes (con opcional placeholder) */
-export const imageUrlSchema = z
-  .string()
-  .url("URL inválida")
-  .optional()
-  .or(z.literal("")); // Permite strings vacíos
-
 /** Valida emails (reutilizable en auth/user) */
 export const emailSchema = z
   .string()
@@ -40,11 +28,12 @@ export const dateSchema = z
 /** Valida IDs numéricos positivos (para APIs) */
 export const idSchema = z.number().int().positive();
 /** Valida opciones de selección (ej: dropdowns) */
-export const selectOptionSchema = z.object({
+export const optionSchema = z.object({
   label: z.string(),
   value: z.string(),
+  disabled: z.boolean().optional(),
 });
-export type SelectOption = z.infer<typeof selectOptionSchema>;
+export type Option = z.infer<typeof optionSchema>;
 
 // ========================
 // 🛠️ Funciones Útiles

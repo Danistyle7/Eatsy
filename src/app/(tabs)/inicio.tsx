@@ -10,10 +10,10 @@ import { DishParams } from "@/features/dish/types";
 export default function HomeScreen() {
   // Example of params
   const params: DishParams = {
-    search: "pasta",
-    category: "MAIN_COURSE",
-    type: "FOOD",
-    isAvailable: false,
+    // search: "pasta",
+    // category: "MAIN_COURSE",
+    type: "DRINK",
+    // isAvailable: true,
   };
   const { data: dishes, isLoading, error } = useGetAllDishes(params);
   console.log(dishes, isLoading, error);

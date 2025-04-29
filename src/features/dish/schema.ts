@@ -1,6 +1,7 @@
 import { z } from "zod";
 
-import { idSchema, imageUrlSchema } from "@/shared/schemas";
+import { idSchema } from "@/shared/schemas";
+import { imageUrlSchema } from "@/features/file/schemas";
 import { DISH_CATEGORIES, DISH_TYPES } from "./constants";
 import { DishCategoryValue, DishTypeValue } from "./types";
 
@@ -32,7 +33,9 @@ export const dishCreateSchema = z.object({
   price: z.number().positive("El precio debe ser positivo"),
   // stock: z.number().int().nonnegative(),
   category: dishCategorySchema,
-  imageUrl: imageUrlSchema.optional(), // Reutilizado desde shared/
+  type: dishTypeSchema,
+  isAvailable: z.boolean(),
+  imageUrl: imageUrlSchema, // Reutilizado desde shared/
   prepTime: z.number().int().positive(),
   isAvailable: z.boolean().optional(),
 });

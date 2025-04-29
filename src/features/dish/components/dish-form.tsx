@@ -1,39 +1,66 @@
-import { useForm } from "react-hook-form";
-import { View, Text } from "react-native";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { Text, View } from "react-native";
+
 import { dishCreateSchema } from "@/features/dish/schema";
+import { ImageUploader } from "@/features/file/components/input-uploader";
+import { useUploadFile } from "@/features/file/hooks/use-upload-file";
+import { Button } from "@/shared/components/ui/button";
 import {
   Form,
+  FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage,
 } from "@/shared/components/ui/form";
 import { Input } from "@/shared/components/ui/input";
 import { Select } from "@/shared/components/ui/select";
-import { getDishCategories } from "../utils";
-import { Button } from "@/shared/components/ui/button";
-import { ImageUploader } from "@/shared/components/ui/input-uploader";
+import { Switch } from "@/shared/components/ui/switch";
+import { DishCreate } from "../types";
+import { getDishCategories, getDishTypes } from "../utils";
+import { ApiError } from "@/shared/lib/api/errors";
 
 interface DishFormProps {
-  onSubmit: (values: any) => void;
+  onSubmit: (values: DishCreate) => Promise<void>;
+  isPending: boolean;
+  defaultValues?: DishCreate;
 }
 
-export const DishForm = ({ onSubmit }: DishFormProps) => {
+export const DishForm = ({
+  onSubmit,
+  isPending,
+  defaultValues,
+}: DishFormProps) => {
   const dishCategories = getDishCategories();
+  const dishTypes = getDishTypes();
+  const { mutateAsync: uploadFile, isPending: isUploading } = useUploadFile();
 
   const form = useForm({
     resolver: zodResolver(dishCreateSchema),
-    defaultValues: {
+    defaultValues: defaultValues || {
       name: "",
       description: "",
       price: 0,
-      category: "APPETIZER",
+      isAvailable: true,
+      category: dishCategories[0].value,
+      type: dishTypes[0].value,
       imageUrl: "",
-      prepTime: 30,
+      prepTime: 0,
     },
   });
+
+  const handleSubmit = async (values: DishCreate) => {
+    try {
+      const imageUrl = await uploadFile(values.imageUrl);
+      onSubmit({ ...values, imageUrl });
+    } catch (error) {
+      if (error instanceof ApiError)
+        console.error(`${error.code}: ${error.message}`);
+      else console.error("Error al subir imagen", error);
+    }
+  };
 
   return (
     <Form {...form}>
@@ -41,6 +68,44 @@ export const DishForm = ({ onSubmit }: DishFormProps) => {
         <Text className="text-2xl font-semibold text-[#3e2f1c] mb-4">
           🌿 Añadir un nuevo plato
         </Text>
+
+        <FormField
+          name="type"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Tipo</FormLabel>
+              <FormControl>
+                <Select
+                  className="rounded-2xl bg-[#f8f4ef] text-[#5e4632]"
+                  items={dishTypes}
+                  selectedValue={field.value}
+                  onValueChange={field.onChange}
+                  placeholder="Selecciona un tipo"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          name="category"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Categoría</FormLabel>
+              <FormControl>
+                <Select
+                  className="rounded-2xl bg-[#f8f4ef] text-[#5e4632]"
+                  items={dishCategories}
+                  selectedValue={field.value}
+                  onValueChange={field.onChange}
+                  placeholder="Selecciona una categoría"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <FormField
           name="name"
@@ -85,10 +150,11 @@ export const DishForm = ({ onSubmit }: DishFormProps) => {
             name="price"
             render={({ field }) => (
               <FormItem className="flex-1">
-                <FormLabel>Precio (S/.)</FormLabel>
+                <FormLabel>Precio (Bs.)</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
+                    placeholder="Ej: 25.00"
                     keyboardType="numeric"
                     onChangeText={(value) => field.onChange(Number(value))}
                   />
@@ -106,6 +172,7 @@ export const DishForm = ({ onSubmit }: DishFormProps) => {
                 <FormControl>
                   <Input
                     {...field}
+                    placeholder="Ej: 30"
                     keyboardType="numeric"
                     onChangeText={(value) => field.onChange(Number(value))}
                   />
@@ -115,25 +182,6 @@ export const DishForm = ({ onSubmit }: DishFormProps) => {
             )}
           />
         </View>
-
-        <FormField
-          name="category"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Categoría</FormLabel>
-              <FormControl>
-                <Select
-                  className="rounded-2xl bg-[#f8f4ef] text-[#5e4632]"
-                  items={dishCategories}
-                  selectedValue={field.value}
-                  onValueChange={field.onChange}
-                  placeholder="Selecciona una categoría"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
         <FormField
           name="imageUrl"
@@ -152,9 +200,36 @@ export const DishForm = ({ onSubmit }: DishFormProps) => {
           )}
         />
 
+        <FormField
+          name="isAvailable"
+          render={({ field }) => (
+            <FormItem className="flex-row justify-between items-center">
+              <View>
+                <FormLabel className="mb-0">Disponible?</FormLabel>
+                <FormDescription>
+                  Activa esto para mostrarlo en el menu
+                </FormDescription>
+              </View>
+              <FormControl>
+                <Switch
+                  checked={field.value}
+                  onChange={field.onChange}
+                  className="rounded-2xl bg-[#f8f4ef]"
+                  accessibilityLabel="Disponible?"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <Button
-          title="🍃 Guardar Plato"
-          onPress={form.handleSubmit(onSubmit)}
+          title={
+            form.formState.isSubmitting || isPending || isUploading
+              ? "📸 Subiendo..."
+              : "🍃 Guardar Plato"
+          }
+          onPress={form.handleSubmit(handleSubmit)}
           className="bg-[#f4a261] rounded-full py-3 shadow-md active:scale-95 transition"
         />
       </View>
