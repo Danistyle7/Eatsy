@@ -33,7 +33,9 @@ export const dishCreateSchema = z.object({
   price: z.number().positive("El precio debe ser positivo"),
   // stock: z.number().int().nonnegative(),
   category: dishCategorySchema,
-  imageUrl: imageUrlSchema.optional(), // Reutilizado desde shared/
+  type: dishTypeSchema,
+  isAvailable: z.boolean(),
+  imageUrl: imageUrlSchema, // Reutilizado desde shared/
   prepTime: z.number().int().positive(),
 });
 

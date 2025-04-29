@@ -1,9 +1,18 @@
 import { DishForm } from "@/features/dish/components/dish-form";
+import { useCreateDish } from "@/features/dish/hooks";
 import { View } from "react-native";
 
 export default function DishRegisterScreen() {
-  const handleSubmit = (data: any) => {
-    console.log("Formulario enviado", data);
+  const { mutateAsync: createDish, error } = useCreateDish();
+
+  const handleSubmit = async (data: any) => {
+    try {
+      const newDish = await createDish(data);
+      console.log("Formulario enviado", newDish);
+    } catch (err) {
+      console.error(err);
+      console.log(error);
+    }
   };
 
   return (

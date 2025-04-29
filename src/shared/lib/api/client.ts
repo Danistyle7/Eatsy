@@ -17,14 +17,16 @@ apiClient.interceptors.request.use((config) => {
   if (typeof config.url !== "string") throw new Error("URL must be a string");
   const { token } = useAuthStore.getState();
   if (token) config.headers.Authorization = `Bearer ${token}`;
-  if (!(config.data instanceof FormData))
-    config.headers["Content-Type"] = "application/json";
+  if (config.data instanceof FormData)
+    config.headers["Content-Type"] = "multipart/form-data";
   return config;
 });
 
 apiClient.interceptors.response.use(
   (response) => {
+    console.log("Respuesta de la API", response);
     const result = apiResponseSchema.safeParse(response.data);
+    console.log("Respuesta de la API", result.data);
 
     if (!result.success) {
       throw new Error(
@@ -34,8 +36,10 @@ apiClient.interceptors.response.use(
       );
     }
 
-    if (!result.data.success)
+    if (!result.data.success) {
+      console.log("Error de la API", result.data.message);
       throw new Error(result.data.message || "Error desconocido");
+    }
 
     return { ...response, data: result.data.data };
   },

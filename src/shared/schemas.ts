@@ -34,11 +34,12 @@ export const dateSchema = z
 /** Valida IDs numéricos positivos (para APIs) */
 export const idSchema = z.number().int().positive();
 /** Valida opciones de selección (ej: dropdowns) */
-export const selectOptionSchema = z.object({
+export const optionSchema = z.object({
   label: z.string(),
   value: z.string(),
+  disabled: z.boolean().optional(),
 });
-export type SelectOption = z.infer<typeof selectOptionSchema>;
+export type Option = z.infer<typeof optionSchema>;
 
 // ========================
 // 🛠️ Funciones Útiles
