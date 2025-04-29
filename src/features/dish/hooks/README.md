@@ -1,122 +1,130 @@
-# `hooks/dish` 📌
+# 🍽️ Dish Hooks Documentation
 
-Carpeta de hooks para la gestión de platos (`Dish`). Contiene hooks especializados para operaciones CRUD, optimizadas para React Query y TypeScript.
-
-## 📁 **Estructura Recomendada**
-
-```bash
-hooks/
-└── dish/
-    ├── use-get-dish.ts
-    ├── use-create-dish.ts
-    ├── use-update-dish.ts
-    ├── use-delete-dish.ts
-    └── README.md
-```
-
----
-
-## 🔄 **Flujo de Datos**
+Colección de hooks para operaciones CRUD de platos usando React Query.  
+**Tecnologías principales:** TanStack Query v4, Zod, Expo Router, TypeScript.
 
 ```mermaid
-sequenceDiagram
-    participant Componente
-    participant Hook
-    participant API
-    participant Cache
+%% Diagrama de Flujo de Datos
+flowchart TD
+  subgraph UI
+    A[Componente] -->|Ejecuta Mutación| B[useCreateDish/useUpdateDish]
+    A -->|Solicita Datos| C[useGetDish]
+  end
 
-    Componente->>Hook: Ejecuta mutate/refetch
-    Hook->>API: Llama a la función API (ej: createDish)
-    API-->>Hook: Respuesta (éxito/error)
-    Hook->>Cache: Actualiza datos (optimista o post-éxito)
-    Hook-->>Componente: Retorna estado (isLoading, data, error)
+  subgraph ReactQuery
+    B -->|Actualiza Cache| D[Query Client]
+    C -->|Lee de Cache| D
+    D -->|Sincroniza| E[API Service]
+  end
+
+  E -->|Respuesta| F[(Backend)]
+  F -->|Datos Validados| E
+  E -->|Actualización Cache| D
 ```
 
 ---
 
-## 🛠 **Hooks Disponibles**
+## 📦 Hooks Disponibles
 
-### 1. `useGetDish`
+| Hook              | Descripción               | Método HTTP | Optimistic Updates |
+| ----------------- | ------------------------- | ----------- | ------------------ |
+| `useCreateDish`   | Crea nuevo plato          | POST        | ✅                 |
+| `useGetAllDishes` | Obtiene lista filtrada    | GET         | -                  |
+| `useGetDishById`  | Obtiene detalle por ID    | GET         | -                  |
+| `useUpdateDish`   | Actualiza plato existente | PUT         | ✅                 |
+| `useDeleteDish`   | Elimina plato             | DELETE      | ✅                 |
 
-- **Propósito**: Obtener un plato por ID.
-- **Flujo**:
-  1. Consulta caché local primero.
-  2. Si no hay datos, llama a la API.
-  3. Retorna datos validados con Zod.
-- **Ejemplo**:
-  ```tsx
-  const { data: dish, isLoading } = useGetDish(1);
-  ```
+## 🛠 Uso Básico
 
-### 2. `useCreateDish`
+### 1. Creación de Plato
 
-- **Propósito**: Crear un nuevo plato.
-- **Flujo**:
-  1. Actualización optimista de la caché.
-  2. Llama a la API.
-  3. Si falla, revierte cambios.
-- **Ejemplo**:
-  ```tsx
-  const { mutate } = useCreateDish();
-  mutate({ name: "Pasta", price: 12.99 });
-  ```
+```typescript
+// components/DishForm.tsx
+const { mutate } = useCreateDish();
 
-### 3. `useUpdateDish`
-
-- **Propósito**: Actualizar un plato existente.
-- **Reglas**:
-  - Campos parciales (`Partial<Dish>`).
-  - Valida datos con Zod antes de enviar.
-- **Ejemplo**:
-  ```tsx
-  const { mutate } = useUpdateDish();
-  mutate({ id: 1, data: { price: 14.99 } });
-  ```
-
-### 4. `useDeleteDish`
-
-- **Propósito**: Eliminar un plato.
-- **Side Effects**:
-  - Invalida la caché de `['dishes']`.
-  - Muestra notificación toast.
-- **Ejemplo**:
-  ```tsx
-  const { mutate } = useDeleteDish();
-  mutate(1); // ID del plato
-  ```
-
----
-
-## 📜 **Reglas de Uso**
-
-1. **Siempre usar tipos**:
-   ```ts
-   const { data } = useGetDish(1); // data es de tipo `DishResponse`
-   ```
-2. **No modificar caché manualmente**: Usar `invalidateQueries` o `setQueryData`.
-3. **Composición**: Para lógica compleja, combinar hooks:
-   ```ts
-   const { data: dish } = useGetDish(1);
-   const { mutate } = useUpdateDish();
-   ```
-
----
-
-## ⁉ **FAQ**
-
-### ¿Cómo añadir un nuevo hook?
-
-1. Crea un archivo `use-{acción}-dish.ts`.
-2. Implementa siguiendo el patrón existente.
-3. Documenta en este README.
-
----
-
-## 🔗 **Relación con Otros Módulos**
-
-```mermaid
-graph TD
-    A[hooks/dish] --> B[api/dish.ts]
-    A --> C[schemas/dish.ts]
-    A --> D[components/dish-form.tsx]
+const handleSubmit = (values: DishCreate) => {
+  mutate(values, {
+    onSuccess: (newDish) => {
+      router.push(`/dishes/${newDish.id}`);
+      toast.success("¡Plato creado!");
+    },
+    onError: (error) => {
+      if (error instanceof ApiError) {
+        toast.error(error.message);
+      }
+    },
+  });
+};
 ```
+
+### 2. Actualización con Optimistic UI
+
+```typescript
+// features/dish/hooks/use-update-dish.ts
+onMutate: ({ id, data }) => {
+  // 🚀 Actualización optimista
+  queryClient.setQueryData(
+    DISH_QUERY_KEYS.detail(id),
+    (old?: DishResponse) => ({ ...old, ...data })
+  );
+},
+onError: (_, { id }, context) => {
+  // 🔄 Rollback en caso de error
+  queryClient.setQueryData(DISH_QUERY_KEYS.detail(id), context?.previous);
+}
+```
+
+## 🛡 Manejo de Errores
+
+Todos los hooks lanzan `ApiError` con metadata estructurada:
+
+```typescript
+try {
+  await updateDish({ id: "123", data: { price: 15 } });
+} catch (error) {
+  if (error instanceof ApiError) {
+    console.error({
+      code: error.code, // Ej: "VALIDATION_ERROR"
+      status: error.statusCode, // Ej: 400
+      details: error.details, // Ej: { "price": "Debe ser positivo" }
+    });
+  }
+}
+```
+
+## ⚡ Optimizaciones Clave
+
+- **Prefetching en Hover:**
+  ```typescript
+  // En lista de platos
+  onMouseEnter={() => queryClient.prefetchQuery({
+    queryKey: DISH_QUERY_KEYS.detail(dish.id),
+    queryFn: () => getDishById(dish.id)
+  })}
+  ```
+- **Invalidaciones Automáticas:**
+  ```typescript
+  // Al eliminar un plato
+  onSettled: () => {
+    queryClient.invalidateQueries({ queryKey: DISH_QUERY_KEYS.lists() });
+  };
+  ```
+
+## 🧩 Estructura de Query Keys
+
+```typescript
+// features/dish/constants.ts
+export const DISH_QUERY_KEYS = {
+  all: ["dishes"],
+  lists: (params?: DishParams) => [...DISH_QUERY_KEYS.all, "list", params],
+  details: () => [...DISH_QUERY_KEYS.all, "detail"],
+  detail: (id: number) => [...DISH_QUERY_KEYS.details(), id],
+};
+```
+
+## ✅ Mejores Prácticas
+
+1. **Siempre usar `ApiError`** para manejo consistente de errores.
+2. **Combinar `onMutate` + `onError`** para actualizaciones optimistas confiables.
+3. **Invalidar queries relacionadas** en `onSettled` para mantener datos frescos.
+4. **Usar prefetching** en interacciones previstas (hover, focus).

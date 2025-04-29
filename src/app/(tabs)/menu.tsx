@@ -1,10 +1,10 @@
 import Header from "@/shared/components/ui/header";
-import { useGetAllDishes } from "@/features/dish/hooks/use-get-dish";
+import { useGetAllDishes } from "@/features/dish/hooks";
 import Section from "@/shared/components/ui/section";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { ScrollView } from "react-native";
-import { DishParams } from  "@/features/dish/types";
+import { DishParams } from "@/features/dish/types";
 
 export const MenuScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -12,8 +12,7 @@ export const MenuScreen = () => {
   const [busqueda, setBusqueda] = useState("");
   const [esCliente, setEsCliente] = useState(false);
 
-
-  const { data: dishes, isLoading, error } = useGetAllDishes({ type: "FOOD"});
+  const { data: dishes, isLoading, error } = useGetAllDishes({ type: "FOOD" });
 
   console.log(dishes);
 
@@ -43,11 +42,15 @@ export const MenuScreen = () => {
 
   return (
     <ScrollView
-      style={{ flex: 1,backgroundColor: "white",paddingHorizontal: 16, paddingTop: 8,}}
+      style={{
+        flex: 1,
+        backgroundColor: "white",
+        paddingHorizontal: 16,
+        paddingTop: 8,
+      }}
     >
       {/* Header */}
-      <Header titulo="Menú" busqueda={busqueda} setBusqueda={setBusqueda} onAgregarPress={() => console.log("Agregar presionado")}
-      />
+      <Header titulo="Menú" busqueda={busqueda} setBusqueda={setBusqueda} />
 
       {/* Secciones dinámicas por cada tipo único */}
       {tiposUnicos.map((tipo) => {
