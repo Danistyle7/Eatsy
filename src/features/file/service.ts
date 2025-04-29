@@ -1,6 +1,6 @@
 import { BaseService } from "@/shared/lib/api/base-service";
 import apiClient from "@/shared/lib/api/client";
-import type { APIResponse } from "@/shared/types/api-response";
+import type { APIResponse } from "@/shared/lib/api/types/api-response";
 import { imageUrlResponseSchema } from "./schemas";
 
 export class FileService extends BaseService {
@@ -31,20 +31,9 @@ export class FileService extends BaseService {
 
       const responseUpload = await apiClient.post(
         "/multimedia/upload",
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
+        formData
       );
-
-      const validated = this.validateResponse(
-        responseUpload.data,
-        imageUrlResponseSchema
-      );
-
-      if (!validated.success) return validated;
-
-      return { success: true, data: validated.data };
+      return this.validateResponse(responseUpload.data, imageUrlResponseSchema);
     } catch (error) {
       return this.handleError(error, "Error al subir imagen");
     }
