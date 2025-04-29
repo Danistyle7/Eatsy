@@ -3,8 +3,10 @@ import { useGetAllDishes } from "@/features/dish/hooks";
 import Section from "@/shared/components/ui/section";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
-import { ScrollView } from "react-native";
-import { DishParams } from "@/features/dish/types";
+import { ScrollView,View } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback } from "react";
+
 
 export const MenuScreenUsuario = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -15,8 +17,14 @@ export const MenuScreenUsuario = () => {
   const {
     data: dishes,
     isLoading,
-    error,
+    error,refetch
   } = useGetAllDishes({ type: "FOOD", isAvailable: esCliente });
+
+  useFocusEffect(
+       useCallback(() => {
+         refetch();
+       }, [refetch])
+     );
 
   console.log(dishes);
 
@@ -45,6 +53,19 @@ export const MenuScreenUsuario = () => {
     );
 
   return (
+
+    <View style={{ flex: 1, backgroundColor: "white" }}>
+  
+    <View style={{ paddingHorizontal: 16, paddingTop: 8 }}>
+    <Header
+        titulo="Menú"
+        busqueda={busqueda}
+        setBusqueda={setBusqueda}
+        mostrarAgregar={false}
+      />
+
+     </View>
+
     <ScrollView
       style={{
         flex: 1,
@@ -53,13 +74,6 @@ export const MenuScreenUsuario = () => {
         paddingTop: 8,
       }}
     >
-      {/* Header */}
-      <Header
-        titulo="Menú"
-        busqueda={busqueda}
-        setBusqueda={setBusqueda}
-        mostrarAgregar={false}
-      />
 
       {/* Secciones dinámicas por cada tipo único */}
       {tiposUnicos.map((tipo) => {
@@ -82,6 +96,7 @@ export const MenuScreenUsuario = () => {
         );
       })}
     </ScrollView>
+    </View>
   );
 };
 
