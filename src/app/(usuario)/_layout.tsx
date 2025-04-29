@@ -39,17 +39,9 @@ export default function TabLayout() {
         ),
       }}
     >
+      
       <Tabs.Screen
-        name="inicio"
-        options={{
-          title: "Inicio",
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome name="home" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="menu"
+        name="menu_usuario"
         options={{
           title: "Menú",
           tabBarIcon: ({ color, size }) => (
@@ -58,7 +50,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="bebidas"
+        name="bebidas_usuario"
         options={{
           title: "Bebidas",
           tabBarIcon: ({ color, size }) => (

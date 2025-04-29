@@ -23,4 +23,4 @@ export const DISH_CATEGORIES = {
 export const DISH_TYPES = {
   FOOD: { value: "FOOD", label: "Comida", icon: "🍔" },
   DRINK: { value: "DRINK", label: "Bebida", icon: "🍹" },
-} as const;
+};

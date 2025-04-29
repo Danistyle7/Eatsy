@@ -1,6 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { dishService } from "../service";
+
+import { ApiError } from "@/shared/lib/api/errors";
 import { DISH_QUERY_KEYS } from "../constants";
+import { dishService } from "../service";
 import type { DishResponse, DishUpdate } from "../types";
 
 type MutationVariables = { id: DishResponse["id"]; data: DishUpdate };
@@ -12,7 +14,8 @@ export const useUpdateDishById = () => {
   return useMutation<DishResponse, Error, MutationVariables, Context>({
     mutationFn: async ({ id, data }) => {
       const result = await dishService.update(id, data);
-      if (!result.success) throw new Error(result.error);
+      if (!result.success)
+        throw new ApiError(result.error, parseInt(result.code || "500"));
       return result.data;
     },
     onMutate: async ({ id, data }) => {

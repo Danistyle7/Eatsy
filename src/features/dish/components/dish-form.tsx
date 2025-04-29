@@ -16,24 +16,26 @@ import {
   FormMessage,
 } from "@/shared/components/ui/form";
 import { Input } from "@/shared/components/ui/input";
-import { RadioGroup } from "@/shared/components/ui/radio-group";
 import { Select } from "@/shared/components/ui/select";
+import { Switch } from "@/shared/components/ui/switch";
+import { ApiError } from "@/shared/lib/api/errors";
 import { DishCreate } from "../types";
 import { getDishCategories, getDishTypes } from "../utils";
-import { CheckboxGroup } from "@/shared/components/ui/checkbox-group";
-import { useState } from "react";
-import { Switch } from "@/shared/components/ui/switch";
 
 interface DishFormProps {
-  onSubmit: (values: DishCreate) => void;
+  onSubmit: (values: DishCreate) => Promise<void>;
+  isPending: boolean;
   defaultValues?: DishCreate;
 }
 
-export const DishForm = ({ onSubmit, defaultValues }: DishFormProps) => {
+export const DishForm = ({
+  onSubmit,
+  isPending,
+  defaultValues,
+}: DishFormProps) => {
   const dishCategories = getDishCategories();
   const dishTypes = getDishTypes();
-  const [selected, setSelected] = useState<string[]>([]);
-  const { mutateAsync: uploadFile } = useUploadFile();
+  const { mutateAsync: uploadFile, isPending: isUploading } = useUploadFile();
 
   const form = useForm({
     resolver: zodResolver(dishCreateSchema),
@@ -51,10 +53,12 @@ export const DishForm = ({ onSubmit, defaultValues }: DishFormProps) => {
 
   const handleSubmit = async (values: DishCreate) => {
     try {
-      const fileUrl = await uploadFile(values.imageUrl);
-      onSubmit({ ...values, imageUrl: fileUrl });
-    } catch (err) {
-      console.error(err);
+      const imageUrl = await uploadFile(values.imageUrl);
+      onSubmit({ ...values, imageUrl });
+    } catch (error) {
+      if (error instanceof ApiError)
+        console.error(`${error.code}: ${error.message}`);
+      else console.error("Error al subir imagen", error);
     }
   };
 
@@ -221,7 +225,9 @@ export const DishForm = ({ onSubmit, defaultValues }: DishFormProps) => {
 
         <Button
           title={
-            form.formState.isSubmitting ? "📸 Subiendo..." : "🍃 Guardar Plato"
+            form.formState.isSubmitting || isPending || isUploading
+              ? "📸 Subiendo..."
+              : "🍃 Guardar Plato"
           }
           onPress={form.handleSubmit(handleSubmit)}
           className="bg-[#f4a261] rounded-full py-3 shadow-md active:scale-95 transition"

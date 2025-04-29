@@ -4,12 +4,6 @@ import { z } from "zod";
 // 🏷️ Esquemas Básicos
 // ========================
 
-export const apiResponseSchema = z.object({
-  success: z.boolean(),
-  data: z.unknown().optional(),
-  message: z.string().optional(),
-});
-
 /** Valida emails (reutilizable en auth/user) */
 export const emailSchema = z
   .string()

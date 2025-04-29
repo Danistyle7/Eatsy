@@ -10,19 +10,41 @@ import {
   Switch,
 } from "react-native";
 import BotonNaranja from "./ui/button";
+import { useUpdateDishById } from "@/features/dish/hooks";
 
 const ModalDetalle = ({ visible, onClose, item, modoCliente }) => {
   const [disponible, setDisponible] = useState(false);
+  const updateDishById = useUpdateDishById();
 
   useEffect(() => {
     if (item) {
-      setDisponible(item.isAvailable); // Cambia a item.disponible si tu objeto usa así
+      setDisponible(item.isAvailable);
+     
     }
   }, [item]);
 
   if (!item) return null;
-
-  const toggleSwitch = () => setDisponible((prev) => !prev);
+  const toggleSwitch = () => {
+    const nuevoDisponible = !disponible;
+    console.log("se qu ees a ",nuevoDisponible);
+    updateDishById.mutate(
+      {
+        id: item.id,
+        data: { isAvailable: nuevoDisponible }
+      },
+      
+      {
+        onSuccess: () => {
+          console.log("se actualiza a ",nuevoDisponible);
+          setDisponible(nuevoDisponible);
+        },
+        onError: () => {
+      
+          console.log("Error actualizando disponibilidad");
+        },
+      }
+    );
+  };
 
   const pedirPlato = () => {
     console.log("Pedido realizado del plato:", item.name);
@@ -106,6 +128,7 @@ const ModalDetalle = ({ visible, onClose, item, modoCliente }) => {
 };
 
 export default ModalDetalle;
+
 
 // Estilos
 const styles = StyleSheet.create({

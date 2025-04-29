@@ -9,11 +9,13 @@ export const BebidaScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [busqueda, setBusqueda] = useState("");
-  const queryResult = useGetAllDishes();
+
   const [esCliente, setEsCliente] = useState(false);
 
-  console.log(queryResult.data);
-  const sampleData = queryResult.data ?? [];
+  
+  const { data: bebidas, isLoading, error } = useGetAllDishes({ type: "DRINK"});
+  console.log(bebidas);
+  const sampleData = bebidas ?? [];
 
   const tiposUnicos = Array.from(
     new Set(

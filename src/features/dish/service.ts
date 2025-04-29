@@ -14,7 +14,7 @@ import type {
 } from "@/features/dish/types";
 import { BaseService } from "@/shared/lib/api/base-service";
 import apiClient from "@/shared/lib/api/client";
-import type { APIResponse } from "@/shared/types/api-response";
+import type { APIResponse } from "@/shared/lib/api/types/api-response";
 
 /**
  * Servicio para operaciones CRUD de platos
@@ -58,7 +58,10 @@ export class DishService extends BaseService {
   ): Promise<APIResponse<DishResponse>> {
     try {
       const validatedData = dishUpdateSchema.parse(dish);
-      const response = await apiClient.put(`/dish/update/${id}`, validatedData);
+      const response = await apiClient.patch(
+        `/dish/update/${id}`,
+        validatedData
+      );
       return this.validateResponse(response.data, dishResponseSchema);
     } catch (error) {
       return this.handleError(error, "Error al actualizar plato");

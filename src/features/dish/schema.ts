@@ -41,7 +41,6 @@ export const dishCreateSchema = z.object({
 
 export const dishResponseSchema = dishCreateSchema.extend({
   id: idSchema,
-  isAvailable: z.boolean(),
 });
 
 export const dishUpdateSchema = dishCreateSchema.partial();

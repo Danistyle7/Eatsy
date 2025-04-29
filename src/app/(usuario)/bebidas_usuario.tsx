@@ -1,38 +1,36 @@
-import Header from "@/shared/components/ui/header";
-import { useGetAllDishes } from "@/features/dish/hooks/use-get-dish";
-import Section from "@/shared/components/ui/section";
-import { useRouter } from "expo-router";
 import React, { useState } from "react";
-import { ScrollView } from "react-native";
-import { DishParams } from  "@/features/dish/types";
+import { ScrollView, Text } from "react-native";
+import Header from "@/shared/components/ui/header";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { useGetAllDishes } from "@/features/dish/hooks";
+import Section from "@/shared/components/ui/section";
 
-export const MenuScreen = () => {
+export const BebidaScreenUsuario = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [busqueda, setBusqueda] = useState("");
-  const [esCliente, setEsCliente] = useState(false);
 
+  const [esCliente, setEsCliente] = useState(true);
 
-  const { data: dishes, isLoading, error } = useGetAllDishes({ type: "FOOD"});
-
-  console.log(dishes);
-
-  const sampleData = dishes ?? [];
+  
+  const { data: bebidas, isLoading, error } = useGetAllDishes({ type: "DRINK",   isAvailable: esCliente,});
+  console.log(bebidas);
+  const sampleData = bebidas ?? [];
 
   const tiposUnicos = Array.from(
     new Set(
       sampleData
         .map((item) => item.category)
-        .filter((categoria) =>
+        .filter((category) =>
           sampleData.some(
             (item) =>
-              item.category === categoria &&
+              item.category === category &&
               item.name.toLowerCase().includes(busqueda.toLowerCase())
           )
         )
     )
   );
-  const router = useRouter();
+
   // Función para filtrar por tipo y búsqueda
   const filtrarPorTipo = (category: string) =>
     sampleData.filter(
@@ -43,10 +41,19 @@ export const MenuScreen = () => {
 
   return (
     <ScrollView
-      style={{ flex: 1,backgroundColor: "white",paddingHorizontal: 16, paddingTop: 8,}}
+      style={{
+        flex: 1,
+        backgroundColor: "white",
+        paddingHorizontal: 16,
+        paddingTop: 8,
+      }}
     >
       {/* Header */}
-      <Header titulo="Menú" busqueda={busqueda} setBusqueda={setBusqueda} onAgregarPress={() => console.log("Agregar presionado")}
+      <Header
+        titulo="Bebidas"
+        busqueda={busqueda}
+        setBusqueda={setBusqueda}
+      mostrarAgregar = {false}
       />
 
       {/* Secciones dinámicas por cada tipo único */}
@@ -73,4 +80,4 @@ export const MenuScreen = () => {
   );
 };
 
-export default MenuScreen;
+export default BebidaScreenUsuario;
