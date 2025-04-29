@@ -58,7 +58,10 @@ export class DishService extends BaseService {
   ): Promise<APIResponse<DishResponse>> {
     try {
       const validatedData = dishUpdateSchema.parse(dish);
-      const response = await apiClient.patch(`/dish/update/${id}`, validatedData);
+      const response = await apiClient.patch(
+        `/dish/update/${id}`,
+        validatedData
+      );
       return this.validateResponse(response.data, dishResponseSchema);
     } catch (error) {
       return this.handleError(error, "Error al actualizar plato");
