@@ -14,7 +14,7 @@ import type {
 } from "@/features/dish/types";
 import { BaseService } from "@/shared/lib/api/base-service";
 import apiClient from "@/shared/lib/api/client";
-import type { APIResponse } from "@/shared/types/api-response";
+import type { APIResponse } from "@/shared/lib/api/types/api-response";
 
 /**
  * Servicio para operaciones CRUD de platos
