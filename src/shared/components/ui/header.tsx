@@ -2,12 +2,12 @@ import React from "react";
 import { View, Text, TextInput } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 import BotonNaranja from "./button";
+import { Link } from "expo-router";
 
 type HeaderProps = {
   titulo: string;
   busqueda?: string;
   setBusqueda?: (text: string) => void;
-  onAgregarPress?: () => void;
   mostrarBusqueda?: boolean;
   mostrarAgregar?: boolean;
 };
@@ -16,7 +16,6 @@ const Header: React.FC<HeaderProps> = ({
   titulo,
   busqueda = "",
   setBusqueda = () => {},
-  onAgregarPress = () => {},
   mostrarBusqueda = true,
   mostrarAgregar = true,
 }) => {
@@ -50,7 +49,12 @@ const Header: React.FC<HeaderProps> = ({
           {titulo}
         </Text>
         {mostrarAgregar && (
-          <BotonNaranja titulo="Agregar" onPress={onAgregarPress} />
+          <Link href="/dish/new" asChild>
+            <BotonNaranja
+              titulo="Agregar"
+              onPress={() => console.log("Agregar presionado")}
+            />
+          </Link>
         )}
       </View>
 
