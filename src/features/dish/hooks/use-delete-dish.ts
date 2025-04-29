@@ -1,8 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { dishService } from "../service";
-import { DISH_QUERY_KEYS } from "../constants";
-import type { DishResponse } from "../types";
+
 import { ApiError } from "@/shared/lib/api/errors";
+import { DISH_QUERY_KEYS } from "../constants";
+import { dishService } from "../service";
+import type { DishResponse } from "../types";
 
 type Context = { previous?: DishResponse[] };
 

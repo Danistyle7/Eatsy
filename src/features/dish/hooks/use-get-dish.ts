@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { dishService, DishService } from "../service";
-import { DISH_QUERY_KEYS } from "../constants";
-import type { DishParams, DishResponse } from "../types";
+
 import { ApiError } from "@/shared/lib/api/errors";
+import { DISH_QUERY_KEYS } from "../constants";
+import { dishService } from "../service";
+import type { DishParams, DishResponse } from "../types";
 
 export const useGetAllDishes = (params?: DishParams) => {
   return useQuery<DishResponse[], Error>({
