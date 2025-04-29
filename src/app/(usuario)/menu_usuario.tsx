@@ -6,14 +6,14 @@ import React, { useState } from "react";
 import { ScrollView } from "react-native";
 import { DishParams } from  "@/features/dish/types";
 
-export const MenuScreen = () => {
+export const MenuScreenUsuario = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [busqueda, setBusqueda] = useState("");
-  const [esCliente, setEsCliente] = useState(false);
+  const [esCliente, setEsCliente] = useState(true);
 
 
-  const { data: dishes, isLoading, error } = useGetAllDishes({ type: "FOOD"});
+  const { data: dishes, isLoading, error } = useGetAllDishes({ type: "FOOD",   isAvailable: esCliente,});
 
   console.log(dishes);
 
@@ -46,7 +46,7 @@ export const MenuScreen = () => {
       style={{ flex: 1,backgroundColor: "white",paddingHorizontal: 16, paddingTop: 8,}}
     >
       {/* Header */}
-      <Header titulo="Menú" busqueda={busqueda} setBusqueda={setBusqueda} onAgregarPress={() => console.log("Agregar presionado")}
+      <Header titulo="Menú" busqueda={busqueda} setBusqueda={setBusqueda}    mostrarAgregar = {false}
       />
 
       {/* Secciones dinámicas por cada tipo único */}
@@ -73,4 +73,4 @@ export const MenuScreen = () => {
   );
 };
 
-export default MenuScreen;
+export default MenuScreenUsuario;

@@ -33,7 +33,7 @@ export class DishService extends BaseService {
   async getAll(params?: DishParams): Promise<APIResponse<DishResponse[]>> {
     try {
       const validatedParams = dishParamsSchema.parse(params || {});
-      const response = await apiClient.get("/dish/all", {
+      const response = await apiClient.get("/dish/filter", {
         params: validatedParams,
       });
       return this.validateResponse(response.data, z.array(dishResponseSchema));
@@ -58,7 +58,7 @@ export class DishService extends BaseService {
   ): Promise<APIResponse<DishResponse>> {
     try {
       const validatedData = dishUpdateSchema.parse(dish);
-      const response = await apiClient.put(`/dish/update/${id}`, validatedData);
+      const response = await apiClient.patch(`/dish/update/${id}`, validatedData);
       return this.validateResponse(response.data, dishResponseSchema);
     } catch (error) {
       return this.handleError(error, "Error al actualizar plato");

@@ -34,11 +34,13 @@ export const dishCreateSchema = z.object({
   category: dishCategorySchema,
   imageUrl: imageUrlSchema.optional(), // Reutilizado desde shared/
   prepTime: z.number().int().positive(),
+  isAvailable: z.boolean().optional(),
 });
 
 export const dishResponseSchema = dishCreateSchema.extend({
   id: idSchema,
   isAvailable: z.boolean(),
+  type: dishTypeSchema,
 });
 
 export const dishUpdateSchema = dishCreateSchema.partial();

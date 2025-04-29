@@ -25,7 +25,8 @@ const Section = ({
         onPress={() =>
           router.push({
             pathname: "/menupag/ver-todos", // ruta a donde quieres ir
-            params: { title }, // los parámetros que quieres enviar
+         
+            params: { title,esCliente,type: data[0]?.type } // los parámetros que quieres enviar
           })
         }
       >
@@ -59,7 +60,9 @@ const Section = ({
                 >
                   <Text style={styles.cardPrice}>Bs. {item.price}</Text>
                 </View>
-                <Text style={styles.cardTitle}>{item.name}</Text>
+                <Text style={styles.cardTitle} numberOfLines={1}>
+                  {item.name}
+                </Text>
               </View>
               <Text style={styles.cardDescription} numberOfLines={1}>
                 {item.description}

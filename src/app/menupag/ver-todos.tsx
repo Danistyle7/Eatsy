@@ -10,26 +10,37 @@ import {
 } from "react-native";
 import BotonNaranja from "@/shared/components/ui/button";
 import Header from "@/shared/components/ui/header";
-<<<<<<< HEAD:src/app/menupag/ver-todos.jsx
 import { useGetAllDishes } from "@/features/dish/hooks/use-get-dish";
-=======
-import { useGetAllDishes } from "@/features/dish/hooks";
->>>>>>> 98f3331ca62eb8bbeb3ea0b897be65106af2768e:src/app/menupag/ver-todos.tsx
 import ModalDetalle from "@/shared/components/modal-detalle";
+import { DishParams } from "@/features/dish/types";
 
 const VerTodos = () => {
   const router = useRouter();
-  const { title } = useLocalSearchParams();
-  const queryResult = useGetAllDishes();
-  const sampleData = queryResult.data ?? [];
+  const { title, type,esCliente} = useLocalSearchParams();
+  const titleStr = Array.isArray(title) ? title[0] : title;
+  const typeStr = Array.isArray(type) ? type[0] : type;
 
-  // Estado para el modal y el ítem seleccionado
+  // Ahora armamos los params
+  const esClienteBool = Array.isArray(esCliente) ? esCliente[0] === "true" : esCliente === "true";
+
+
+  const params: DishParams = {
+    category: titleStr as DishParams["category"],
+    type: typeStr,
+    ...(esClienteBool ? { isAvailable: true } : {}),
+  };
+
+  const { data: dishes, isLoading, error } = useGetAllDishes(params);
+
+  const sampleData = dishes ?? [];
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedItem, setSelectedItem] = useState<typeof sampleData[0] | null>(null); 
 
-  if (!title) {
+  if (!titleStr) {
     return <Text>Cargando...</Text>;
   }
+
+ 
 
   return (
     <ScrollView style={styles.scrollView}>
@@ -42,34 +53,34 @@ const VerTodos = () => {
         }}
       />
 
-      <Header titulo={title} mostrarAgregar={false} mostrarBusqueda={false} />
+      <Header titulo={titleStr} mostrarAgregar={false} mostrarBusqueda={false} />
 
       {/* Lista de platos (cards) */}
       <View style={styles.cardsContainer}>
         {sampleData.map((item, index) => (
           <TouchableOpacity
-            key={`${title}-${index}`}
+            key={`${titleStr}-${index}`}
             activeOpacity={0.8}
             style={styles.cardWrapper}
             onPress={() => {
-              setSelectedItem(item);
-              setModalVisible(true); // Muestra el modal cuando se presiona un item
+              setSelectedItem(item); 
+              setModalVisible(true);
             }}
           >
             <View style={styles.cardBox}>
               <Image
-                source={item.imageUrl}
+                source={{ uri: item.imageUrl }}  
                 style={styles.cardImage}
                 resizeMode="cover"
               />
               <View style={styles.cardContent}>
                 <View style={styles.cardHeader}>
-                  <View
-                    style={{ flexDirection: "row", justifyContent: "flex-end" }}
-                  >
+                  <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
                     <Text style={styles.cardPrice}>Bs. {item.price}</Text>
                   </View>
-                  <Text style={styles.cardTitle}>{item.name}</Text>
+                  <Text style={styles.cardTitle} numberOfLines={1}>
+                  {item.name}
+                </Text>
                 </View>
                 <Text style={styles.cardDescription} numberOfLines={1}>
                   {item.description}
@@ -80,19 +91,20 @@ const VerTodos = () => {
         ))}
       </View>
 
-      {/* ModalDetalle: Se muestra cuando modalVisible es true */}
+      {/* ModalDetalle */}
       {selectedItem && (
         <ModalDetalle
           visible={modalVisible}
-          onClose={() => setModalVisible(false)} // Cerrar modal
+          onClose={() => setModalVisible(false)}
           item={selectedItem}
+          modoCliente={esClienteBool}
         />
       )}
     </ScrollView>
   );
 };
 
-// Estilos usando StyleSheet
+// Estilos
 const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
@@ -106,7 +118,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   cardWrapper: {
-    width: "48%", // Ocupa casi la mitad del ancho disponible
+    width: "48%",
     marginBottom: 16,
   },
   cardBox: {
@@ -120,17 +132,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 5,
-    overflow: "hidden",
-    marginRight: 16, // tailwind mr-4
+    marginRight: 16,
     padding: 6,
     marginLeft: 16,
     marginBottom: 16,
-    borderWidth: 1, // Asegúrate de que el borde tenga un grosor visible
-    borderColor: "black", // Asegúrate de que el color del borde esté correcto,
+
   },
   cardImage: {
     width: "100%",
-    height: 120, // Puedes ajustar la altura según tu necesidad
+    height: 120,
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
   },

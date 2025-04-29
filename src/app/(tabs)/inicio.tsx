@@ -13,7 +13,7 @@ export default function HomeScreen() {
     search: "pasta",
     category: "MAIN_COURSE",
     type: "FOOD",
-    isAvailable: true,
+    isAvailable: false,
   };
   const { data: dishes, isLoading, error } = useGetAllDishes(params);
   console.log(dishes, isLoading, error);

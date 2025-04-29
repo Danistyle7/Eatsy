@@ -29,7 +29,7 @@ export const DishForm = ({ onSubmit }: DishFormProps) => {
       name: "",
       description: "",
       price: 0,
-      category: "appetizer",
+      category: "APPETIZER",
       imageUrl: "",
       prepTime: 30,
     },
