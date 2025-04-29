@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { ScrollView, Text } from "react-native";
-import Header from "@/shared/components/ui/header";
-import { QueryClientProvider } from "@tanstack/react-query";
+import { ScrollView } from "react-native";
+
 import { useGetAllDishes } from "@/features/dish/hooks";
+import Header from "@/shared/components/ui/header";
 import Section from "@/shared/components/ui/section";
 
 export const BebidaScreen = () => {
@@ -12,8 +12,11 @@ export const BebidaScreen = () => {
 
   const [esCliente, setEsCliente] = useState(false);
 
-  
-  const { data: bebidas, isLoading, error } = useGetAllDishes({ type: "DRINK"});
+  const {
+    data: bebidas,
+    isLoading,
+    error,
+  } = useGetAllDishes({ type: "DRINK" });
   console.log(bebidas);
   const sampleData = bebidas ?? [];
 
@@ -49,12 +52,7 @@ export const BebidaScreen = () => {
       }}
     >
       {/* Header */}
-      <Header
-        titulo="Bebidas"
-        busqueda={busqueda}
-        setBusqueda={setBusqueda}
-        onAgregarPress={() => console.log("Agregar presionado")}
-      />
+      <Header titulo="Bebidas" busqueda={busqueda} setBusqueda={setBusqueda} />
 
       {/* Secciones dinámicas por cada tipo único */}
       {tiposUnicos.map((tipo) => {

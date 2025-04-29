@@ -10,19 +10,20 @@ import {
 } from "react-native";
 import BotonNaranja from "@/shared/components/ui/button";
 import Header from "@/shared/components/ui/header";
-import { useGetAllDishes } from "@/features/dish/hooks/use-get-dish";
+import { useGetAllDishes } from "@/features/dish/hooks";
 import ModalDetalle from "@/shared/components/modal-detalle";
 import { DishParams } from "@/features/dish/types";
 
 const VerTodos = () => {
   const router = useRouter();
-  const { title, type,esCliente} = useLocalSearchParams();
+  const { title, type, esCliente } = useLocalSearchParams();
   const titleStr = Array.isArray(title) ? title[0] : title;
   const typeStr = Array.isArray(type) ? type[0] : type;
 
   // Ahora armamos los params
-  const esClienteBool = Array.isArray(esCliente) ? esCliente[0] === "true" : esCliente === "true";
-
+  const esClienteBool = Array.isArray(esCliente)
+    ? esCliente[0] === "true"
+    : esCliente === "true";
 
   const params: DishParams = {
     category: titleStr as DishParams["category"],
@@ -34,13 +35,13 @@ const VerTodos = () => {
 
   const sampleData = dishes ?? [];
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<typeof sampleData[0] | null>(null); 
+  const [selectedItem, setSelectedItem] = useState<
+    (typeof sampleData)[0] | null
+  >(null);
 
   if (!titleStr) {
     return <Text>Cargando...</Text>;
   }
-
- 
 
   return (
     <ScrollView style={styles.scrollView}>
@@ -53,7 +54,11 @@ const VerTodos = () => {
         }}
       />
 
-      <Header titulo={titleStr} mostrarAgregar={false} mostrarBusqueda={false} />
+      <Header
+        titulo={titleStr}
+        mostrarAgregar={false}
+        mostrarBusqueda={false}
+      />
 
       {/* Lista de platos (cards) */}
       <View style={styles.cardsContainer}>
@@ -63,24 +68,26 @@ const VerTodos = () => {
             activeOpacity={0.8}
             style={styles.cardWrapper}
             onPress={() => {
-              setSelectedItem(item); 
+              setSelectedItem(item);
               setModalVisible(true);
             }}
           >
             <View style={styles.cardBox}>
               <Image
-                source={{ uri: item.imageUrl }}  
+                source={{ uri: item.imageUrl }}
                 style={styles.cardImage}
                 resizeMode="cover"
               />
               <View style={styles.cardContent}>
                 <View style={styles.cardHeader}>
-                  <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
+                  <View
+                    style={{ flexDirection: "row", justifyContent: "flex-end" }}
+                  >
                     <Text style={styles.cardPrice}>Bs. {item.price}</Text>
                   </View>
                   <Text style={styles.cardTitle} numberOfLines={1}>
-                  {item.name}
-                </Text>
+                    {item.name}
+                  </Text>
                 </View>
                 <Text style={styles.cardDescription} numberOfLines={1}>
                   {item.description}
@@ -136,7 +143,6 @@ const styles = StyleSheet.create({
     padding: 6,
     marginLeft: 16,
     marginBottom: 16,
-
   },
   cardImage: {
     width: "100%",
