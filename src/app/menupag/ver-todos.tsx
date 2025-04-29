@@ -44,16 +44,19 @@ const VerTodos = () => {
   }
 
   return (
-    <ScrollView style={styles.scrollView}>
-      {/* Botón Naranja arriba */}
-      <BotonNaranja titulo="Atras" onPress={router.back} />
 
+    <View style={{ flex: 1, backgroundColor: "white" }}>
+    {/* Botón y Header fijos arriba */}
+    <View style={{ paddingHorizontal: 16, paddingTop: 8 }}>
+      <BotonNaranja titulo="Atras" onPress={router.back} />
       <Header
         titulo={titleStr}
         mostrarAgregar={false}
         mostrarBusqueda={false}
       />
-
+    </View>
+    
+    <ScrollView style={styles.scrollView}>
       {/* Lista de platos (cards) */}
       <View style={styles.cardsContainer}>
         {sampleData.map((item, index) => (
@@ -102,6 +105,7 @@ const VerTodos = () => {
         />
       )}
     </ScrollView>
+    </View>
   );
 };
 

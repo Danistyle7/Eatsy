@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { ScrollView, Text } from "react-native";
+import { ScrollView, View } from "react-native";
 import Header from "@/shared/components/ui/header";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { useGetAllDishes } from "@/features/dish/hooks";
 import Section from "@/shared/components/ui/section";
-
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback } from "react";
 export const BebidaScreenUsuario = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -13,7 +14,14 @@ export const BebidaScreenUsuario = () => {
   const [esCliente, setEsCliente] = useState(true);
 
   
-  const { data: bebidas, isLoading, error } = useGetAllDishes({ type: "DRINK",   isAvailable: esCliente,});
+  const { data: bebidas, isLoading, error,refetch } = useGetAllDishes({ type: "DRINK",   isAvailable: esCliente,});
+
+   useFocusEffect(
+       useCallback(() => {
+         refetch();
+       }, [refetch])
+     );
+
   console.log(bebidas);
   const sampleData = bebidas ?? [];
 
@@ -40,6 +48,17 @@ export const BebidaScreenUsuario = () => {
     );
 
   return (
+
+    <View style={{ flex: 1, backgroundColor: "white" }}>
+    <View style={{ paddingHorizontal: 16, paddingTop: 8 }}>
+    <Header
+        titulo="Bebidas"
+        busqueda={busqueda}
+        setBusqueda={setBusqueda}
+      mostrarAgregar = {false}
+      />
+
+     </View>
     <ScrollView
       style={{
         flex: 1,
@@ -48,14 +67,6 @@ export const BebidaScreenUsuario = () => {
         paddingTop: 8,
       }}
     >
-      {/* Header */}
-      <Header
-        titulo="Bebidas"
-        busqueda={busqueda}
-        setBusqueda={setBusqueda}
-      mostrarAgregar = {false}
-      />
-
       {/* Secciones dinámicas por cada tipo único */}
       {tiposUnicos.map((tipo) => {
         const items = filtrarPorTipo(tipo);
@@ -77,6 +88,7 @@ export const BebidaScreenUsuario = () => {
         );
       })}
     </ScrollView>
+    </View>
   );
 };
 
