@@ -1,7 +1,7 @@
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 
-import { useFrameworkReady } from "@/shared/hooks/use-framework-ready";
+import { useFrameworkReady } from "@/shared/hooks";
 import { useAuthStore } from "@/features/auth/store";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "@/shared/lib/query-client";

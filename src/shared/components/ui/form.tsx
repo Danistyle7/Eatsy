@@ -12,7 +12,7 @@ import { Text, View } from "react-native";
 
 import { Label } from "@/shared/components/ui/label";
 import { cn } from "@/shared/lib/utils";
-import { useAutoId } from "@/shared/hooks/use-auto-id";
+import { useAutoId } from "@/shared/hooks";
 
 const Form = FormProvider;
 

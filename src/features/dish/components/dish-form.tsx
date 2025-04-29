@@ -4,7 +4,7 @@ import { Text, View } from "react-native";
 
 import { dishCreateSchema } from "@/features/dish/schema";
 import { ImageUploader } from "@/features/file/components/input-uploader";
-import { useUploadFile } from "@/features/file/hooks/use-upload-file";
+import { useUploadFile } from "@/features/file/hooks";
 import { Button } from "@/shared/components/ui/button";
 import {
   Form,
