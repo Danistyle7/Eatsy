@@ -8,7 +8,7 @@ export const useUploadFile = () => {
     mutationFn: async (file) => {
       const result = await fileService.uploadImage(file);
       if (!result.success)
-        throw new ApiError(result.error, parseInt(result.code || "500"));
+        throw new ApiError(result.error, 400, { code: result.code });
       return result.data;
     },
   });

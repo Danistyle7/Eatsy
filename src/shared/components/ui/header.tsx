@@ -50,10 +50,7 @@ const Header: React.FC<HeaderProps> = ({
         </Text>
         {mostrarAgregar && (
           <Link href="/dish/new" asChild>
-            <BotonNaranja
-              titulo="Agregar"
-              onPress={() => console.log("Agregar presionado")}
-            />
+            <BotonNaranja titulo="Agregar" onPress={() => {}} />
           </Link>
         )}
       </View>

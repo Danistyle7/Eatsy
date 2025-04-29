@@ -46,13 +46,7 @@ const VerTodos = () => {
   return (
     <ScrollView style={styles.scrollView}>
       {/* Botón Naranja arriba */}
-      <BotonNaranja
-        titulo="Atras"
-        onPress={() => {
-          router.back();
-          console.log("Volver a la pantalla anterior");
-        }}
-      />
+      <BotonNaranja titulo="Atras" onPress={router.back} />
 
       <Header
         titulo={titleStr}

@@ -2,6 +2,7 @@ import { BaseService } from "@/shared/lib/api/base-service";
 import apiClient from "@/shared/lib/api/client";
 import type { APIResponse } from "@/shared/lib/api/types/api-response";
 import { imageUrlResponseSchema } from "./schemas";
+import { ApiError } from "@/shared/lib/api/errors";
 
 export class FileService extends BaseService {
   async uploadImage(fileUri: string): Promise<APIResponse<string>> {
@@ -17,12 +18,10 @@ export class FileService extends BaseService {
       const mimeType = blob.type.split("/")[1];
       const allowedTypes = ["jpeg", "jpg", "png", "webp"];
 
-      if (!allowedTypes.includes(mimeType)) {
-        return {
-          success: false,
-          error: "Formato de imagen no válido",
-        };
-      }
+      if (!allowedTypes.includes(mimeType))
+        throw new ApiError("Formato de imagen no válido", 400, {
+          code: "INVALID_FILE_TYPE",
+        });
 
       // Generar nombre de archivo con extensión correcta
       const fileName = `dish_${Date.now()}.${mimeType}`;

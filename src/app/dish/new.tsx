@@ -12,7 +12,6 @@ export default function DishRegisterScreen() {
   const handleSubmit = async (data: any) => {
     try {
       const newDish = await createDish(data);
-      console.log("Dish created successfully", newDish);
       router.back();
     } catch (error) {
       if (error instanceof ApiError)
