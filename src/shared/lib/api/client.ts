@@ -1,7 +1,8 @@
 import axios, { isAxiosError } from "axios";
 
 import { useAuthStore } from "@/features/auth/store";
-import { apiResponseSchema } from "@/shared/schemas";
+import { apiResponseSchema } from "@/shared/lib/api/schema";
+import { ApiError } from "./errors";
 
 const apiClient = axios.create({
   baseURL: process.env.API_URL || "http://localhost:8001",
@@ -23,30 +24,15 @@ apiClient.interceptors.request.use((config) => {
 });
 
 apiClient.interceptors.response.use(
-  (response) => {
-    console.log("Respuesta de la API", response);
-    const result = apiResponseSchema.safeParse(response.data);
-    console.log("Respuesta de la API", result.data);
-
-    if (!result.success) {
-      throw new Error(
-        `Estructura inválida: ${result.error.errors
-          .map((e) => `${e.path.join(".")} (${e.message})`)
-          .join(", ")}`
-      );
-    }
-
-    if (!result.data.success) {
-      console.log("Error de la API", result.data.message);
-      throw new Error(result.data.message || "Error desconocido");
-    }
-
-    return { ...response, data: result.data.data };
-  },
+  (response) => response,
   async (error: unknown) => {
     if (!isAxiosError(error)) {
-      console.error("Non-Axios error:", error);
-      return Promise.reject(error);
+      return Promise.reject(
+        new ApiError("Non-Axios error", 500, {
+          code: "UNKNOWN_ERROR",
+          details: error,
+        })
+      );
     }
 
     const originalRequest = error.config as { _retry?: boolean };
@@ -66,7 +52,12 @@ apiClient.interceptors.response.use(
       error.response?.data?.message || error.message || "Error desconocido";
     // error.message = REQUEST_ERROR_CODES[error.code || ""] || error.message;
 
-    return Promise.reject(new Error(`[${error.response?.status}] ${apiError}`));
+    return Promise.reject(
+      new ApiError(apiError, error.response?.status || 500, {
+        code: error.code,
+        details: error.response?.data,
+      })
+    );
   }
 );
 
