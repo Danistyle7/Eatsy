@@ -18,9 +18,9 @@ import {
 import { Input } from "@/shared/components/ui/input";
 import { Select } from "@/shared/components/ui/select";
 import { Switch } from "@/shared/components/ui/switch";
+import { ApiError } from "@/shared/lib/api/errors";
 import { DishCreate } from "../types";
 import { getDishCategories, getDishTypes } from "../utils";
-import { ApiError } from "@/shared/lib/api/errors";
 
 interface DishFormProps {
   onSubmit: (values: DishCreate) => Promise<void>;
