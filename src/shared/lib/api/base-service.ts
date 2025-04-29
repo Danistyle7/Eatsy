@@ -1,9 +1,9 @@
-import { z } from "zod";
 import { isAxiosError } from "axios";
+import { z } from "zod";
 
+import { apiResponseSchema } from "@/shared/lib/api/schema";
 import { APIResponse } from "@/shared/lib/api/types/api-response";
 import { ApiError } from "./errors";
-import { apiResponseSchema } from "@/shared/lib/api/schema";
 
 export abstract class BaseService {
   protected validateResponse<TData>(
