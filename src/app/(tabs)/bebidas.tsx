@@ -13,7 +13,7 @@ export const BebidaScreen = () => {
 
   const [esCliente, setEsCliente] = useState(false);
 
-  const { data: bebidas, isLoading, error, refetch } = useGetAllDishes({ type: "FOOD" });
+  const { data: bebidas, isLoading, error, refetch } = useGetAllDishes({ type: "DRINK" });
  
    useFocusEffect(
      useCallback(() => {
