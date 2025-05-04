@@ -1,10 +1,7 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { Text, View } from "react-native";
+import { FieldValues, UseFormReturn } from "react-hook-form";
+import { ScrollView, Text, View } from "react-native";
 
-import { dishCreateSchema } from "@/features/dish/schema";
 import { ImageUploader } from "@/features/file/components/input-uploader";
-import { useUploadFile } from "@/features/file/hooks";
 import { Button } from "@/shared/components/ui/button";
 import {
   Form,
@@ -18,57 +15,19 @@ import {
 import { Input } from "@/shared/components/ui/input";
 import { Select } from "@/shared/components/ui/select";
 import { Switch } from "@/shared/components/ui/switch";
-import { ApiError } from "@/shared/lib/api/errors";
-import { DishCreate } from "../types";
 import { getDishCategories, getDishTypes } from "../utils";
 
-interface DishFormProps {
-  onSubmit: (values: DishCreate) => Promise<void>;
-  isPending: boolean;
-  defaultValues?: DishCreate;
+interface DishFormProps<T extends FieldValues> {
+  form: UseFormReturn<T>;
 }
 
-export const DishForm = ({
-  onSubmit,
-  isPending,
-  defaultValues,
-}: DishFormProps) => {
+export const DishForm = <T extends FieldValues>({ form }: DishFormProps<T>) => {
   const dishCategories = getDishCategories();
   const dishTypes = getDishTypes();
-  const { mutateAsync: uploadFile, isPending: isUploading } = useUploadFile();
-
-  const form = useForm({
-    resolver: zodResolver(dishCreateSchema),
-    defaultValues: defaultValues || {
-      name: "",
-      description: "",
-      price: 0,
-      isAvailable: true,
-      category: dishCategories[0].value,
-      type: dishTypes[0].value,
-      imageUrl: "",
-      prepTime: 0,
-    },
-  });
-
-  const handleSubmit = async (values: DishCreate) => {
-    try {
-      const imageUrl = await uploadFile(values.imageUrl);
-      onSubmit({ ...values, imageUrl });
-    } catch (error) {
-      if (error instanceof ApiError)
-        console.error(`${error.code}: ${error.message}`);
-      else console.error("Error al subir imagen", error);
-    }
-  };
 
   return (
     <Form {...form}>
-      <View className="p-6 bg-[#fffaf3] rounded-3xl shadow-lg">
-        <Text className="text-2xl font-semibold text-[#3e2f1c] mb-4">
-          🌿 Añadir un nuevo plato
-        </Text>
-
+      <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
         <FormField
           name="type"
           render={({ field }) => (
@@ -222,17 +181,7 @@ export const DishForm = ({
             </FormItem>
           )}
         />
-
-        <Button
-          title={
-            form.formState.isSubmitting || isPending || isUploading
-              ? "📸 Subiendo..."
-              : "🍃 Guardar Plato"
-          }
-          onPress={form.handleSubmit(handleSubmit)}
-          className="bg-[#f4a261] rounded-full py-3 shadow-md active:scale-95 transition"
-        />
-      </View>
+      </ScrollView>
     </Form>
   );
 };
