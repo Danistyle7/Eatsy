@@ -26,3 +26,24 @@ import { twMerge } from "tailwind-merge";
 export function cn(...inputs: ClassValue[]): string {
   return twMerge(clsx(inputs));
 }
+
+export function getChangedFields<T extends object>(
+  original: T,
+  updated: Partial<T>
+): Partial<T> {
+  const changes: Partial<T> = {};
+
+  for (const key in updated) {
+    if (Object.prototype.hasOwnProperty.call(updated, key)) {
+      const originalValue = original[key];
+      const updatedValue = updated[key];
+
+      // Comparación profunda para objetos/arrays
+      if (JSON.stringify(originalValue) !== JSON.stringify(updatedValue)) {
+        changes[key] = updatedValue;
+      }
+    }
+  }
+
+  return changes;
+}
