@@ -1,16 +1,18 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { ScrollView, Text, View } from "react-native";
 
 import { DishForm } from "@/features/dish/components/dish-form";
+import { DISH_CATEGORIES, DISH_TYPES } from "@/features/dish/constants";
 import { useGetDishById, useUpdateDishById } from "@/features/dish/hooks";
 import { dishUpdateSchema } from "@/features/dish/schema";
 import { DishUpdate } from "@/features/dish/types";
 import { useUploadFile } from "@/features/file/hooks";
+import { Button } from "@/shared/components/ui/button";
 import { ApiError } from "@/shared/lib/api/errors";
 import { getChangedFields } from "@/shared/lib/utils";
-import { Button } from "@/shared/components/ui/button";
 
 export default function EditDishScreen() {
   const router = useRouter();
@@ -31,8 +33,24 @@ export default function EditDishScreen() {
 
   const form = useForm({
     resolver: zodResolver(dishUpdateSchema),
-    defaultValues: dish,
+    defaultValues: {
+      name: "",
+      price: 0,
+      isAvailable: true,
+      category: DISH_CATEGORIES.APPETIZER.value,
+      type: DISH_TYPES.FOOD.value,
+      prepTime: 0,
+    },
   });
+
+  useEffect(() => {
+    if (dish)
+      form.reset({
+        ...dish,
+        description: dish.description || "",
+        imageUrl: dish.imageUrl || "",
+      });
+  }, [dish]);
 
   const isPending = idUpdating || isUploading;
   const errorMessage = errorUpload?.message || errorUpdate?.message;
