@@ -31,11 +31,10 @@ export const dishCreateSchema = z.object({
   name: z.string().min(1, "Nombre es requerido").max(150),
   description: z.string().max(500).optional(),
   price: z.number().positive("El precio debe ser positivo"),
-  // stock: z.number().int().nonnegative(),
   category: dishCategorySchema,
   type: dishTypeSchema,
   isAvailable: z.boolean(),
-  imageUrl: imageUrlSchema, // Reutilizado desde shared/
+  imageUrl: imageUrlSchema,
   prepTime: z.number().int().positive(),
 });
 
