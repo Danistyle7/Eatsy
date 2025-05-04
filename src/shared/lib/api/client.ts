@@ -1,7 +1,6 @@
 import axios, { isAxiosError } from "axios";
 
 import { useAuthStore } from "@/features/auth/store";
-import { apiResponseSchema } from "@/shared/lib/api/schema";
 import { ApiError } from "./errors";
 
 const apiClient = axios.create({

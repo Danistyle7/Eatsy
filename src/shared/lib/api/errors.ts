@@ -1,4 +1,3 @@
-// shared/lib/api/errors.ts
 export class ApiError extends Error {
   public readonly statusCode: number;
   public readonly code: string;
