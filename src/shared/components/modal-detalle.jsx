@@ -11,35 +11,35 @@ import {
 } from "react-native";
 import BotonNaranja from "./ui/button";
 import { useUpdateDishById } from "@/features/dish/hooks";
+import { useRouter } from "expo-router";
 
 const ModalDetalle = ({ visible, onClose, item, modoCliente }) => {
+  const route = useRouter();
   const [disponible, setDisponible] = useState(false);
   const updateDishById = useUpdateDishById();
 
   useEffect(() => {
     if (item) {
       setDisponible(item.isAvailable);
-     
     }
   }, [item]);
 
   if (!item) return null;
   const toggleSwitch = () => {
     const nuevoDisponible = !disponible;
-    console.log("se qu ees a ",nuevoDisponible);
+    console.log("se qu ees a ", nuevoDisponible);
     updateDishById.mutate(
       {
         id: item.id,
-        data: { isAvailable: nuevoDisponible }
+        data: { isAvailable: nuevoDisponible },
       },
-      
+
       {
         onSuccess: () => {
-          console.log("se actualiza a ",nuevoDisponible);
+          console.log("se actualiza a ", nuevoDisponible);
           setDisponible(nuevoDisponible);
         },
         onError: () => {
-      
           console.log("Error actualizando disponibilidad");
         },
       }
@@ -49,6 +49,11 @@ const ModalDetalle = ({ visible, onClose, item, modoCliente }) => {
   const pedirPlato = () => {
     console.log("Pedido realizado del plato:", item.name);
     onClose();
+  };
+
+  const handleEdit = () => {
+    onClose();
+    route.navigate(`/dish/${item.id}/edit`);
   };
 
   return (
@@ -113,10 +118,7 @@ const ModalDetalle = ({ visible, onClose, item, modoCliente }) => {
                 <Text style={styles.time}>{item.prepTime}</Text>
 
                 {!modoCliente && (
-                  <BotonNaranja
-                    titulo="Editar"
-                    onPress={() => console.log("Editar disponibilidad")}
-                  />
+                  <BotonNaranja titulo="Editar" onPress={handleEdit} />
                 )}
               </View>
             </Pressable>
@@ -128,7 +130,6 @@ const ModalDetalle = ({ visible, onClose, item, modoCliente }) => {
 };
 
 export default ModalDetalle;
-
 
 // Estilos
 const styles = StyleSheet.create({
