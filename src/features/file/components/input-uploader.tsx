@@ -64,7 +64,7 @@ export const ImageUploader = ({
   };
 
   return (
-    <View className={cn("mb-4", className)}>
+    <View className={cn("mb-4 rounded-2xl bg-[#EDEDED]", className)}>
       <Pressable
         onPress={pickImage}
         className={cn(
