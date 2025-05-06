@@ -1,4 +1,4 @@
-import { DishParams } from "./types";
+import { DishCreate, DishParams } from "./types";
 
 export const DISH_QUERY_KEYS = {
   all: ["dishes"],
@@ -24,3 +24,14 @@ export const DISH_TYPES = {
   FOOD: { value: "FOOD", label: "Comida", icon: "🍔" },
   DRINK: { value: "DRINK", label: "Bebida", icon: "🍹" },
 } as const;
+
+export const defaultDish = {
+  name: "",
+  description: "",
+  price: 0,
+  category: DISH_CATEGORIES.APPETIZER.value,
+  type: DISH_TYPES.FOOD.value,
+  isAvailable: true,
+  imageUrl: "",
+  prepTime: 0,
+} as const satisfies DishCreate;
