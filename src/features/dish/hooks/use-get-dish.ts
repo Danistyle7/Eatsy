@@ -17,7 +17,7 @@ export const useGetAllDishes = (params?: DishParams) => {
   });
 };
 
-export const useGetDishById = (id: DishResponse["id"], options = {}) => {
+export const useGetDishById = (id: DishResponse["id"]) => {
   return useQuery<DishResponse, Error>({
     queryKey: DISH_QUERY_KEYS.detail(id),
     queryFn: async () => {
@@ -27,6 +27,5 @@ export const useGetDishById = (id: DishResponse["id"], options = {}) => {
       return result.data;
     },
     enabled: !!id,
-    ...options,
   });
 };
