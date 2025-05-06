@@ -25,7 +25,7 @@ export const Switch = ({
   className,
   trackColor = {
     false: "#e2e8f0", // gray-300
-    true: "#7f5af0", // primary
+    true: "#F97316", // primary
   },
   thumbColor = {
     false: "#ffffff", // white
