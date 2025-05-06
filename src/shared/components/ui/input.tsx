@@ -13,12 +13,12 @@ export const Input = forwardRef<TextInput, InputProps>(
         ref={ref}
         className={cn(
           "w-full rounded-2xl border border-gray-300 px-3 py-2 md:px-4",
-          "shadow-inner text-[#5e4632] text-sm bg-[#f8f4ef]",
+          "shadow-inner text-[#5e4632] text-sm bg-[#EDEDED]",
           "focus:border-primary focus:ring-0", // Estados de focus
           props.editable === false && "opacity-50 bg-gray-100",
           className
         )}
-        placeholderTextColor="#A0A0A0"
+        placeholderTextColor="#878787"
         {...props}
       />
     );
