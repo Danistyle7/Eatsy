@@ -9,7 +9,7 @@ interface LabelProps extends React.ComponentProps<typeof Text> {
 const Label = ({ className, nativeID, ...props }: LabelProps) => {
   return (
     <Text
-      className={cn("text-sm font-medium text-[#5e4632] mb-2", className)}
+      className={cn("text-sm font-medium text-black mb-2", className)}
       nativeID={nativeID}
       accessibilityRole="text"
       {...props}
