@@ -50,11 +50,11 @@ export default function EditDishScreen() {
 
   const handleSubmit = async (data: DishUpdate) => {
     try {
-      const changes = getChangedFields(data, data);
+      const changes = getChangedFields(dish, data);
       if (Object.keys(changes).length === 0) return router.back();
       const imageUrl = changes.imageUrl
         ? await uploadFile(changes.imageUrl)
-        : data.imageUrl;
+        : undefined;
       await updateDish({ id, data: { ...data, imageUrl } });
       router.back();
     } catch (error) {
