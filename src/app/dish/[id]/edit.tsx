@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { ScrollView, Text, View } from "react-native";
 
 import { DishForm } from "@/features/dish/components/dish-form";
-import { DISH_CATEGORIES, DISH_TYPES } from "@/features/dish/constants";
+import { defaultDish } from "@/features/dish/constants";
 import { useGetDishById, useUpdateDishById } from "@/features/dish/hooks";
 import { dishUpdateSchema } from "@/features/dish/schema";
 import { DishUpdate } from "@/features/dish/types";
@@ -33,41 +33,28 @@ export default function EditDishScreen() {
 
   const form = useForm({
     resolver: zodResolver(dishUpdateSchema),
-    defaultValues: {
-      name: "",
-      price: 0,
-      isAvailable: true,
-      category: DISH_CATEGORIES.APPETIZER.value,
-      type: DISH_TYPES.FOOD.value,
-      prepTime: 0,
-    },
+    defaultValues: defaultDish,
   });
 
   useEffect(() => {
-    if (dish)
-      form.reset({
-        ...dish,
-        description: dish.description || "",
-        imageUrl: dish.imageUrl || "",
-      });
+    if (dish) form.reset({ ...defaultDish, ...dish });
   }, [dish]);
-
-  const isPending = idUpdating || isUploading;
-  const errorMessage = errorUpload?.message || errorUpdate?.message;
-  const buttonTitle =
-    form.formState.isSubmitting || isPending ? "Subiendo..." : "Guardar";
 
   if (isLoading) return <Text>Cargando...</Text>;
   if (errorGet) return <Text>Error: {errorGet.message}</Text>;
   if (!dish) return <Text>Plato no encontrado</Text>;
 
+  const isPending = idUpdating || isUploading || form.formState.isSubmitting;
+  const errorMessage = errorUpload?.message || errorUpdate?.message;
+  const buttonTitle = isPending ? "Subiendo..." : "Guardar";
+
   const handleSubmit = async (data: DishUpdate) => {
     try {
-      const changes = getChangedFields(dish, data);
+      const changes = getChangedFields(data, data);
       if (Object.keys(changes).length === 0) return router.back();
       const imageUrl = changes.imageUrl
         ? await uploadFile(changes.imageUrl)
-        : dish.imageUrl;
+        : data.imageUrl;
       await updateDish({ id, data: { ...data, imageUrl } });
       router.back();
     } catch (error) {
@@ -75,6 +62,11 @@ export default function EditDishScreen() {
         console.error(`${error.code}: ${error.message}`);
       else console.error("Error creating dish", error);
     }
+  };
+
+  const handleBack = () => {
+    if (isPending) return;
+    router.back();
   };
 
   return (
@@ -92,13 +84,15 @@ export default function EditDishScreen() {
           <View className="flex-row gap-4 mt-6 justify-between">
             <Button
               title="Cancelar"
-              onPress={router.back}
+              onPress={handleBack}
+              disabled={isPending}
               variant="outline"
               className="flex-1"
             />
 
             <Button
               title={buttonTitle}
+              disabled={isPending}
               onPress={form.handleSubmit(handleSubmit)}
               className="flex-1"
             />
