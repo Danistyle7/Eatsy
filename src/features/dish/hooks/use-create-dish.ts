@@ -42,7 +42,10 @@ export const useCreateDish = () => {
       );
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: DISH_QUERY_KEYS.lists() });
+      queryClient.invalidateQueries({
+        queryKey: DISH_QUERY_KEYS.lists(),
+        exact: false,
+      });
     },
   });
 };
