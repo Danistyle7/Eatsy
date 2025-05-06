@@ -46,17 +46,17 @@ type ButtonVariant =
   | "link";
 type ButtonSize = "default" | "sm" | "lg" | "icon";
 
-const buttonVariants = (
+export const buttonVariants = (
   variant: ButtonVariant = "default",
   size: ButtonSize = "default"
 ) => {
   const base =
-    "flex-row items-center justify-center rounded-md font-medium disabled:opacity-50";
+    "flex-row items-center justify-center rounded-md font-medium disabled:opacity-50 disabled:cursor-not-allowed rounded-2xl";
 
   const variants = {
-    default: "bg-blue-600 active:bg-blue-700",
+    default: "bg-[#F97316] active:bg-[#F97316]/80",
     destructive: "bg-red-600 active:bg-red-700",
-    outline: "border border-blue-600 bg-transparent active:bg-blue-100",
+    outline: "border border-[#F97316] bg-transparent active:bg-[#F97316]/80",
     secondary: "bg-gray-200 active:bg-gray-300",
     ghost: "active:bg-blue-100",
     link: "",
@@ -99,7 +99,7 @@ export const Button = forwardRef<
     const textVariants = {
       default: "text-white",
       destructive: "text-white",
-      outline: "text-blue-600",
+      outline: "text-[#F97316]",
       secondary: "text-gray-900",
       ghost: "text-blue-600",
       link: "text-blue-600 underline",
