@@ -1,5 +1,5 @@
 import { FieldValues, UseFormReturn } from "react-hook-form";
-import { ScrollView, Text, View } from "react-native";
+import { ScrollView, View } from "react-native";
 
 import { ImageUploader } from "@/features/file/components/input-uploader";
 import { Button } from "@/shared/components/ui/button";
@@ -33,15 +33,17 @@ export const DishForm = <T extends FieldValues>({ form }: DishFormProps<T>) => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Tipo</FormLabel>
-              <FormControl>
-                <Select
-                  className="rounded-2xl bg-[#f8f4ef] text-[#5e4632]"
-                  items={dishTypes}
-                  selectedValue={field.value}
-                  onValueChange={field.onChange}
-                  placeholder="Selecciona un tipo"
-                />
-              </FormControl>
+              <View className="flex-row gap-4">
+                {dishTypes.map((type) => (
+                  <Button
+                    key={type.value}
+                    title={type.label}
+                    onPress={() => field.onChange(type.value)}
+                    variant={field.value === type.value ? "default" : "outline"}
+                    size="sm"
+                  />
+                ))}
+              </View>
               <FormMessage />
             </FormItem>
           )}
@@ -54,7 +56,6 @@ export const DishForm = <T extends FieldValues>({ form }: DishFormProps<T>) => {
               <FormLabel>Categoría</FormLabel>
               <FormControl>
                 <Select
-                  className="rounded-2xl bg-[#f8f4ef] text-[#5e4632]"
                   items={dishCategories}
                   selectedValue={field.value}
                   onValueChange={field.onChange}
@@ -104,6 +105,19 @@ export const DishForm = <T extends FieldValues>({ form }: DishFormProps<T>) => {
           )}
         />
 
+        <FormField
+          name="imageUrl"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Imagen</FormLabel>
+              <FormControl>
+                <ImageUploader value={field.value} onChange={field.onChange} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <View className="flex-row gap-4">
           <FormField
             name="price"
@@ -143,38 +157,20 @@ export const DishForm = <T extends FieldValues>({ form }: DishFormProps<T>) => {
         </View>
 
         <FormField
-          name="imageUrl"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Imagen</FormLabel>
-              <FormControl>
-                <ImageUploader
-                  value={field.value}
-                  onChange={field.onChange}
-                  className="rounded-2xl bg-[#f8f4ef]"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
           name="isAvailable"
           render={({ field }) => (
             <FormItem className="flex-row justify-between items-center">
               <View>
-                <FormLabel className="mb-0">Disponible?</FormLabel>
+                <FormLabel className="mb-0">¿Disponible?</FormLabel>
                 <FormDescription>
-                  Activa esto para mostrarlo en el menu
+                  Activa esto para mostrarlo en el menú.
                 </FormDescription>
               </View>
               <FormControl>
                 <Switch
                   checked={field.value}
                   onChange={field.onChange}
-                  className="rounded-2xl bg-[#f8f4ef]"
-                  accessibilityLabel="Disponible?"
+                  accessibilityLabel="¿Disponible?"
                 />
               </FormControl>
               <FormMessage />
