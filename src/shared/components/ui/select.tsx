@@ -1,7 +1,9 @@
-import React from "react";
 import { Picker } from "@react-native-picker/picker";
-import { View, Text } from "react-native";
+import React from "react";
+
 import { cn } from "@/shared/lib/utils";
+
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 interface SelectProps {
   items: { label: string; value: string }[];
@@ -21,7 +23,7 @@ export function Select({
   return (
     <Picker
       className={cn(
-        "border border-gray-300 rounded-md p-2 md:px-4 text-sm",
+        "border border-gray-300 p-2 md:px-4 text-sm bg-[#EDEDED] rounded-2xl",
         className
       )}
       selectedValue={selectedValue}
