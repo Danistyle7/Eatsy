@@ -11,12 +11,11 @@ import {
  * @param value - Valor de la categoría (ej: "appetizer")
  * @returns Objeto con label, icon, etc.
  */
-export const getDishCategory = (value: DishCategoryValue): DishCategory => {
+export const getDishCategory = (value: string): DishCategory => {
   const category = Object.values(DISH_CATEGORIES).find(
     (c) => c.value === value
   );
-  if (!category) throw new Error(`Categoría inválida: ${value}`);
-  return category;
+  return category ?? DISH_CATEGORIES.OTHER;
 };
 
 /**
@@ -47,10 +46,9 @@ export const getTranslatedCategories = (
  * @param value - Valor de la tipo de plato (ej: "FOOD")
  * @returns Objeto con label, icon, etc.
  */
-export const getDishType = (value: DishTypeValue): DishType => {
+export const getDishType = (value: string): DishType => {
   const type = Object.values(DISH_TYPES).find((t) => t.value === value);
-  if (!type) throw new Error(`Tipo de plato inválido: ${value}`);
-  return type;
+  return type ?? DISH_TYPES.FOOD;
 };
 
 /**
