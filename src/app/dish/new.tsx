@@ -15,23 +15,15 @@ import { ApiError } from "@/shared/lib/api/errors";
 export default function DishRegisterScreen() {
   const router = useRouter();
 
-  const {
-    mutateAsync: createDish,
-    isPending: isCreating,
-    error: errorCreate,
-  } = useCreateDish();
-  const {
-    mutateAsync: uploadFile,
-    isPending: isUploading,
-    error: errorUpload,
-  } = useUploadFile();
+  const { mutateAsync: createDish, error: errorCreate } = useCreateDish();
+  const { mutateAsync: uploadFile, error: errorUpload } = useUploadFile();
 
   const form = useForm({
     resolver: zodResolver(dishCreateSchema),
     defaultValues: defaultDish,
   });
 
-  const isPending = isCreating || isUploading || form.formState.isSubmitting;
+  const isPending = form.formState.isSubmitting;
   const errorMessage = errorUpload?.message || errorCreate?.message;
   const buttonTitle = isPending ? "Subiendo..." : "Guardar";
 
