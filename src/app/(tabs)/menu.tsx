@@ -2,6 +2,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { useCallback, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 
+import { DISH_TYPES } from "@/features/dish/constants";
 import { useGetAllDishes } from "@/features/dish/hooks";
 import { getDishCategory } from "@/features/dish/utils";
 import Header from "@/shared/components/ui/header";
@@ -18,7 +19,7 @@ export const MenuScreen = () => {
     isLoading,
     error,
     refetch,
-  } = useGetAllDishes({ type: "FOOD" });
+  } = useGetAllDishes({ type: DISH_TYPES.FOOD.value });
 
   useFocusEffect(
     useCallback(() => {
