@@ -20,16 +20,8 @@ export default function EditDishScreen() {
   const id = Number(idString);
 
   const { data: dish, isLoading, error: errorGet } = useGetDishById(id);
-  const {
-    mutateAsync: uploadFile,
-    isPending: isUploading,
-    error: errorUpload,
-  } = useUploadFile();
-  const {
-    mutateAsync: updateDish,
-    isPending: idUpdating,
-    error: errorUpdate,
-  } = useUpdateDishById();
+  const { mutateAsync: uploadFile, error: errorUpload } = useUploadFile();
+  const { mutateAsync: updateDish, error: errorUpdate } = useUpdateDishById();
 
   const form = useForm({
     resolver: zodResolver(dishUpdateSchema),
@@ -44,7 +36,7 @@ export default function EditDishScreen() {
   if (errorGet) return <Text>Error: {errorGet.message}</Text>;
   if (!dish) return <Text>Plato no encontrado</Text>;
 
-  const isPending = idUpdating || isUploading || form.formState.isSubmitting;
+  const isPending = form.formState.isSubmitting;
   const errorMessage = errorUpload?.message || errorUpdate?.message;
   const buttonTitle = isPending ? "Subiendo..." : "Guardar";
 
@@ -52,10 +44,9 @@ export default function EditDishScreen() {
     try {
       const changes = getChangedFields(dish, data);
       if (Object.keys(changes).length === 0) return router.back();
-      const imageUrl = changes.imageUrl
-        ? await uploadFile(changes.imageUrl)
-        : undefined;
-      await updateDish({ id, data: { ...data, imageUrl } });
+      if (changes.imageUrl)
+        changes.imageUrl = await uploadFile(changes.imageUrl);
+      await updateDish({ id, data: changes });
       router.back();
     } catch (error) {
       if (error instanceof ApiError)
