@@ -4,7 +4,7 @@ import { useAuthStore } from "@/features/auth/store";
 import { ApiError } from "./errors";
 
 const apiClient = axios.create({
-  baseURL: process.env.API_URL || "http://localhost:8001",
+  baseURL: process.env.API_URL || "https://eatzy-be.vercel.app/",
   timeout: 30_000, // 30 segundos
   headers: {
     "Content-Type": "application/json",

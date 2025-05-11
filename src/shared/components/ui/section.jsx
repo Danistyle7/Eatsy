@@ -42,6 +42,7 @@ const Section = ({
       renderItem={({ item }) => (
         <TouchableOpacity
           onPress={() => {
+              console.log("Item tocado en sección:", title, item.name);
             setSelectedItem(item);
             setModalVisible(true);
           }}
@@ -49,9 +50,9 @@ const Section = ({
         >
           <View style={styles.cardBox}>
             <Image
-              source={item.imageUrl}
+                source={{ uri: item.imageUrl }}
               style={styles.cardImage}
-              resizeMode="cover"
+              // resizeMode="cover"
             />
             <View style={styles.cardContent}>
               <View style={styles.cardHeader}>
@@ -69,6 +70,8 @@ const Section = ({
               </Text>
             </View>
           </View>
+
+          
         </TouchableOpacity>
       )}
     />

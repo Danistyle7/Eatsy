@@ -20,6 +20,9 @@ const VerTodos = () => {
   const titleStr = Array.isArray(title) ? title[0] : title;
   const typeStr = Array.isArray(type) ? type[0] : type;
 
+  function isValidDishType(type: any): type is "FOOD" | "DRINK" {
+    return type === "FOOD" || type === "DRINK";
+  }
   // Ahora armamos los params
   const esClienteBool = Array.isArray(esCliente)
     ? esCliente[0] === "true"
@@ -27,7 +30,7 @@ const VerTodos = () => {
 
   const params: DishParams = {
     category: titleStr as DishParams["category"],
-    type: typeStr,
+   ...(isValidDishType(typeStr) ? { type: typeStr } : {}),
     ...(esClienteBool ? { isAvailable: true } : {}),
   };
 
@@ -47,7 +50,7 @@ const VerTodos = () => {
 
     <View style={{ flex: 1, backgroundColor: "white" }}>
     {/* Botón y Header fijos arriba */}
-    <View style={{ paddingHorizontal: 16, paddingTop: 8 }}>
+    <View style={{ paddingHorizontal: 16, paddingTop: 50 }}>
       <BotonNaranja titulo="Atras" onPress={router.back} />
       <Header
         titulo={titleStr}

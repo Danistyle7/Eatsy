@@ -6,7 +6,7 @@ export default function Home() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>¡Bienvenido a Eatsy!</Text>  .
+      <Text style={styles.title}>¡Bienvenido a Eatsy!</Text>
          
       <TouchableOpacity
         style={[styles.button, styles.adminButton]}
@@ -19,7 +19,7 @@ export default function Home() {
         style={[styles.button, styles.userButton]}
         onPress={() => router.push("/(usuario)/menu_usuario")}
       >
-        <Text style={styles.buttonText}>Entrar como Usuario</Text>
+        <Text style={styles.buttonText}>Scanear codigo </Text>
       </TouchableOpacity>
     </View>
   );

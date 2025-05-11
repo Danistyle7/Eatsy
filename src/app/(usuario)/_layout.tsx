@@ -1,6 +1,6 @@
 import { Tabs } from "expo-router";
 import BotonNaranja from "@/shared/components/ui/button";
-import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { View, StyleSheet } from "react-native";
 
@@ -55,6 +55,15 @@ export default function TabLayout() {
           title: "Bebidas",
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="local-drink" size={size} color={color} />
+          ),
+        }}
+      />
+        <Tabs.Screen
+        name="pedidos"
+        options={{
+          title: "Pedidos",
+          tabBarIcon: ({ color, size }) => (
+           <MaterialCommunityIcons name="pot-steam-outline"  size={size} color={color} />
           ),
         }}
       />

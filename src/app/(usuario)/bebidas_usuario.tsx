@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { ScrollView, View } from "react-native";
 import Header from "@/shared/components/ui/header";
-import { QueryClientProvider } from "@tanstack/react-query";
 import { useGetAllDishes } from "@/features/dish/hooks";
 import Section from "@/shared/components/ui/section";
 import { useFocusEffect } from "@react-navigation/native";
