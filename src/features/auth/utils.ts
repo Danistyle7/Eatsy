@@ -1,20 +1,21 @@
-import * as SecureStore from "expo-secure-store";
+import * as ExpoSecureStore from "expo-secure-store";
 import { PersistStorage, StorageValue } from "zustand/middleware";
 import { PersistedAuthState, AuthState } from "./types";
 
-export const authStorage: PersistStorage<PersistedAuthState> = {
-  getItem: async (name): Promise<StorageValue<AuthState> | null> => {
-    try {
-      const value = await SecureStore.getItemAsync(name);
-      return value ? { state: JSON.parse(value) } : null;
-    } catch (error) {
-      return null;
-    }
+export const authStorage = {
+  getItem: async (key: string) => {
+    if (typeof ExpoSecureStore.getItemAsync === "function")
+      return ExpoSecureStore.getItemAsync(key);
+    return localStorage.getItem(key);
   },
-  setItem: async (name, value): Promise<void> => {
-    await SecureStore.setItemAsync(name, JSON.stringify(value.state));
+  setItem: async (key: string, value: string) => {
+    if (typeof ExpoSecureStore.setItemAsync === "function")
+      await ExpoSecureStore.setItemAsync(key, value);
+    else localStorage.setItem(key, value);
   },
-  removeItem: async (name): Promise<void> => {
-    await SecureStore.deleteItemAsync(name);
+  removeItem: async (key: string) => {
+    if (typeof ExpoSecureStore.deleteItemAsync === "function")
+      await ExpoSecureStore.deleteItemAsync(key);
+    else localStorage.removeItem(key);
   },
 };
