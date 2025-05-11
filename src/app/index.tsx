@@ -6,15 +6,13 @@ export default function Home() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>¡Bienvenido a Eatsy!</Text>  .
-         
+      <Text style={styles.title}>¡Bienvenido a Eatsy!</Text>
       <TouchableOpacity
         style={[styles.button, styles.adminButton]}
         onPress={() => router.push("/(tabs)/menu")}
       >
         <Text style={styles.buttonText}>Entrar como Administrador</Text>
       </TouchableOpacity>
-
       <TouchableOpacity
         style={[styles.button, styles.userButton]}
         onPress={() => router.push("/(usuario)/menu_usuario")}

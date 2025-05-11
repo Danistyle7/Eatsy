@@ -1,15 +1,24 @@
+import { QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { useColorScheme } from "nativewind";
+import { useEffect } from "react";
+import { Appearance, Platform } from "react-native";
 
-import { useFrameworkReady } from "@/shared/hooks";
 import { useAuthStore } from "@/features/auth/store";
-import { QueryClientProvider } from "@tanstack/react-query";
+import { useFrameworkReady } from "@/shared/hooks";
 import { queryClient } from "@/shared/lib/query-client";
-
-useAuthStore.getState().initialize();
 
 export default function RootLayout() {
   useFrameworkReady();
+
+  const { setColorScheme } = useColorScheme();
+
+  useEffect(() => {
+    const systemTheme = Appearance.getColorScheme();
+    setColorScheme(systemTheme || "light");
+    if (Platform.OS !== "web") useAuthStore.getState().initialize();
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
