@@ -1,8 +1,8 @@
-import React from "react";
-import { View, Text, TextInput } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
-import BotonNaranja from "./button";
 import { Link } from "expo-router";
+import React from "react";
+import { Text, TextInput, View } from "react-native";
+import { Button } from "./button";
 
 type HeaderProps = {
   titulo: string;
@@ -50,7 +50,7 @@ const Header: React.FC<HeaderProps> = ({
         </Text>
         {mostrarAgregar && (
           <Link href="/dish/new" asChild>
-            <BotonNaranja titulo="Agregar" onPress={() => {}} />
+            <Button title="Agregar" />
           </Link>
         )}
       </View>
