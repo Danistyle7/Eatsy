@@ -1,18 +1,19 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
   Image,
+  ScrollView,
   StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import BotonNaranja from "@/shared/components/ui/button";
-import Header from "@/shared/components/ui/header";
+
 import { useGetAllDishes } from "@/features/dish/hooks";
-import ModalDetalle from "@/shared/components/modal-detalle";
 import { DishParams } from "@/features/dish/types";
+import ModalDetalle from "@/shared/components/modal-detalle";
+import { Button } from "@/shared/components/ui/button";
+import Header from "@/shared/components/ui/header";
 
 const VerTodos = () => {
   const router = useRouter();
@@ -44,67 +45,69 @@ const VerTodos = () => {
   }
 
   return (
-
     <View style={{ flex: 1, backgroundColor: "white" }}>
-    {/* Botón y Header fijos arriba */}
-    <View style={{ paddingHorizontal: 16, paddingTop: 8 }}>
-      <BotonNaranja titulo="Atras" onPress={router.back} />
-      <Header
-        titulo={titleStr}
-        mostrarAgregar={false}
-        mostrarBusqueda={false}
-      />
-    </View>
-    
-    <ScrollView style={styles.scrollView}>
-      {/* Lista de platos (cards) */}
-      <View style={styles.cardsContainer}>
-        {sampleData.map((item, index) => (
-          <TouchableOpacity
-            key={`${titleStr}-${index}`}
-            activeOpacity={0.8}
-            style={styles.cardWrapper}
-            onPress={() => {
-              setSelectedItem(item);
-              setModalVisible(true);
-            }}
-          >
-            <View style={styles.cardBox}>
-              <Image
-                source={{ uri: item.imageUrl }}
-                style={styles.cardImage}
-                resizeMode="cover"
-              />
-              <View style={styles.cardContent}>
-                <View style={styles.cardHeader}>
-                  <View
-                    style={{ flexDirection: "row", justifyContent: "flex-end" }}
-                  >
-                    <Text style={styles.cardPrice}>Bs. {item.price}</Text>
-                  </View>
-                  <Text style={styles.cardTitle} numberOfLines={1}>
-                    {item.name}
-                  </Text>
-                </View>
-                <Text style={styles.cardDescription} numberOfLines={1}>
-                  {item.description}
-                </Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-        ))}
+      {/* Botón y Header fijos arriba */}
+      <View style={{ paddingHorizontal: 16, paddingTop: 8 }}>
+        <Button title="Atras" onPress={router.back} />
+        <Header
+          titulo={titleStr}
+          mostrarAgregar={false}
+          mostrarBusqueda={false}
+        />
       </View>
 
-      {/* ModalDetalle */}
-      {selectedItem && (
-        <ModalDetalle
-          visible={modalVisible}
-          onClose={() => setModalVisible(false)}
-          item={selectedItem}
-          modoCliente={esClienteBool}
-        />
-      )}
-    </ScrollView>
+      <ScrollView style={styles.scrollView}>
+        {/* Lista de platos (cards) */}
+        <View style={styles.cardsContainer}>
+          {sampleData.map((item, index) => (
+            <TouchableOpacity
+              key={`${titleStr}-${index}`}
+              activeOpacity={0.8}
+              style={styles.cardWrapper}
+              onPress={() => {
+                setSelectedItem(item);
+                setModalVisible(true);
+              }}
+            >
+              <View style={styles.cardBox}>
+                <Image
+                  source={{ uri: item.imageUrl }}
+                  style={styles.cardImage}
+                  resizeMode="cover"
+                />
+                <View style={styles.cardContent}>
+                  <View style={styles.cardHeader}>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "flex-end",
+                      }}
+                    >
+                      <Text style={styles.cardPrice}>Bs. {item.price}</Text>
+                    </View>
+                    <Text style={styles.cardTitle} numberOfLines={1}>
+                      {item.name}
+                    </Text>
+                  </View>
+                  <Text style={styles.cardDescription} numberOfLines={1}>
+                    {item.description}
+                  </Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {/* ModalDetalle */}
+        {selectedItem && (
+          <ModalDetalle
+            visible={modalVisible}
+            onClose={() => setModalVisible(false)}
+            item={selectedItem}
+            modoCliente={esClienteBool}
+          />
+        )}
+      </ScrollView>
     </View>
   );
 };

@@ -1,8 +1,8 @@
-import { Tabs } from "expo-router";
-import BotonNaranja from "@/shared/components/ui/button";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import { View, StyleSheet } from "react-native";
+import { Tabs, useRouter } from "expo-router";
+import { StyleSheet, View } from "react-native";
+
+import { Button } from "@/shared/components/ui/button";
 
 export default function TabLayout() {
   const router = useRouter();
@@ -28,13 +28,7 @@ export default function TabLayout() {
         headerLeft: () => null, // Eliminar el botón de la izquierda
         headerRight: () => (
           <View style={styles.headerRightContainer}>
-            <BotonNaranja
-              titulo="Salir" // Texto del botón
-              onPress={() => {
-                // Redirigir al index
-                router.push('/');
-              }}
-            />
+            <Button title="Salir" onPress={() => router.push("/")} />
           </View>
         ),
       }}
@@ -73,8 +67,8 @@ export default function TabLayout() {
 // Estilos para asegurar que el botón esté alineado correctamente
 const styles = StyleSheet.create({
   headerRightContainer: {
-    flexDirection: 'row',
-    alignItems: 'center', // Alinea verticalmente el botón con el título
-    justifyContent: 'flex-end', // Alinea el botón al final de la cabecera
+    flexDirection: "row",
+    alignItems: "center", // Alinea verticalmente el botón con el título
+    justifyContent: "flex-end", // Alinea el botón al final de la cabecera
   },
 });
