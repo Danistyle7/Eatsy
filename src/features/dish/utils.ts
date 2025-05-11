@@ -1,10 +1,5 @@
 import { DISH_CATEGORIES, DISH_TYPES } from "./constants";
-import {
-  DishCategory,
-  DishCategoryValue,
-  DishType,
-  DishTypeValue,
-} from "./types";
+import { DishCategory, DishType } from "./types";
 
 /**
  * Obtiene la metadata completa de una categoría por su valor
