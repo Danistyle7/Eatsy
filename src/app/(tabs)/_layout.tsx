@@ -60,6 +60,15 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="tables"
+        options={{
+          title: "Mesas",
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons name="table-chart" size={size} color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }
