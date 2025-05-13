@@ -1,12 +1,10 @@
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
-import { Tabs, useRouter } from "expo-router";
+import { Link, Tabs } from "expo-router";
 import { StyleSheet, View } from "react-native";
 
 import { Button } from "@/shared/components/ui/button";
 
 export default function TabLayout() {
-  const router = useRouter();
-
   return (
     <Tabs
       screenOptions={{
@@ -28,7 +26,9 @@ export default function TabLayout() {
         headerLeft: () => null, // Eliminar el botón de la izquierda
         headerRight: () => (
           <View style={styles.headerRightContainer}>
-            <Button title="Salir" onPress={() => router.push("/")} />
+            <Link href="/" asChild>
+              <Button title="Salir" />
+            </Link>
           </View>
         ),
       }}

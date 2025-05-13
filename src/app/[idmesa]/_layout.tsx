@@ -1,12 +1,11 @@
-import { MaterialIcons } from "@expo/vector-icons";
-import { Tabs, useRouter } from "expo-router";
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { Link, Tabs, useLocalSearchParams } from "expo-router";
 import { StyleSheet, View } from "react-native";
 
 import { Button } from "@/shared/components/ui/button";
 
 export default function TabLayout() {
-  const router = useRouter();
-
+  const { idmesa } = useLocalSearchParams();
   return (
     <Tabs
       screenOptions={{
@@ -28,7 +27,9 @@ export default function TabLayout() {
         headerLeft: () => null, // Eliminar el botón de la izquierda
         headerRight: () => (
           <View style={styles.headerRightContainer}>
-            <Button title="Salir" onPress={() => router.push("/")} />
+            <Link href="/" asChild>
+              <Button title="Inicio" />
+            </Link>
           </View>
         ),
       }}
@@ -41,6 +42,7 @@ export default function TabLayout() {
             <MaterialIcons name="restaurant-menu" size={size} color={color} />
           ),
         }}
+        initialParams={{ idmesa }}
       />
       <Tabs.Screen
         name="bebidas_usuario"
@@ -50,6 +52,21 @@ export default function TabLayout() {
             <MaterialIcons name="local-drink" size={size} color={color} />
           ),
         }}
+        initialParams={{ idmesa }}
+      />
+      <Tabs.Screen
+        name="pedidos"
+        options={{
+          title: "Pedidos",
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons
+              name="pot-steam-outline"
+              size={size}
+              color={color}
+            />
+          ),
+        }}
+        initialParams={{ idmesa }}
       />
     </Tabs>
   );

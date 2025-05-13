@@ -1,4 +1,4 @@
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { Link, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import {
   Image,
@@ -16,11 +16,13 @@ import { Button } from "@/shared/components/ui/button";
 import Header from "@/shared/components/ui/header";
 
 const VerTodos = () => {
-  const router = useRouter();
   const { title, type, esCliente } = useLocalSearchParams();
   const titleStr = Array.isArray(title) ? title[0] : title;
   const typeStr = Array.isArray(type) ? type[0] : type;
 
+  function isValidDishType(type: any): type is "FOOD" | "DRINK" {
+    return type === "FOOD" || type === "DRINK";
+  }
   // Ahora armamos los params
   const esClienteBool = Array.isArray(esCliente)
     ? esCliente[0] === "true"
@@ -28,7 +30,7 @@ const VerTodos = () => {
 
   const params: DishParams = {
     category: titleStr as DishParams["category"],
-    type: typeStr,
+    ...(isValidDishType(typeStr) ? { type: typeStr } : {}),
     ...(esClienteBool ? { isAvailable: true } : {}),
   };
 
@@ -48,7 +50,10 @@ const VerTodos = () => {
     <View style={{ flex: 1, backgroundColor: "white" }}>
       {/* Botón y Header fijos arriba */}
       <View style={{ paddingHorizontal: 16, paddingTop: 8 }}>
-        <Button title="Atras" onPress={router.back} />
+        <Link href=".." asChild>
+          <Button title="Atras" />
+        </Link>
+
         <Header
           titulo={titleStr}
           mostrarAgregar={false}

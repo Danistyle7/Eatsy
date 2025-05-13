@@ -1,5 +1,4 @@
-import { useUpdateDishById } from "@/features/dish/hooks";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   Image,
@@ -11,12 +10,17 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+
+import { useUpdateDishById } from "@/features/dish/hooks";
+import { useCartStore } from "../hooks/use_cardstore";
 import { Button } from "./ui/button";
 
 const ModalDetalle = ({ visible, onClose, item, modoCliente }) => {
+  const { idmesa } = useLocalSearchParams();
   const route = useRouter();
   const [disponible, setDisponible] = useState(false);
   const updateDishById = useUpdateDishById();
+  const addItem = useCartStore((state) => state.addItem);
 
   useEffect(() => {
     if (item) {
@@ -47,8 +51,10 @@ const ModalDetalle = ({ visible, onClose, item, modoCliente }) => {
   };
 
   const pedirPlato = () => {
-    console.log("Pedido realizado del plato:", item.name);
+    console.log("Pedido realizado del plato:", item.imageUrl);
+    addItem(item);
     onClose();
+    route.navigate(`/${idmesa}/pedidos`);
   };
 
   const handleEdit = () => {
@@ -106,7 +112,7 @@ const ModalDetalle = ({ visible, onClose, item, modoCliente }) => {
               {/* Imagen */}
               <View style={styles.imageContainer}>
                 <Image
-                  source={item.imageUrl}
+                  source={{ uri: item.imageUrl }}
                   style={styles.image}
                   resizeMode="cover"
                 />

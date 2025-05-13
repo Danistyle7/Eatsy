@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { ScrollView, View } from "react-native";
 import Header from "@/shared/components/ui/header";
-import { QueryClientProvider } from "@tanstack/react-query";
 import { useGetAllDishes } from "@/features/dish/hooks";
 import Section from "@/shared/components/ui/section";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback } from "react";
+import { useLocalSearchParams } from 'expo-router';
+import { DISH_TYPES } from "@/features/dish/constants";
 export const BebidaScreenUsuario = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -13,8 +14,9 @@ export const BebidaScreenUsuario = () => {
 
   const [esCliente, setEsCliente] = useState(true);
 
-  
-  const { data: bebidas, isLoading, error,refetch } = useGetAllDishes({ type: "DRINK",   isAvailable: esCliente,});
+ const { idmesa } = useLocalSearchParams();
+
+  const { data: bebidas, isLoading, error,refetch } = useGetAllDishes({ type: DISH_TYPES.DRINK.value,   isAvailable: esCliente,});
 
    useFocusEffect(
        useCallback(() => {
@@ -22,7 +24,7 @@ export const BebidaScreenUsuario = () => {
        }, [refetch])
      );
 
-  console.log(bebidas);
+  console.log("que es aqui ",idmesa);
   const sampleData = bebidas ?? [];
 
   const tiposUnicos = Array.from(
@@ -56,6 +58,7 @@ export const BebidaScreenUsuario = () => {
         busqueda={busqueda}
         setBusqueda={setBusqueda}
       mostrarAgregar = {false}
+      idmesa={idmesa}
       />
 
      </View>

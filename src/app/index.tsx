@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 
 export default function Home() {
   const router = useRouter();
-
+  const nummesa = 5;
   return (
     <View style={styles.container}>
       <Text style={styles.title}>¡Bienvenido a Eatsy!</Text>
@@ -15,7 +15,7 @@ export default function Home() {
       </TouchableOpacity>
       <TouchableOpacity
         style={[styles.button, styles.userButton]}
-        onPress={() => router.push("/(usuario)/menu_usuario")}
+        onPress={() => router.push(`/${nummesa}/menu_usuario`)}
       >
         <Text style={styles.buttonText}>Entrar como Usuario</Text>
       </TouchableOpacity>

@@ -1,14 +1,9 @@
-import React from "react";
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  Image,
-  StyleSheet,
-} from "react-native";
-import ModalDetalle from "../modal-detalle";
 import { router } from "expo-router";
+import React from "react";
+import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
+
+import ModalDetalle from "../modal-detalle";
+
 const Section = ({
   title,
   data,
@@ -25,8 +20,8 @@ const Section = ({
         onPress={() =>
           router.push({
             pathname: "/menupag/ver-todos", // ruta a donde quieres ir
-         
-            params: { title,esCliente,type: data[0]?.type } // los parámetros que quieres enviar
+
+            params: { title, esCliente, type: data[0]?.type }, // los parámetros que quieres enviar
           })
         }
       >
@@ -42,6 +37,7 @@ const Section = ({
       renderItem={({ item }) => (
         <TouchableOpacity
           onPress={() => {
+            console.log("Item tocado en sección:", title, item.name);
             setSelectedItem(item);
             setModalVisible(true);
           }}
@@ -49,9 +45,9 @@ const Section = ({
         >
           <View style={styles.cardBox}>
             <Image
-              source={item.imageUrl}
+              source={{ uri: item.imageUrl }}
               style={styles.cardImage}
-              resizeMode="cover"
+              // resizeMode="cover"
             />
             <View style={styles.cardContent}>
               <View style={styles.cardHeader}>
