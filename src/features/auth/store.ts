@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 import { AUTH_TOKEN_KEY, AuthState } from "./types";
 import { authStorage } from "./utils";
 
@@ -24,7 +24,7 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: AUTH_TOKEN_KEY,
-      storage: authStorage,
+      storage: createJSONStorage(() => authStorage),
       partialize: (state) => ({
         token: state.token,
         isLoading: state.isLoading,

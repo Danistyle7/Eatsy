@@ -5,13 +5,13 @@ import { imageUrlSchema } from "@/features/file/schemas";
 import { DISH_CATEGORIES, DISH_TYPES } from "./constants";
 import { DishCategoryValue, DishTypeValue } from "./types";
 
-const categoryValues = Object.values(DISH_CATEGORIES).map((c) => c.value) as [
-  DishCategoryValue,
-];
+const dishCategoryValues = Object.values(DISH_CATEGORIES).map(
+  (c) => c.value
+) as [DishCategoryValue];
 
-export const dishCategorySchema = z.enum(categoryValues, {
+export const dishCategorySchema = z.enum(dishCategoryValues, {
   errorMap: (_) => ({
-    message: `Categoría inválida. Opciones válidas: ${categoryValues.join(", ")}`,
+    message: `Categoría inválida. Opciones válidas: ${dishCategoryValues.join(", ")}`,
   }),
 });
 

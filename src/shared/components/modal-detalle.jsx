@@ -1,10 +1,19 @@
-import React, { useState, useEffect } from "react";
-import {View,Text,Modal,Image,StyleSheet,Pressable,TouchableWithoutFeedback,Switch,} from "react-native";
-import BotonNaranja from "./ui/button";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import React, { useEffect, useState } from "react";
+import {
+  Image,
+  Modal,
+  Pressable,
+  StyleSheet,
+  Switch,
+  Text,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
+
 import { useUpdateDishById } from "@/features/dish/hooks";
-import { useRouter, router } from "expo-router";
 import { useCartStore } from "../hooks/use_cardstore";
-import { useLocalSearchParams } from "expo-router";
+import { Button } from "./ui/button";
 
 const ModalDetalle = ({ visible, onClose, item, modoCliente }) => {
   const { idmesa } = useLocalSearchParams();
@@ -90,7 +99,7 @@ const ModalDetalle = ({ visible, onClose, item, modoCliente }) => {
 
                 {modoCliente && (
                   <View style={{ alignItems: "flex-end" }}>
-                    <BotonNaranja titulo="Pedir" onPress={pedirPlato} />
+                    <Button title="Pedir" onPress={pedirPlato} />
                     <Text style={styles.price}>Bs. {item.price}</Text>
                   </View>
                 )}
@@ -114,9 +123,7 @@ const ModalDetalle = ({ visible, onClose, item, modoCliente }) => {
               <View style={styles.footer}>
                 <Text style={styles.time}>{item.prepTime}</Text>
 
-                {!modoCliente && (
-                  <BotonNaranja titulo="Editar" onPress={handleEdit} />
-                )}
+                {!modoCliente && <Button title="Editar" onPress={handleEdit} />}
               </View>
             </Pressable>
           </View>

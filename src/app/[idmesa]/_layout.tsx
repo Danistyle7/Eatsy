@@ -1,11 +1,10 @@
-import { Tabs } from "expo-router";
-import BotonNaranja from "@/shared/components/ui/button";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import { View, StyleSheet } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { Link, Tabs, useLocalSearchParams } from "expo-router";
+import { StyleSheet, View } from "react-native";
+
+import { Button } from "@/shared/components/ui/button";
+
 export default function TabLayout() {
-  const router = useRouter();
   const { idmesa } = useLocalSearchParams();
   return (
     <Tabs
@@ -28,18 +27,13 @@ export default function TabLayout() {
         headerLeft: () => null, // Eliminar el botón de la izquierda
         headerRight: () => (
           <View style={styles.headerRightContainer}>
-            <BotonNaranja
-              titulo="Salir" // Texto del botón
-              onPress={() => {
-                // Redirigir al index
-                router.push('/');
-              }}
-            />
+            <Link href="/" asChild>
+              <Button title="Inicio" />
+            </Link>
           </View>
         ),
       }}
     >
-      
       <Tabs.Screen
         name="menu_usuario"
         options={{
@@ -48,7 +42,7 @@ export default function TabLayout() {
             <MaterialIcons name="restaurant-menu" size={size} color={color} />
           ),
         }}
-         initialParams={{ idmesa }}
+        initialParams={{ idmesa }}
       />
       <Tabs.Screen
         name="bebidas_usuario"
@@ -58,17 +52,21 @@ export default function TabLayout() {
             <MaterialIcons name="local-drink" size={size} color={color} />
           ),
         }}
-         initialParams={{ idmesa }}
+        initialParams={{ idmesa }}
       />
-        <Tabs.Screen
+      <Tabs.Screen
         name="pedidos"
         options={{
           title: "Pedidos",
           tabBarIcon: ({ color, size }) => (
-           <MaterialCommunityIcons name="pot-steam-outline"  size={size} color={color} />
+            <MaterialCommunityIcons
+              name="pot-steam-outline"
+              size={size}
+              color={color}
+            />
           ),
         }}
-         initialParams={{ idmesa }}
+        initialParams={{ idmesa }}
       />
     </Tabs>
   );
@@ -77,8 +75,8 @@ export default function TabLayout() {
 // Estilos para asegurar que el botón esté alineado correctamente
 const styles = StyleSheet.create({
   headerRightContainer: {
-    flexDirection: 'row',
-    alignItems: 'center', // Alinea verticalmente el botón con el título
-    justifyContent: 'flex-end', // Alinea el botón al final de la cabecera
+    flexDirection: "row",
+    alignItems: "center", // Alinea verticalmente el botón con el título
+    justifyContent: "flex-end", // Alinea el botón al final de la cabecera
   },
 });
