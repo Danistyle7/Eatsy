@@ -20,7 +20,7 @@ export const MenuScreenUsuario = () => {
     isLoading,
     error,
     refetch,
-  } = useGetAllDishes({ type:DISH_TYPES.FOOD.value, isAvailable: esCliente });
+  } = useGetAllDishes({ type: DISH_TYPES.FOOD.value, isAvailable: esCliente });
 
   useFocusEffect(
     useCallback(() => {
