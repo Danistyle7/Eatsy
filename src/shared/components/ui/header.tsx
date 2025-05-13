@@ -10,6 +10,7 @@ type HeaderProps = {
   setBusqueda?: (text: string) => void;
   mostrarBusqueda?: boolean;
   mostrarAgregar?: boolean;
+  idmesa?: string | string[];
 };
 
 const Header: React.FC<HeaderProps> = ({
@@ -18,7 +19,9 @@ const Header: React.FC<HeaderProps> = ({
   setBusqueda = () => {},
   mostrarBusqueda = true,
   mostrarAgregar = true,
+  idmesa,
 }) => {
+  const idMesaTexto = Array.isArray(idmesa) ? idmesa[0] : idmesa;
   return (
     <View style={{ marginBottom: 10 }}>
       {/* Iconos de cabecera */}
@@ -32,7 +35,13 @@ const Header: React.FC<HeaderProps> = ({
         <View style={{ transform: [{ scaleX: -1 }] }}>
           <FontAwesome5 name="fish" size={35} color="#EF6C00" />
         </View>
-        <FontAwesome5 name="user-circle" size={35} color="#EF6C00" />
+        {idMesaTexto ? (
+          <Text style={{ fontSize: 16, fontWeight: "bold", color: "#EF6C00" }}>
+            Mesa: {idMesaTexto}
+          </Text>
+        ) : (
+          <FontAwesome5 name="user-circle" size={35} color="#EF6C00" />
+        )}
       </View>
 
       {/* Título y botón */}
@@ -48,6 +57,7 @@ const Header: React.FC<HeaderProps> = ({
         <Text style={{ color: "#EF6C00", fontSize: 24, fontWeight: "bold" }}>
           {titulo}
         </Text>
+
         {mostrarAgregar && (
           <Link href="/dish/new" asChild>
             <BotonNaranja titulo="Agregar" onPress={() => {}} />

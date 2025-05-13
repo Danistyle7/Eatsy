@@ -3,10 +3,10 @@ import BotonNaranja from "@/shared/components/ui/button";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { View, StyleSheet } from "react-native";
-
+import { useLocalSearchParams } from "expo-router";
 export default function TabLayout() {
   const router = useRouter();
-
+  const { idmesa } = useLocalSearchParams();
   return (
     <Tabs
       screenOptions={{
@@ -48,6 +48,7 @@ export default function TabLayout() {
             <MaterialIcons name="restaurant-menu" size={size} color={color} />
           ),
         }}
+         initialParams={{ idmesa }}
       />
       <Tabs.Screen
         name="bebidas_usuario"
@@ -57,6 +58,7 @@ export default function TabLayout() {
             <MaterialIcons name="local-drink" size={size} color={color} />
           ),
         }}
+         initialParams={{ idmesa }}
       />
         <Tabs.Screen
         name="pedidos"
@@ -66,6 +68,7 @@ export default function TabLayout() {
            <MaterialCommunityIcons name="pot-steam-outline"  size={size} color={color} />
           ),
         }}
+         initialParams={{ idmesa }}
       />
     </Tabs>
   );

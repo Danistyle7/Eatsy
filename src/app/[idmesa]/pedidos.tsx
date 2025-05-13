@@ -5,8 +5,11 @@ import BotonNaranja from "@/shared/components/ui/button";
 import { View, Text, FlatList } from "react-native";
 import { useCartStore } from "@/shared/hooks/use_cardstore";
 import PedidoItem from "@/shared/components/ui/pedido_detail";
+import { idSchema } from "@/shared/schemas";
+import { useLocalSearchParams } from "expo-router";
 
 export default function PedidoScreen() {
+  const { idmesa } = useLocalSearchParams();
   const router = useRouter();
   const items = useCartStore((state) => state.items);
   const getTotal = useCartStore((state) => state.getTotal); // 👈 obtenemos la función
@@ -15,7 +18,7 @@ export default function PedidoScreen() {
     <View className="flex-1 bg-white">
       <View className="px-4 pt-2">
         {/* <BotonNaranja titulo="Atras" onPress={router.back} /> */}
-        <Header titulo="Pedidos" mostrarBusqueda={false} mostrarAgregar={false} />
+        <Header titulo="Pedidos" mostrarBusqueda={false} mostrarAgregar={false} idmesa={idmesa}/>
       </View>
 
       {items.length === 0 ? (
