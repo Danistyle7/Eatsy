@@ -27,7 +27,11 @@ export const DishForm = <T extends FieldValues>({ form }: DishFormProps<T>) => {
 
   return (
     <Form {...form}>
-      <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
+      <ScrollView
+        className="flex-1 min-h-fit"
+        contentContainerStyle={{ flexGrow: 1 }}
+        keyboardShouldPersistTaps="handled"
+      >
         <FormField
           name="type"
           render={({ field }) => (

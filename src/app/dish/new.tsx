@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { useForm } from "react-hook-form";
 import { ScrollView, Text, View } from "react-native";
 
@@ -25,7 +25,7 @@ export default function DishRegisterScreen() {
 
   const isPending = form.formState.isSubmitting;
   const errorMessage = errorUpload?.message || errorCreate?.message;
-  const buttonTitle = isPending ? "Subiendo..." : "Guardar";
+  const buttonSuccessTitle = isPending ? "Subiendo..." : "Guardar";
 
   const handleSubmit = async (data: DishCreate) => {
     try {
@@ -39,54 +39,38 @@ export default function DishRegisterScreen() {
     }
   };
 
-  const handleBack = () => {
-    if (isPending) return;
-    router.back();
-  };
-
   return (
     <ScrollView
-      className="flex-1 bg-white"
+      className="flex-1 bg-white h-full"
       contentContainerStyle={{ flexGrow: 1 }}
       keyboardShouldPersistTaps="handled"
     >
-      <View className="flex-1 p-4 h-full">
-        <View className="max-w-2xl mx-auto w-full">
+      <View className="flex-1 p-4 justify-between">
+        <View className="max-w-2xl mx-auto">
           <Text className="text-2xl font-semibold mb-4 text-black">
             Añadir producto
           </Text>
 
           <DishForm form={form} />
+        </View>
 
-          <View className="flex-row gap-4 mt-6 justify-between">
+        <View className="flex-row gap-4">
+          <Link href=".." className="flex-1" asChild>
             <Button
               title="Cancelar"
-              onPress={handleBack}
               disabled={isPending}
               variant="outline"
               className="flex-1"
             />
+          </Link>
 
-            <Button
-              title={buttonTitle}
-              disabled={isPending}
-              onPress={form.handleSubmit(handleSubmit)}
-              className="flex-1"
-            />
-          </View>
+          <Button
+            title={buttonSuccessTitle}
+            disabled={isPending}
+            onPress={form.handleSubmit(handleSubmit)}
+            className="flex-1"
+          />
         </View>
-
-        {errorMessage && (
-          <View className="bg-red-500 p-4 rounded-md mt-4">
-            <Text className="text-white">{errorMessage}</Text>
-          </View>
-        )}
-
-        {isPending && (
-          <View className="bg-yellow-500 p-4 rounded-md mt-4">
-            <Text className="text-white">Guardando...</Text>
-          </View>
-        )}
       </View>
     </ScrollView>
   );
