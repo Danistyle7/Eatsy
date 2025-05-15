@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import { forwardRef } from "react";
 import {
   Pressable,
   PressableProps,
@@ -54,9 +54,9 @@ export const buttonVariants = (
     "flex-row items-center justify-center rounded-md font-medium disabled:opacity-50 disabled:cursor-not-allowed rounded-2xl";
 
   const variants = {
-    default: "bg-[#F97316] active:bg-[#F97316]/80",
+    default: "bg-[#F97316]",
     destructive: "bg-red-600 active:bg-red-700",
-    outline: "border border-[#F97316] bg-transparent active:bg-[#F97316]/80",
+    outline: "border border-[#F97316] bg-transparent",
     secondary: "bg-gray-200 active:bg-gray-300",
     ghost: "active:bg-blue-100",
     link: "",
