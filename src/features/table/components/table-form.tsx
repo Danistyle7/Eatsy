@@ -24,7 +24,11 @@ export const TableForm = <T extends FieldValues>({
 
   return (
     <Form {...form}>
-      <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
+      <ScrollView
+        className="flex-1 min-h-fit"
+        contentContainerStyle={{ flexGrow: 1 }}
+        keyboardShouldPersistTaps="handled"
+      >
         <FormField
           name="name"
           render={({ field }) => (

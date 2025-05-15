@@ -1,6 +1,6 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { useForm } from "react-hook-form";
 import { ScrollView, Text, View } from "react-native";
 
@@ -19,7 +19,7 @@ const NewTableScreen = () => {
   });
 
   const isPending = form.formState.isSubmitting;
-  const buttonTitle = isPending ? "Subiendo..." : "Guardar";
+  const buttonSuccessTitle = isPending ? "Subiendo..." : "Guardar";
 
   const handleSubmit = async (data: TableCreate) => {
     console.log("se envió a la API", data);
@@ -36,17 +36,13 @@ const NewTableScreen = () => {
       contentContainerStyle={{ flexGrow: 1 }}
       keyboardShouldPersistTaps="handled"
     >
-      <View className="flex-1 p-4 h-full">
-        <View className="max-w-2xl mx-auto size-full">
-          <Text className="text-2xl font-semibold mb-4 text-black">
-            Añadir mesa
-          </Text>
-
-          <View className="flex-1 items-center justify-center w-full h-full z-0">
+      <View className="flex-1 p-4 justify-between">
+        <View className="max-w-2xl mx-auto">
+          <View className="flex-1 items-center justify-center w-full min-h-60 z-0">
             <MaterialCommunityIcons
-              name="chef-hat" // Nombre correcto del ícono
+              name="chef-hat"
               size={150}
-              color="rgba(239, 108, 0, 1)" // Naranja con transparencia
+              color="rgba(239, 108, 0, 1)"
             />
             <Text className="text-2xl font-semibold mb-4 text-black">
               Añadir mesa
@@ -54,24 +50,26 @@ const NewTableScreen = () => {
           </View>
 
           <TableForm form={form} />
+        </View>
 
-          <View className="flex-row gap-4 mt-6 justify-between h-fit">
+        <View className="flex-row gap-4">
+          <Link href=".." className="flex-1" asChild>
             <Button
               title="Cancelar"
-              onPress={handleBack}
               disabled={isPending}
               variant="outline"
               className="flex-1"
             />
+          </Link>
 
-            <Button
-              title={buttonTitle}
-              disabled={isPending}
-              onPress={form.handleSubmit(handleSubmit)}
-              className="flex-1"
-            />
-          </View>
+          <Button
+            title={buttonSuccessTitle}
+            disabled={isPending}
+            onPress={form.handleSubmit(handleSubmit)}
+            className="flex-1"
+          />
         </View>
+        {/* </View> */}
       </View>
     </ScrollView>
   );
