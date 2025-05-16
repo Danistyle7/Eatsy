@@ -1,10 +1,15 @@
 import { z } from "zod";
-import { tableCreateSchema } from "./schema";
+import {
+  tableCreateSchema,
+  tableParamsSchema,
+  tableResponseSchema,
+  tableUpdateSchema,
+} from "./schema";
 import { TABLE_STATUSES } from "./constants";
-
-export type TableStatusValue =
-  (typeof TABLE_STATUSES)[keyof typeof TABLE_STATUSES]["value"];
 
 export type TableStatus = (typeof TABLE_STATUSES)[keyof typeof TABLE_STATUSES];
 
 export type TableCreate = z.infer<typeof tableCreateSchema>;
+export type TableUpdate = z.infer<typeof tableUpdateSchema>;
+export type TableResponse = z.infer<typeof tableResponseSchema>;
+export type TableParams = z.infer<typeof tableParamsSchema>;

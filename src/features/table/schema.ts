@@ -1,9 +1,11 @@
 import { z } from "zod";
-import { TableStatusValue } from "./types";
+
+import { idSchema } from "@/shared/schemas";
 import { TABLE_STATUSES } from "./constants";
+import { TableStatus } from "./types";
 
 const tableStatusValues = Object.values(TABLE_STATUSES).map((c) => c.value) as [
-  TableStatusValue,
+  TableStatus["value"],
 ];
 
 export const tableStatusSchema = z.enum(tableStatusValues, {
@@ -15,7 +17,19 @@ export const tableStatusSchema = z.enum(tableStatusValues, {
 });
 
 export const tableCreateSchema = z.object({
-  name: z.string().min(1, "El nombre es requerido").max(150),
-  capacity: z.number().int().positive().max(100),
+  number: z.number().int().positive(),
+  capacity: z.number().int().positive(),
   status: tableStatusSchema,
+});
+
+export const tableUpdateSchema = tableCreateSchema.partial();
+
+export const tableResponseSchema = tableCreateSchema.extend({
+  id: idSchema,
+  qrCode: z.string(),
+  // qrCodeUrl: z.string(),
+});
+
+export const tableParamsSchema = z.object({
+  status: tableStatusSchema.optional(),
 });
