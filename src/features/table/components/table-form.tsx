@@ -72,7 +72,7 @@ export const TableForm = <T extends FieldValues>({
           render={({ field }) => (
             <FormItem>
               <FormLabel>Estado</FormLabel>
-              <View className="flex-row gap-4 mb-2">
+              <View className="flex flex-row flex-wrap gap-2 mb-2">
                 {tableStatuses.map((status) => (
                   <Button
                     key={status.value}

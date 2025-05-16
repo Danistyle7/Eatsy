@@ -63,7 +63,7 @@ const EditTableScreen = () => {
       keyboardShouldPersistTaps="handled"
     >
       <View className="flex-1 p-4 justify-between">
-        <View className="max-w-2xl mx-auto">
+        <View className="max-w-full md:max-w-2xl mx-auto">
           <View className="flex-1 items-center justify-center w-full min-h-60 z-0">
             <MaterialCommunityIcons
               name="chef-hat"
