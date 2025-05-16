@@ -46,7 +46,7 @@ const pedidos: PedidoItemProps[] = [
 ];
 
 export default function MesaScreen() {
-  const { idmesa } = useLocalSearchParams();
+  const { tableCode } = useLocalSearchParams();
   const totalProductos = pedidos.reduce((acc, item) => acc + item.cantidad, 0);
   const totalPrecio = pedidos.reduce(
     (acc, item) => acc + item.precio * item.cantidad,
@@ -59,7 +59,7 @@ export default function MesaScreen() {
         titulo="Pedidos"
         mostrarBusqueda={false}
         mostrarAgregar={false}
-        idmesa={idmesa}
+        idmesa={tableCode}
       />
 
       <FlatList
