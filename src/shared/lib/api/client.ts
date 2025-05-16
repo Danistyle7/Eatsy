@@ -3,8 +3,10 @@ import axios, { isAxiosError } from "axios";
 import { useAuthStore } from "@/features/auth/store";
 import { ApiError } from "./errors";
 
+const env = process.env; // 🚨 TODO: Mover a core
+
 const apiClient = axios.create({
-  baseURL: process.env.API_URL || "https://eatzy-be.vercel.app/",
+  baseURL: env.EXPO_PUBLIC_API_URL,
   timeout: 30_000, // 30 segundos
   headers: {
     "Content-Type": "application/json",
