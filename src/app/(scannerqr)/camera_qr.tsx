@@ -18,9 +18,12 @@ export default function Scanner() {
   const handleBarCodeScanned = ({ type, data }: BarCodeScannedEvent) => {
     if (!scanned) {
       setScanned(true);
-      const ultimoDigito = data.slice(-1);
+
       console.log(`QR escaneado: ${data}`);
-      router.replace(`/${ultimoDigito}/menu_usuario`);
+      router.replace({
+        pathname: "/(scannerqr)/confirmar_mesa",
+        params: { tableCode: data },
+      });
     }
   };
 

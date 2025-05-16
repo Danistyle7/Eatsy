@@ -17,7 +17,7 @@ export default function Home() {
 
       <TouchableOpacity
         style={[styles.button, styles.userButton]}
-        onPress={() => router.push("/scanner")}
+        onPress={() => router.push("/(scannerqr)/camera_qr")}
       >
         <Text style={styles.buttonText}>Scanear código</Text>
       </TouchableOpacity>
