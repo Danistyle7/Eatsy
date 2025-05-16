@@ -30,15 +30,16 @@ export const TableForm = <T extends FieldValues>({
         keyboardShouldPersistTaps="handled"
       >
         <FormField
-          name="name"
+          name="number"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Nombre de la mesa</FormLabel>
               <FormControl>
                 <Input
                   {...field}
-                  onChangeText={field.onChange}
-                  placeholder="Ej: Mesa 1"
+                  onChangeText={(value) => field.onChange(Number(value))}
+                  keyboardType="numeric"
+                  placeholder="Ej: 1"
                   maxLength={150}
                 />
               </FormControl>
