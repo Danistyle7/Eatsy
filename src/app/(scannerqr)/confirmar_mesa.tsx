@@ -9,14 +9,26 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-
+import { useGetTableByQrCode } from "@/features/table/hooks";
 export default function ConfirmarMesa() {
   const router = useRouter();
   const { tableCode } = useLocalSearchParams();
   const [nombre, setNombre] = useState("");
+  const qrCode = Array.isArray(tableCode) ? tableCode[0] : (tableCode ?? "");
+  const { data, error, isLoading } = useGetTableByQrCode(qrCode);
 
+  console;
   const handleContinue = () => {
-    router.replace(`/${tableCode}/menu_usuario`);
+    if (!data || !nombre.trim()) return;
+
+    router.replace({
+      pathname: `/${data.id}/menu_usuario`,
+      params: {
+        tableCode: data.id.toString(),
+        idMesa: data.id.toString(),
+        nombre,
+      },
+    });
   };
 
   return (

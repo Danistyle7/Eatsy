@@ -5,7 +5,7 @@ import {
 } from "@expo/vector-icons";
 import { Link, Tabs, useLocalSearchParams } from "expo-router";
 import { StyleSheet, View } from "react-native";
-
+import { useCartStore } from "@/shared/hooks/use_cardstore";
 import { Button } from "@/shared/components/ui/button";
 
 export default function TabLayout() {
@@ -32,7 +32,13 @@ export default function TabLayout() {
         headerRight: () => (
           <View style={styles.headerRightContainer}>
             <Link href="/" asChild>
-              <Button title="Inicio" />
+              <Button
+                title="Inicio"
+                onPress={() => {
+                  const clearCart = useCartStore.getState().clearCart;
+                  clearCart();
+                }}
+              />
             </Link>
           </View>
         ),

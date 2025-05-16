@@ -14,7 +14,7 @@ export const BebidaScreenUsuario = () => {
 
   const [esCliente, setEsCliente] = useState(true);
 
-  const { idmesa } = useLocalSearchParams();
+  const { tableCode } = useLocalSearchParams();
 
   const {
     data: bebidas,
@@ -29,7 +29,7 @@ export const BebidaScreenUsuario = () => {
     }, [refetch])
   );
 
-  console.log("que es aqui ", idmesa);
+  console.log("que es aqui ", tableCode);
   const sampleData = bebidas ?? [];
 
   const tiposUnicos = Array.from(
@@ -62,7 +62,7 @@ export const BebidaScreenUsuario = () => {
           busqueda={busqueda}
           setBusqueda={setBusqueda}
           mostrarAgregar={false}
-          idmesa={idmesa}
+          idmesa={tableCode}
         />
       </View>
       <ScrollView
