@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { ScrollView, Text, View } from "react-native";
@@ -13,11 +13,14 @@ import { useUploadFile } from "@/features/file/hooks";
 import { Button } from "@/shared/components/ui/button";
 import { ApiError } from "@/shared/lib/api/errors";
 import { getChangedFields } from "@/shared/lib/utils";
+import { idSchema } from "@/shared/schemas";
 
 export default function EditDishScreen() {
   const router = useRouter();
   const { id: idString } = useLocalSearchParams<{ id: string }>();
-  const id = Number(idString);
+  const idParse = idSchema.safeParse(idString);
+  if (!idParse.success) return router.back();
+  const id = idParse.data;
 
   const { data: dish, isLoading, error: errorGet } = useGetDishById(id);
   const { mutateAsync: uploadFile, error: errorUpload } = useUploadFile();
@@ -55,52 +58,38 @@ export default function EditDishScreen() {
     }
   };
 
-  const handleBack = () => {
-    if (isPending) return;
-    router.back();
-  };
-
   return (
     <ScrollView
-      className="flex-1 bg-white"
+      className="flex-1 bg-white h-full"
       contentContainerStyle={{ flexGrow: 1 }}
       keyboardShouldPersistTaps="handled"
     >
-      <View className="flex-1 p-4 min-h-screen">
-        <View className="max-w-2xl mx-auto w-full">
-          <Text className="text-2xl font-semibold mb-4">Editar producto</Text>
+      <View className="flex-1 p-4 justify-between">
+        <View className="max-w-2xl mx-auto">
+          <Text className="text-2xl font-semibold mb-4 text-black">
+            Editar producto
+          </Text>
 
           <DishForm form={form} />
+        </View>
 
-          <View className="flex-row gap-4 mt-6 justify-between">
+        <View className="flex-row gap-4 mt-6 justify-between">
+          <Link href=".." className="flex-1" asChild>
             <Button
               title="Cancelar"
-              onPress={handleBack}
               disabled={isPending}
               variant="outline"
               className="flex-1"
             />
+          </Link>
 
-            <Button
-              title={buttonTitle}
-              disabled={isPending}
-              onPress={form.handleSubmit(handleSubmit)}
-              className="flex-1"
-            />
-          </View>
+          <Button
+            title={buttonTitle}
+            disabled={isPending}
+            onPress={form.handleSubmit(handleSubmit)}
+            className="flex-1"
+          />
         </View>
-
-        {errorMessage && (
-          <View className="bg-red-500 p-4 rounded-md mt-4">
-            <Text className="text-white">{errorMessage}</Text>
-          </View>
-        )}
-
-        {isPending && (
-          <View className="bg-yellow-500 p-4 rounded-md mt-4">
-            <Text className="text-white">Guardando...</Text>
-          </View>
-        )}
       </View>
     </ScrollView>
   );

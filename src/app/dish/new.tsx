@@ -31,7 +31,7 @@ export default function DishRegisterScreen() {
     try {
       const imageUrl = await uploadFile(data.imageUrl);
       await createDish({ ...data, imageUrl });
-      router.back();
+      router.back(); // TODO: navigate to dishes list
     } catch (error) {
       if (error instanceof ApiError)
         console.error(`${error.code}: ${error.message}`);
