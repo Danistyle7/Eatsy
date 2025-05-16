@@ -6,6 +6,7 @@ import {
   Text,
   TouchableOpacity,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import { captureRef } from "react-native-view-shot";
 import * as FileSystem from "expo-file-system";
@@ -21,7 +22,7 @@ interface QRModalProps {
   onSave?: (uri: string) => void;
 }
 
-export default function QRModal({
+export function QRModal({
   title = "Tu código QR",
   visible,
   value,
@@ -33,20 +34,38 @@ export default function QRModal({
 
   const handleSave = async () => {
     if (!qrRef.current) return;
+    setSaving(true);
+
     try {
-      setSaving(true);
-      // Captura el QR como imagen PNG
+      // Captura el QR como PNG
       const uri = await captureRef(qrRef.current, {
         format: "png",
         quality: 1,
       });
-      // Pide permisos para guardar en galería
-      const { status } = await MediaLibrary.requestPermissionsAsync();
-      if (status !== "granted") throw new Error("Permiso denegado");
-      // Mueve el archivo a la galería
-      const asset = await MediaLibrary.createAssetAsync(uri);
-      await MediaLibrary.createAlbumAsync("QR Codes", asset, false);
-      onSave && onSave(uri);
+
+      if (Platform.OS === "web") {
+        // En web, descargamos mediante un <a> temporal
+        const response = await fetch(uri);
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "qr.png";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        onSave && onSave(uri);
+      } else {
+        // En iOS/Android, guardamos en la galería
+        const { status } = await MediaLibrary.requestPermissionsAsync();
+        if (status !== "granted") throw new Error("Permiso denegado");
+        const asset = await MediaLibrary.createAssetAsync(uri);
+        await MediaLibrary.createAlbumAsync("QR Codes", asset, false);
+        onSave && onSave(asset.uri);
+      }
     } catch (e) {
       console.error("Error guardando QR:", e);
     } finally {

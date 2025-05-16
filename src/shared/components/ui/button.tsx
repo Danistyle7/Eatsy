@@ -66,7 +66,7 @@ export const buttonVariants = (
     default: "h-10 px-4 py-2 text-base",
     sm: "h-8 px-3 text-sm",
     lg: "h-12 px-8 text-lg",
-    icon: "h-10 w-10",
+    icon: "size-8",
   };
 
   return `${base} ${variants[variant]} ${sizes[size]}`;
