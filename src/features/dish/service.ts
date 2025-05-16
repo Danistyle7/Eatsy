@@ -1,20 +1,15 @@
 import { z } from "zod";
 
+import { BaseService } from "@/shared/lib/api/base-service";
+import apiClient from "@/shared/lib/api/client";
+import type { APIResponse } from "@/shared/lib/api/types/api-response";
 import {
   dishCreateSchema,
   dishParamsSchema,
   dishResponseSchema,
   dishUpdateSchema,
-} from "@/features/dish/schema";
-import type {
-  DishCreate,
-  DishParams,
-  DishResponse,
-  DishUpdate,
-} from "@/features/dish/types";
-import { BaseService } from "@/shared/lib/api/base-service";
-import apiClient from "@/shared/lib/api/client";
-import type { APIResponse } from "@/shared/lib/api/types/api-response";
+} from "./schema";
+import type { DishCreate, DishParams, DishResponse, DishUpdate } from "./types";
 
 /**
  * Servicio para operaciones CRUD de platos

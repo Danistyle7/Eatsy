@@ -1,13 +1,13 @@
 import { z } from "zod";
 
-import { idSchema } from "@/shared/schemas";
 import { imageUrlSchema } from "@/features/file/schemas";
+import { idSchema } from "@/shared/schemas";
 import { DISH_CATEGORIES, DISH_TYPES } from "./constants";
-import { DishCategoryValue, DishTypeValue } from "./types";
+import { DishCategory, DishType } from "./types";
 
 const dishCategoryValues = Object.values(DISH_CATEGORIES).map(
   (c) => c.value
-) as [DishCategoryValue];
+) as [DishCategory["value"]];
 
 export const dishCategorySchema = z.enum(dishCategoryValues, {
   errorMap: (_) => ({
@@ -16,7 +16,7 @@ export const dishCategorySchema = z.enum(dishCategoryValues, {
 });
 
 const dishTypeValues = Object.values(DISH_TYPES).map((c) => c.value) as [
-  DishTypeValue,
+  DishType["value"],
 ];
 
 export const dishTypeSchema = z.enum(dishTypeValues, {
@@ -38,11 +38,11 @@ export const dishCreateSchema = z.object({
   prepTime: z.number().int().positive(),
 });
 
+export const dishUpdateSchema = dishCreateSchema.partial();
+
 export const dishResponseSchema = dishCreateSchema.extend({
   id: idSchema,
 });
-
-export const dishUpdateSchema = dishCreateSchema.partial();
 
 export const dishParamsSchema = z.object({
   search: z.string().optional(),

@@ -1,10 +1,10 @@
-import { DishCreate, DishParams } from "./types";
+import { DishCreate, DishParams, DishResponse } from "./types";
 
 export const DISH_QUERY_KEYS = {
   all: ["dishes"],
   lists: (params?: DishParams) => [...DISH_QUERY_KEYS.all, "list", params],
   details: () => [...DISH_QUERY_KEYS.all, "detail"],
-  detail: (id: number) => [...DISH_QUERY_KEYS.details(), id],
+  detail: (id: DishResponse["id"]) => [...DISH_QUERY_KEYS.details(), id],
 };
 
 export const DISH_CATEGORIES = {
