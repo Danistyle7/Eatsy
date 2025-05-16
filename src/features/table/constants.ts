@@ -13,10 +13,11 @@ export const TABLE_QUERY_KEYS = {
 };
 
 export const TABLE_STATUSES = {
-  AVAILABLE: { value: "AVAILABLE", label: "Disponible", icon: "✅🟢" },
-  OCCUPIED: { value: "OCCUPIED", label: "Ocupado", icon: "🚫🔴" },
-  RESERVED: { value: "RESERVED", label: "Reservado", icon: "🎟️🟡" },
-  MAINTENANCE: { value: "MAINTENANCE", label: "No disponible", icon: "🛠️⚠️" },
+  AVAILABLE: { value: "AVAILABLE", label: "Disponible", icon: "🟢" },
+  OCCUPIED: { value: "OCCUPIED", label: "Ocupado", icon: "🔴" },
+  RESERVED: { value: "RESERVED", label: "Reservado", icon: "🟡" },
+  MAINTENANCE: { value: "MAINTENANCE", label: "No disponible", icon: "🛠️" },
+  DELETED: { value: "DELETED", label: "Eliminado", icon: "🗑️" },
 } as const;
 
 export const defaultTable = {

@@ -1,4 +1,8 @@
-import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
+import {
+  FontAwesome,
+  MaterialCommunityIcons,
+  MaterialIcons,
+} from "@expo/vector-icons";
 import { Link, Tabs } from "expo-router";
 import { StyleSheet, View } from "react-native";
 
@@ -34,15 +38,6 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="inicio"
-        options={{
-          title: "Inicio",
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome name="home" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="menu"
         options={{
           title: "Menú",
@@ -51,6 +46,7 @@ export default function TabLayout() {
           ),
         }}
       />
+
       <Tabs.Screen
         name="bebidas"
         options={{
@@ -60,12 +56,23 @@ export default function TabLayout() {
           ),
         }}
       />
+
       <Tabs.Screen
         name="tables"
         options={{
-          title: "Mesas",
+          title: "Lista de Mesas",
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="table-chart" size={size} color={color} />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="kitchen"
+        options={{
+          title: "Monitor de cocina",
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="chef-hat" size={size} color={color} />
           ),
         }}
       />

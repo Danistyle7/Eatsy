@@ -15,15 +15,15 @@ import {
 import { tableUpdateSchema } from "@/features/table/schema";
 import { TableUpdate } from "@/features/table/types";
 import { Button } from "@/shared/components/ui/button";
+import { ApiError } from "@/shared/lib/api/errors";
+import { getChangedFields } from "@/shared/lib/utils";
 
 const EditTableScreen = () => {
   const { id: idString } = useLocalSearchParams<{ id: string }>();
   const id = Number(idString);
 
   const { data: table, isLoading, error: errorGet } = useGetTableById(id);
-  const { data } = useGetTableByQrCode("TABLECOD10");
   const { mutateAsync: updateTable, error: errorUpdate } = useUpdateTableById();
-  console.log(data);
 
   const form = useForm({
     resolver: zodResolver(tableUpdateSchema),
@@ -43,7 +43,17 @@ const EditTableScreen = () => {
   const buttonSuccessTitle = isPending ? "Subiendo..." : "Guardar";
 
   const handleSubmit = async (data: TableUpdate) => {
-    console.log("se envió a la API", data);
+    console.log("se envió a la API", data, id);
+    try {
+      const changes = getChangedFields(table, data);
+      console.log("cambios", changes);
+      if (Object.keys(changes).length === 0) return;
+      await updateTable({ id, data: changes });
+    } catch (error) {
+      if (error instanceof ApiError)
+        console.error(`${error.code}: ${error.message}`);
+      else console.error("Error creating table", error);
+    }
   };
 
   return (
