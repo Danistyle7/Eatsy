@@ -31,7 +31,7 @@ export const useGetTableById = (id: TableResponse["id"]) => {
 };
 
 export const useGetTableByQrCode = (qrCode: TableResponse["qrCode"]) => {
-  return useQuery<TableResponse[], ApiError>({
+  return useQuery<TableResponse, ApiError>({
     queryKey: TABLE_QUERY_KEYS.scan(qrCode),
     queryFn: async () => {
       const result = await tableService.scan(qrCode);
