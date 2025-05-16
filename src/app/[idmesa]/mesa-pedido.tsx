@@ -56,7 +56,7 @@ export default function MesaScreen() {
   return (
     <View style={styles.container}>
       <Header
-        titulo="Pedidos"
+        titulo="Estado de pedidos"
         mostrarBusqueda={false}
         mostrarAgregar={false}
         idmesa={tableCode}
