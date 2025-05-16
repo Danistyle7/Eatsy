@@ -32,12 +32,12 @@ const NewTableScreen = () => {
 
   return (
     <ScrollView
-      className="flex-1 bg-white"
+      className="flex-1 bg-white h-full"
       contentContainerStyle={{ flexGrow: 1 }}
       keyboardShouldPersistTaps="handled"
     >
       <View className="flex-1 p-4 h-full">
-        <View className="max-w-2xl mx-auto w-full">
+        <View className="max-w-2xl mx-auto size-full">
           <Text className="text-2xl font-semibold mb-4 text-black">
             Añadir mesa
           </Text>
@@ -55,7 +55,7 @@ const NewTableScreen = () => {
 
           <TableForm form={form} />
 
-          <View className="flex-row gap-4 mt-6 justify-between">
+          <View className="flex-row gap-4 mt-6 justify-between h-fit">
             <Button
               title="Cancelar"
               onPress={handleBack}
