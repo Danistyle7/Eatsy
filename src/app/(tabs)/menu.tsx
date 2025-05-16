@@ -33,6 +33,16 @@ export const MenuScreen = () => {
   // Asegúrate de que dishes no sea undefined, null o está vacío
   if (!dishes?.length) return <Text>No hay platos disponibles</Text>;
 
+  const grouped = dishes.reduce(
+    (acc, dish) => {
+      const cat = dish.category;
+      if (!acc[cat]) acc[cat] = [];
+      acc[cat].push(dish);
+      return acc;
+    },
+    {} as Record<string, typeof dishes>
+  );
+
   return (
     <View className="flex-1 bg-white">
       <View className="px-4 pt-2">
@@ -41,22 +51,20 @@ export const MenuScreen = () => {
 
       <ScrollView className="flex-1 bg-white px-4 pt-2">
         {/* Secciones dinámicas por cada tipo único */}
-        {Object.entries(Object.groupBy(dishes, (dish) => dish.category)).map(
-          ([category, dishes]) => (
-            <Section
-              key={category}
-              title={getDishCategory(category).label}
-              data={dishes}
-              {...{
-                modalVisible,
-                setModalVisible,
-                selectedItem,
-                setSelectedItem,
-              }}
-              esCliente={esCliente}
-            />
-          )
-        )}
+        {Object.entries(grouped).map(([category, dishes]) => (
+          <Section
+            key={category}
+            title={getDishCategory(category).label}
+            data={dishes}
+            {...{
+              modalVisible,
+              setModalVisible,
+              selectedItem,
+              setSelectedItem,
+            }}
+            esCliente={esCliente}
+          />
+        ))}
       </ScrollView>
     </View>
   );
