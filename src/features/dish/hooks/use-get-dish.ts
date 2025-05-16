@@ -6,7 +6,7 @@ import { dishService } from "../service";
 import type { DishParams, DishResponse } from "../types";
 
 export const useGetAllDishes = (params?: DishParams) => {
-  return useQuery<DishResponse[], Error>({
+  return useQuery<DishResponse[], ApiError>({
     queryKey: DISH_QUERY_KEYS.lists(params),
     queryFn: async () => {
       const result = await dishService.getAll(params);
@@ -18,7 +18,7 @@ export const useGetAllDishes = (params?: DishParams) => {
 };
 
 export const useGetDishById = (id: DishResponse["id"]) => {
-  return useQuery<DishResponse, Error>({
+  return useQuery<DishResponse, ApiError>({
     queryKey: DISH_QUERY_KEYS.detail(id),
     queryFn: async () => {
       const result = await dishService.getById(id);

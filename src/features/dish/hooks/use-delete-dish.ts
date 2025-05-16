@@ -1,6 +1,7 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import { ApiError } from "@/shared/lib/api/errors";
+import { queryClient } from "@/shared/lib/query-client";
 import { DISH_QUERY_KEYS } from "../constants";
 import { dishService } from "../service";
 import type { DishResponse } from "../types";
@@ -8,9 +9,7 @@ import type { DishResponse } from "../types";
 type Context = { previous?: DishResponse[] };
 
 export const useDeleteDishById = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation<void, Error, DishResponse["id"], Context>({
+  return useMutation<void, ApiError, DishResponse["id"], Context>({
     mutationFn: async (id) => {
       const result = await dishService.delete(id);
       if (!result.success)
