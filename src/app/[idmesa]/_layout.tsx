@@ -1,11 +1,15 @@
-import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import {
+  MaterialCommunityIcons,
+  MaterialIcons,
+  FontAwesome5,
+} from "@expo/vector-icons";
 import { Link, Tabs, useLocalSearchParams } from "expo-router";
 import { StyleSheet, View } from "react-native";
 
 import { Button } from "@/shared/components/ui/button";
 
 export default function TabLayout() {
-  const { idmesa } = useLocalSearchParams();
+  const { tableCode } = useLocalSearchParams();
   return (
     <Tabs
       screenOptions={{
@@ -42,7 +46,7 @@ export default function TabLayout() {
             <MaterialIcons name="restaurant-menu" size={size} color={color} />
           ),
         }}
-        initialParams={{ idmesa }}
+        initialParams={{ tableCode }}
       />
       <Tabs.Screen
         name="bebidas_usuario"
@@ -52,7 +56,7 @@ export default function TabLayout() {
             <MaterialIcons name="local-drink" size={size} color={color} />
           ),
         }}
-        initialParams={{ idmesa }}
+        initialParams={{ tableCode }}
       />
       <Tabs.Screen
         name="pedidos"
@@ -66,7 +70,17 @@ export default function TabLayout() {
             />
           ),
         }}
-        initialParams={{ idmesa }}
+        initialParams={{ tableCode }}
+      />
+      <Tabs.Screen
+        name="mesa-pedido"
+        options={{
+          title: "Mesa",
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome5 name="concierge-bell" size={size} color={color} />
+          ),
+        }}
+        initialParams={{ tableCode }}
       />
     </Tabs>
   );
