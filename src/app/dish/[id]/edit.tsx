@@ -13,14 +13,11 @@ import { useUploadFile } from "@/features/file/hooks";
 import { Button } from "@/shared/components/ui/button";
 import { ApiError } from "@/shared/lib/api/errors";
 import { getChangedFields } from "@/shared/lib/utils";
-import { idSchema } from "@/shared/schemas";
 
 export default function EditDishScreen() {
   const router = useRouter();
   const { id: idString } = useLocalSearchParams<{ id: string }>();
-  const idParse = idSchema.safeParse(idString);
-  if (!idParse.success) return router.back();
-  const id = idParse.data;
+  const id = Number(idString);
 
   const { data: dish, isLoading, error: errorGet } = useGetDishById(id);
   const { mutateAsync: uploadFile, error: errorUpload } = useUploadFile();
@@ -74,7 +71,7 @@ export default function EditDishScreen() {
         </View>
 
         <View className="flex-row gap-4 mt-6 justify-between">
-          <Link href=".." className="flex-1" asChild>
+          <Link href="/menu" className="flex-1" asChild>
             <Button
               title="Cancelar"
               disabled={isPending}

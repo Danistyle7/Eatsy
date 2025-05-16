@@ -1,26 +1,29 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, useLocalSearchParams, useRouter } from "expo-router";
+import { Link, useLocalSearchParams } from "expo-router";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { ScrollView, Text, View } from "react-native";
 
 import { TableForm } from "@/features/table/components/table-form";
 import { defaultTable } from "@/features/table/constants";
-import { useGetTableById, useUpdateTableById } from "@/features/table/hooks";
+import {
+  useGetTableById,
+  useGetTableByQrCode,
+  useUpdateTableById,
+} from "@/features/table/hooks";
 import { tableUpdateSchema } from "@/features/table/schema";
 import { TableUpdate } from "@/features/table/types";
 import { Button } from "@/shared/components/ui/button";
-import { idSchema } from "@/shared/schemas";
 
 const EditTableScreen = () => {
-  const router = useRouter();
   const { id: idString } = useLocalSearchParams<{ id: string }>();
-  const id = idSchema.safeParse(idString);
-  if (!id.success) return router.back();
+  const id = Number(idString);
 
-  const { data: table, isLoading, error: errorGet } = useGetTableById(id.data);
+  const { data: table, isLoading, error: errorGet } = useGetTableById(id);
+  const { data } = useGetTableByQrCode("TABLECOD10");
   const { mutateAsync: updateTable, error: errorUpdate } = useUpdateTableById();
+  console.log(data);
 
   const form = useForm({
     resolver: zodResolver(tableUpdateSchema),

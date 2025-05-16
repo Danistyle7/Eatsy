@@ -54,12 +54,14 @@ export class TableService extends BaseService {
 
   async scan(
     qrCode: TableResponse["qrCode"]
-  ): Promise<APIResponse<TableResponse[]>> {
+  ): Promise<APIResponse<TableResponse>> {
     try {
-      const response = await apiClient.get("/table/scan", {
-        params: { qrCode },
+      const response = await apiClient.post("/table/scan", {
+        qrCode,
+        nameCustomer: "Israel Samk",
       });
-      return this.validateResponse(response.data, z.array(tableResponseSchema));
+      response.data.data = response.data.data.table;
+      return this.validateResponse(response.data, tableResponseSchema);
     } catch (error) {
       return this.handleError(error, "Error al escanear mesas");
     }
