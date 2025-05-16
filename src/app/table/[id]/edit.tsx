@@ -1,40 +1,46 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, useRouter } from "expo-router";
+import { Link, useLocalSearchParams, useRouter } from "expo-router";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { ScrollView, Text, View } from "react-native";
 
 import { TableForm } from "@/features/table/components/table-form";
 import { defaultTable } from "@/features/table/constants";
-import { useCreateTable } from "@/features/table/hooks";
-import { tableCreateSchema } from "@/features/table/schema";
-import { TableCreate } from "@/features/table/types";
+import { useGetTableById, useUpdateTableById } from "@/features/table/hooks";
+import { tableUpdateSchema } from "@/features/table/schema";
+import { TableUpdate } from "@/features/table/types";
 import { Button } from "@/shared/components/ui/button";
-import { ApiError } from "@/shared/lib/api/errors";
+import { idSchema } from "@/shared/schemas";
 
-const NewTableScreen = () => {
+const EditTableScreen = () => {
   const router = useRouter();
+  const { id: idString } = useLocalSearchParams<{ id: string }>();
+  const id = idSchema.safeParse(idString);
+  if (!id.success) return router.back();
 
-  const { mutateAsync: createTable, error: errorCreate } = useCreateTable();
+  const { data: table, isLoading, error: errorGet } = useGetTableById(id.data);
+  const { mutateAsync: updateTable, error: errorUpdate } = useUpdateTableById();
 
   const form = useForm({
-    resolver: zodResolver(tableCreateSchema),
+    resolver: zodResolver(tableUpdateSchema),
     defaultValues: defaultTable,
   });
 
+  useEffect(() => {
+    if (table) form.reset({ ...defaultTable, ...table });
+  }, [table]);
+
+  if (isLoading) return <Text>Cargando...</Text>;
+  if (errorGet) return <Text>Error: {errorGet.message}</Text>;
+  if (!table) return <Text>Mesa no encontrada</Text>;
+
   const isPending = form.formState.isSubmitting;
-  const errorMessage = errorCreate?.message;
+  const errorMessage = errorUpdate?.message;
   const buttonSuccessTitle = isPending ? "Subiendo..." : "Guardar";
 
-  const handleSubmit = async (data: TableCreate) => {
-    try {
-      await createTable(data);
-      router.navigate("/tables");
-    } catch (error) {
-      if (error instanceof ApiError)
-        console.error(`${error.code}: ${error.message}`);
-      else console.error("Error creating table", error);
-    }
+  const handleSubmit = async (data: TableUpdate) => {
+    console.log("se envió a la API", data);
   };
 
   return (
@@ -81,4 +87,4 @@ const NewTableScreen = () => {
   );
 };
 
-export default NewTableScreen;
+export default EditTableScreen;
