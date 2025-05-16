@@ -9,7 +9,8 @@ import { idSchema } from "@/shared/schemas";
 import { useLocalSearchParams } from "expo-router";
 
 export default function PedidoScreen() {
-  const { idmesa } = useLocalSearchParams();
+  const { tableCode, idMesas, nombre } = useLocalSearchParams();
+
   const router = useRouter();
   const items = useCartStore((state) => state.items);
   const getTotal = useCartStore((state) => state.getTotal); // 👈 obtenemos la función
@@ -22,7 +23,7 @@ export default function PedidoScreen() {
           titulo="Pedidos"
           mostrarBusqueda={false}
           mostrarAgregar={false}
-          idmesa={idmesa}
+          idmesa={tableCode}
         />
       </View>
 
@@ -47,7 +48,20 @@ export default function PedidoScreen() {
         <View className=" items-center p-1">
           <BotonNaranja
             titulo="Confirmar pedido"
-            onPress={() => router.push("/5/mesa-pedido")}
+            onPress={() => {
+              // 1. Imprimir en consola los datos
+              items.forEach((item) => {
+                console.log(
+                  `ID: ${item.id}, Nombre: ${item.name}, Cantidad: ${item.count}`
+                );
+              });
+
+              // 2. Limpiar el carrito
+              useCartStore.getState().clearCart();
+
+              // 3. Navegar a la siguiente pantalla
+              router.push("/5/mesa-pedido");
+            }}
           />
         </View>
       </View>
