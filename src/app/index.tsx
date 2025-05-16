@@ -3,34 +3,34 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 
 export default function Home() {
   const router = useRouter();
-  const nummesa = 5;
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>¡Bienvenido a Eatsy!</Text>
+
       <TouchableOpacity
         style={[styles.button, styles.adminButton]}
         onPress={() => router.push("/(tabs)/menu")}
       >
         <Text style={styles.buttonText}>Entrar como Administrador</Text>
       </TouchableOpacity>
+
       <TouchableOpacity
         style={[styles.button, styles.userButton]}
-        onPress={() => router.push(`/${nummesa}/menu_usuario`)}
+        onPress={() => router.push("/scanner")}
       >
-        <Text style={styles.buttonText}>Entrar como Usuario</Text>
+        <Text style={styles.buttonText}>Scanear código</Text>
       </TouchableOpacity>
     </View>
   );
 }
 
-// Estilos
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: 32,
+    padding: 32,
   },
   title: {
     fontSize: 28,
@@ -40,21 +40,12 @@ const styles = StyleSheet.create({
   },
   button: {
     width: "100%",
-    paddingVertical: 14,
+    padding: 14,
     borderRadius: 10,
     alignItems: "center",
     marginBottom: 20,
-    elevation: 3,
   },
-  adminButton: {
-    backgroundColor: "#FF7043",
-  },
-  userButton: {
-    backgroundColor: "#FFA726",
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "600",
-  },
+  adminButton: { backgroundColor: "#FF7043" },
+  userButton: { backgroundColor: "#FFA726" },
+  buttonText: { color: "#fff", fontSize: 16, fontWeight: "600" },
 });

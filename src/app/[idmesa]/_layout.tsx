@@ -1,4 +1,8 @@
-import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import {
+  MaterialCommunityIcons,
+  MaterialIcons,
+  FontAwesome5,
+} from "@expo/vector-icons";
 import { Link, Tabs, useLocalSearchParams } from "expo-router";
 import { StyleSheet, View } from "react-native";
 
@@ -64,6 +68,16 @@ export default function TabLayout() {
               size={size}
               color={color}
             />
+          ),
+        }}
+        initialParams={{ idmesa }}
+      />
+      <Tabs.Screen
+        name="mesa-pedido"
+        options={{
+          title: "Mesa",
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome5 name="concierge-bell" size={size} color={color} />
           ),
         }}
         initialParams={{ idmesa }}

@@ -45,7 +45,10 @@ export default function PedidoScreen() {
           </Text>
         </View>
         <View className=" items-center p-1">
-          <BotonNaranja titulo="Confirmar pedido" onPress={() => {}} />
+          <BotonNaranja
+            titulo="Confirmar pedido"
+            onPress={() => router.push("/5/mesa-pedido")}
+          />
         </View>
       </View>
     </View>
