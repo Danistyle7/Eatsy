@@ -1,23 +1,13 @@
-// QRModal.jsx
-import React, { useRef, useState } from "react";
-import {
-  Modal,
-  View,
-  Text,
-  TouchableOpacity,
-  ActivityIndicator,
-  Platform,
-} from "react-native";
-import { captureRef } from "react-native-view-shot";
-import * as FileSystem from "expo-file-system";
-import * as MediaLibrary from "expo-media-library";
-import QRCode from "react-native-qrcode-svg";
+import React, { useState } from "react";
+import { ActivityIndicator, Image, Modal, Text, View } from "react-native";
+
+import { saveQrFromUrl } from "@/features/file/utils";
 import { Button } from "./button";
 
 interface QRModalProps {
   title?: string;
   visible: boolean;
-  value: string;
+  qrCodeUrl: string;
   onClose: () => void;
   onSave?: (uri: string) => void;
 }
@@ -25,47 +15,17 @@ interface QRModalProps {
 export function QRModal({
   title = "Tu código QR",
   visible,
-  value,
+  qrCodeUrl,
   onClose,
   onSave,
 }: QRModalProps) {
-  const qrRef = useRef(null);
   const [saving, setSaving] = useState(false);
 
   const handleSave = async () => {
-    if (!qrRef.current) return;
     setSaving(true);
-
     try {
-      // Captura el QR como PNG
-      const uri = await captureRef(qrRef.current, {
-        format: "png",
-        quality: 1,
-      });
-
-      if (Platform.OS === "web") {
-        // En web, descargamos mediante un <a> temporal
-        const response = await fetch(uri);
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "qr.png";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-
-        onSave && onSave(uri);
-      } else {
-        // En iOS/Android, guardamos en la galería
-        const { status } = await MediaLibrary.requestPermissionsAsync();
-        if (status !== "granted") throw new Error("Permiso denegado");
-        const asset = await MediaLibrary.createAssetAsync(uri);
-        await MediaLibrary.createAlbumAsync("QR Codes", asset, false);
-        onSave && onSave(asset.uri);
-      }
+      const savedUri = await saveQrFromUrl(qrCodeUrl);
+      onSave?.(savedUri);
     } catch (e) {
       console.error("Error guardando QR:", e);
     } finally {
@@ -86,14 +46,15 @@ export function QRModal({
             {title}
           </Text>
 
-          <View
-            ref={qrRef}
-            className="bg-white p-4 items-center justify-center rounded-lg"
-          >
-            <QRCode value={value || " "} size={200} />
+          <View className="bg-white p-4 items-center justify-center rounded-lg">
+            <Image
+              source={{ uri: qrCodeUrl }}
+              style={{ width: 200, height: 200 }}
+              resizeMode="contain"
+            />
           </View>
 
-          <View className="flex-row mt-6 space-x-4">
+          <View className="flex-row mt-6 gap-4">
             <Button
               title="Cerrar"
               onPress={onClose}
@@ -105,7 +66,9 @@ export function QRModal({
               onPress={handleSave}
               disabled={saving}
               className="flex-1"
-            />
+            >
+              {saving && <ActivityIndicator color="#fff" />}
+            </Button>
           </View>
         </View>
       </View>

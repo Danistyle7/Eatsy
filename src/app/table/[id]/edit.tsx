@@ -1,6 +1,6 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, useLocalSearchParams } from "expo-router";
+import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { ScrollView, Text, View } from "react-native";
@@ -19,6 +19,7 @@ import { ApiError } from "@/shared/lib/api/errors";
 import { getChangedFields } from "@/shared/lib/utils";
 
 const EditTableScreen = () => {
+  const router = useRouter();
   const { id: idString } = useLocalSearchParams<{ id: string }>();
   const id = Number(idString);
 
@@ -43,12 +44,11 @@ const EditTableScreen = () => {
   const buttonSuccessTitle = isPending ? "Subiendo..." : "Guardar";
 
   const handleSubmit = async (data: TableUpdate) => {
-    console.log("se envió a la API", data, id);
     try {
       const changes = getChangedFields(table, data);
-      console.log("cambios", changes);
       if (Object.keys(changes).length === 0) return;
       await updateTable({ id, data: changes });
+      router.push("/tables");
     } catch (error) {
       if (error instanceof ApiError)
         console.error(`${error.code}: ${error.message}`);

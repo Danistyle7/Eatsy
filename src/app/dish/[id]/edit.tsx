@@ -47,7 +47,7 @@ export default function EditDishScreen() {
       if (changes.imageUrl)
         changes.imageUrl = await uploadFile(changes.imageUrl);
       await updateDish({ id, data: changes });
-      router.back();
+      router.navigate("/menu");
     } catch (error) {
       if (error instanceof ApiError)
         console.error(`${error.code}: ${error.message}`);

@@ -11,6 +11,7 @@ import { Input } from "@/shared/components/ui";
 
 export default function TablesScreen() {
   const [qrValue, setQrValue] = useState<string>("");
+  const [modalVisible, setModalVisible] = useState(false);
   const [searchText, setSearchText] = useState<string>("");
 
   const { data: tables, isLoading, error } = useGetAllTables();
@@ -32,6 +33,18 @@ export default function TablesScreen() {
     console.log("Filtrar mesas por:", searchText);
   };
 
+  const handleScan = (table: TableResponse) => {
+    setQrValue(table.qrCodeUrl);
+    setModalVisible(true);
+  };
+
+  const handleClose = () => {
+    setModalVisible(false);
+    setTimeout(() => {
+      setQrValue("");
+    }, 500);
+  };
+
   return (
     <View className="flex-1 bg-white">
       <ScrollView contentContainerStyle={{ padding: 16 }} className="flex-1">
@@ -47,20 +60,15 @@ export default function TablesScreen() {
         </View>
 
         {tables.map((table: TableResponse) => (
-          <TableListItem
-            key={table.id}
-            table={table}
-            onScan={(t) => setQrValue(t.qrCode)}
-            onDelete={(t) => console.log("Eliminar mesa", t)}
-          />
+          <TableListItem key={table.id} table={table} onScan={handleScan} />
         ))}
       </ScrollView>
 
       <QRModal
         title="Código QR de la mesa"
-        visible={!!qrValue}
-        value={qrValue}
-        onClose={() => setQrValue("")}
+        visible={modalVisible}
+        qrCodeUrl={qrValue}
+        onClose={handleClose}
       />
 
       <FloatingButton href="/table/new" icon="add" />

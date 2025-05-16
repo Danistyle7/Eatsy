@@ -27,7 +27,7 @@ export const tableUpdateSchema = tableCreateSchema.partial();
 export const tableResponseSchema = tableCreateSchema.extend({
   id: idSchema,
   qrCode: z.string(),
-  // qrCodeUrl: z.string(),
+  qrCodeUrl: z.string(),
 });
 
 export const tableParamsSchema = z.object({
