@@ -4,10 +4,18 @@ import { ScrollView, Text, View } from "react-native";
 import { Button } from "@/shared/components/ui/button";
 import { cn } from "@/shared/lib/utils";
 
+import { DishResponse } from "@/features/dish/types";
+import { usePanelOrder } from "@/features/order/hooks/use-panel-order";
+import { OrderPanel, OrderResponse } from "@/features/order/types";
+import { TableResponse } from "@/features/table/types";
+import { getTableStatus } from "@/features/table/utils";
 import "@/shared/styles.css";
+import { getDishCategory, getDishType } from "@/features/dish/utils";
 
 export default function HomeScreen() {
   const [filter, setFilter] = useState("tables");
+
+  const { data: orders, isLoading, error } = usePanelOrder();
 
   const filters = [
     { label: "Por mesas", value: "tables" },
@@ -21,11 +29,35 @@ export default function HomeScreen() {
     { title: "Rechazado", dataIndex: "rejected", bg: "bg-[#FB6340]" },
   ];
 
-  const data = [
-    { name: "Mesa 1", status: "Preparando" },
-    { name: "Mesa 2", status: "Preparando" },
-    { name: "Mesa 3", status: "Preparando" },
-  ];
+  // control de respuesta de la API
+  if (isLoading) return <Text>Cargando...</Text>;
+  if (error) return <Text>Error al cargar los platos: {error.message}</Text>;
+  // Asegúrate de que dishes no sea undefined, null o está vacío
+  if (!orders?.length) return <Text>No hay platos disponibles</Text>;
+
+  const parsed = orders.map((order) => ({
+    order,
+    table: {
+      id: order.itemOrdes[0].id_table,
+      number: order.mesa_number,
+      status: order.status,
+    },
+    dishes: order.itemOrdes.map((item) => ({
+      id: item.id_dish,
+      name: item.name_dish,
+      price: item.price,
+      status: item.status,
+      isAvailable: item.isAvailable,
+      imageUrl: item.imageUrl,
+      prepTime: item.prepTime,
+    })),
+  }));
+
+  const items = Object.groupBy(parsed, ({ table, dishes }) => {
+    if (filter === "preparing") return dishes[0]?.status;
+    if (filter === "tables") return table.number.toString();
+    return "all";
+  });
 
   return (
     <ScrollView
@@ -65,7 +97,7 @@ export default function HomeScreen() {
               </View>
 
               <View className="flex-1 p-4 gap-2">
-                {data.map((item) => (
+                {Object.entries(items).map(([statusOrTableNumber, items]) => (
                   <View
                     key={item.name}
                     className="flex-col gap-4 items-center bg-white rounded-lg shadow-sm overflow-hidden"

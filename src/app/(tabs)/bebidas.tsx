@@ -33,6 +33,7 @@ export const BebidaScreen = () => {
   // Asegúrate de que dishes no sea undefined, null o está vacío
   if (!dishes?.length) return <Text>No hay platos disponibles</Text>;
 
+  // const grouped = Object.groupBy(dishes, (dish) => dish.category);
   const grouped = dishes.reduce(
     (acc, dish) => {
       const cat = dish.category;
