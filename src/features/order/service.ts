@@ -12,6 +12,7 @@ import type {
   OrderCreate,
   OrderPanel,
   OrderParams,
+  OrderUpdate,
   OrderResponse,
 } from "./types";
 
@@ -45,6 +46,18 @@ export class OrderService extends BaseService {
       return this.validateResponse(response.data, z.array(orderPanelSchema));
     } catch (error) {
       return this.handleError(error, "Error al crear plato");
+    }
+  }
+
+  async update(
+    id: number,
+    order: OrderUpdate
+  ): Promise<APIResponse<OrderResponse>> {
+    try {
+      const response = await apiClient.patch(`/order/update/${id}`, order);
+      return this.validateResponse(response.data, orderResponseSchema);
+    } catch (error) {
+      return this.handleError(error, "Error al actualizar el estado");
     }
   }
 }

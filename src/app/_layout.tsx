@@ -9,6 +9,8 @@ import { useAuthStore } from "@/features/auth/store";
 import { useFrameworkReady } from "@/shared/hooks";
 import { queryClient } from "@/shared/lib/query-client";
 
+import "@/shared/styles.css";
+
 export default function RootLayout() {
   useFrameworkReady();
 
