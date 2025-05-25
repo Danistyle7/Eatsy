@@ -30,11 +30,14 @@ export const useGetTableById = (id: TableResponse["id"]) => {
   });
 };
 
-export const useGetTableByQrCode = (qrCode: TableResponse["qrCode"]) => {
+export const useGetTableByQrCode = (
+  qrCode: TableResponse["qrCode"],
+  nameCustomer: string
+) => {
   return useQuery<TableResponse, ApiError>({
     queryKey: TABLE_QUERY_KEYS.scan(qrCode),
     queryFn: async () => {
-      const result = await tableService.scan(qrCode);
+      const result = await tableService.scan(qrCode, nameCustomer);
       if (!result.success)
         throw new ApiError(result.error, parseInt(result.code || "500"));
       return result.data;

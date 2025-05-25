@@ -15,7 +15,7 @@ export default function ConfirmarMesa() {
   const { tableCode } = useLocalSearchParams();
   const [nombre, setNombre] = useState("");
   const qrCode = Array.isArray(tableCode) ? tableCode[0] : (tableCode ?? "");
-  const { data, error, isLoading } = useGetTableByQrCode(qrCode);
+  const { data, error, isLoading } = useGetTableByQrCode(qrCode, nombre);
 
   console;
   const handleContinue = () => {
