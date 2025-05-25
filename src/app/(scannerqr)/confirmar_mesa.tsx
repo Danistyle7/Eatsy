@@ -16,17 +16,16 @@ export default function ConfirmarMesa() {
   const [nombre, setNombre] = useState("");
   const qrCode = Array.isArray(tableCode) ? tableCode[0] : (tableCode ?? "");
   const { data, error, isLoading } = useGetTableByQrCode(qrCode);
-
-  console;
   const handleContinue = () => {
     if (!data || !nombre.trim()) return;
+    console.log("datos al enviar", data);
 
     router.replace({
-      pathname: `/${data.id}/menu_usuario`,
+      pathname: `/${data.number}/menu_usuario`,
       params: {
-        tableCode: data.id.toString(),
+        tableCode: data.number.toString(),
         idMesa: data.id.toString(),
-        nombre,
+        idUsuario: 47,
       },
     });
   };

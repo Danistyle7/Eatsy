@@ -7,14 +7,17 @@ import { useCartStore } from "@/shared/hooks/use_cardstore";
 import PedidoItem from "@/shared/components/ui/pedido_detail";
 import { idSchema } from "@/shared/schemas";
 import { useLocalSearchParams } from "expo-router";
+import { useCreateOrder } from "@/features/order/hooks";
 
 export default function PedidoScreen() {
-  const { tableCode, idMesas, nombre } = useLocalSearchParams();
+  const { tableCode, idUsuario, idMesa } = useLocalSearchParams();
+  const createOrder = useCreateOrder();
 
   const router = useRouter();
   const items = useCartStore((state) => state.items);
   const getTotal = useCartStore((state) => state.getTotal); // 👈 obtenemos la función
   const total = getTotal();
+  console.log("id del usuario:", idUsuario, idMesa);
   return (
     <View className="flex-1 bg-white">
       <View className="px-4 pt-2">
@@ -49,18 +52,41 @@ export default function PedidoScreen() {
           <BotonNaranja
             titulo="Confirmar pedido"
             onPress={() => {
-              // 1. Imprimir en consola los datos
-              items.forEach((item) => {
-                console.log(
-                  `ID: ${item.id}, Nombre: ${item.name}, Cantidad: ${item.count}`
-                );
+              const rawOrder = {
+                id_table: Number(idMesa),
+                id_customer: Number(idUsuario),
+                dishes: items.map((item) => ({
+                  id: Number(item.id),
+                  quantity: item.count,
+                })),
+              };
+
+              const formattedOrder = {
+                tableId: rawOrder.id_table,
+                customerId: rawOrder.id_customer,
+                items: rawOrder.dishes.map((dish) => ({
+                  dishId: dish.id,
+                  quantity: dish.quantity,
+                })),
+              };
+
+              createOrder.mutate(formattedOrder, {
+                onSuccess: (data) => {
+                  console.log("Orden creada correctamente:", data);
+
+                  useCartStore.getState().clearCart();
+
+                  router.push({
+                    pathname: `/${tableCode}/mesa-pedido`,
+                    params: {
+                      data: JSON.stringify(data),
+                    },
+                  });
+                },
+                onError: (error) => {
+                  console.error("Error al crear la orden:", error.message);
+                },
               });
-
-              // 2. Limpiar el carrito
-              useCartStore.getState().clearCart();
-
-              // 3. Navegar a la siguiente pantalla
-              router.push("/5/mesa-pedido");
             }}
           />
         </View>

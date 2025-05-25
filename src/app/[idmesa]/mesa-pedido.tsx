@@ -1,52 +1,42 @@
 // screens/MesaScreen.tsx
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Text, StyleSheet, FlatList } from "react-native";
 import { PedidoItem } from "@/shared/components/ui/pedido-item";
 import type { PedidoItemProps } from "@/shared/components/ui/pedido-item";
 import Header from "@/shared/components/ui/header";
 import { useLocalSearchParams } from "expo-router";
+import { usePedidoStore } from "@/shared/hooks/use_pedido";
 
-const pedidos: PedidoItemProps[] = [
-  {
-    id: "1",
-    nombre: "Silpancho de res",
-    precio: 55,
-    cantidad: 1,
-    usuario: "Usuario 1",
-    estado: "Pendiente",
-    imagen: "https://i.imgur.com/PltE8gB.jpg",
-  },
-  {
-    id: "2",
-    nombre: "Chicharron de cerdo",
-    precio: 140,
-    cantidad: 2,
-    usuario: "Usuario 1",
-    estado: "En preparación",
-    imagen: "https://i.imgur.com/hp5mn5U.jpg",
-  },
-  {
-    id: "3",
-    nombre: "Silpancho de res",
-    precio: 55,
-    cantidad: 1,
-    usuario: "Usuario 2",
-    estado: "Listo",
-    imagen: "https://i.imgur.com/PltE8gB.jpg",
-  },
-  {
-    id: "4",
-    nombre: "Chicharron de cerdo",
-    precio: 140,
-    cantidad: 2,
-    usuario: "Usuario 1",
-    estado: "Rechazado",
-    imagen: "https://i.imgur.com/hp5mn5U.jpg",
-  },
-];
-
+const statusMap: Record<string, PedidoItemProps["estado"]> = {
+  PENDING: "Pendiente",
+  PREPARING: "En preparación",
+  READY: "Listo",
+  REJECTED: "Rechazado",
+};
+const parseEstado = (status: string): PedidoItemProps["estado"] => {
+  return statusMap[status] || "Pendiente"; // default para valores no contemplados
+};
 export default function MesaScreen() {
-  const { tableCode } = useLocalSearchParams();
+  const { tableCode, idUsuario, data } = useLocalSearchParams();
+  const { pedidos, agregarPedidos } = usePedidoStore();
+
+  useEffect(() => {
+    const parsedData = data ? JSON.parse(data as string) : null;
+
+    const nuevosPedidos: PedidoItemProps[] =
+      parsedData?.items?.map((item: any) => ({
+        id: item.id_dish.toString(),
+        nombre: item.name_dish,
+        precio: item.price,
+        cantidad: item.quantity,
+        usuario: item.name_customer || "Usuario",
+        estado: parseEstado(item.status),
+        imagen: item.imageUrl || "https://via.placeholder.com/150",
+      })) || [];
+
+    agregarPedidos(nuevosPedidos);
+  }, [data]);
+
   const totalProductos = pedidos.reduce((acc, item) => acc + item.cantidad, 0);
   const totalPrecio = pedidos.reduce(
     (acc, item) => acc + item.precio * item.cantidad,
@@ -81,11 +71,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     backgroundColor: "#FFF",
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: "bold",
-    marginBottom: 12,
   },
   list: {
     paddingBottom: 80,

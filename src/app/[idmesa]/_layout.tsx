@@ -9,7 +9,7 @@ import { useCartStore } from "@/shared/hooks/use_cardstore";
 import { Button } from "@/shared/components/ui/button";
 
 export default function TabLayout() {
-  const { tableCode } = useLocalSearchParams();
+  const { tableCode, idUsuario, idMesa } = useLocalSearchParams();
   return (
     <Tabs
       screenOptions={{
@@ -52,7 +52,7 @@ export default function TabLayout() {
             <MaterialIcons name="restaurant-menu" size={size} color={color} />
           ),
         }}
-        initialParams={{ tableCode }}
+        initialParams={{ tableCode, idUsuario }}
       />
       <Tabs.Screen
         name="bebidas_usuario"
@@ -62,7 +62,7 @@ export default function TabLayout() {
             <MaterialIcons name="local-drink" size={size} color={color} />
           ),
         }}
-        initialParams={{ tableCode }}
+        initialParams={{ tableCode, idUsuario }}
       />
       <Tabs.Screen
         name="pedidos"
@@ -76,7 +76,7 @@ export default function TabLayout() {
             />
           ),
         }}
-        initialParams={{ tableCode }}
+        initialParams={{ tableCode, idUsuario, idMesa }}
       />
       <Tabs.Screen
         name="mesa-pedido"
@@ -86,7 +86,7 @@ export default function TabLayout() {
             <FontAwesome5 name="concierge-bell" size={size} color={color} />
           ),
         }}
-        initialParams={{ tableCode }}
+        initialParams={{ tableCode, idUsuario }}
       />
     </Tabs>
   );
