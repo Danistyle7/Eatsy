@@ -13,7 +13,7 @@ export const MenuScreenUsuario = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [busqueda, setBusqueda] = useState("");
   const [esCliente, setEsCliente] = useState(true);
-  const { idmesa } = useLocalSearchParams();
+  const { idmesa, tableCode } = useLocalSearchParams();
 
   const {
     data: dishes,

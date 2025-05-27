@@ -5,10 +5,11 @@ export const TABLE_QUERY_KEYS = {
   lists: (params?: TableParams) => [...TABLE_QUERY_KEYS.all, "list", params],
   details: () => [...TABLE_QUERY_KEYS.all, "detail"],
   detail: (id: TableResponse["id"]) => [...TABLE_QUERY_KEYS.details(), id],
-  scan: (qrCode: TableResponse["qrCode"]) => [
+  scan: (qrCode: string, nameCustomer: string) => [
     ...TABLE_QUERY_KEYS.all,
     "scan",
     qrCode,
+    nameCustomer,
   ],
 };
 

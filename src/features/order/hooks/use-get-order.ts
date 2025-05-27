@@ -27,5 +27,7 @@ export const useGetOrderByTableId = (id: number) => {
         throw new ApiError(result.error, parseInt(result.code || "500"));
       return result.data.map(parseOrder);
     },
+    staleTime: 0, // Los datos se consideran "viejos" de inmediato
+    refetchOnMount: "always", // Siempre vuelve a hacer fetch al montar
   });
 };

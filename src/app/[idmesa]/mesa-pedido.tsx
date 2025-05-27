@@ -1,52 +1,26 @@
 // screens/MesaScreen.tsx
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Text, StyleSheet, FlatList } from "react-native";
 import { PedidoItem } from "@/shared/components/ui/pedido-item";
-import type { PedidoItemProps } from "@/shared/components/ui/pedido-item";
 import Header from "@/shared/components/ui/header";
 import { useLocalSearchParams } from "expo-router";
-
-const pedidos: PedidoItemProps[] = [
-  {
-    id: "1",
-    nombre: "Silpancho de res",
-    precio: 55,
-    cantidad: 1,
-    usuario: "Usuario 1",
-    estado: "Pendiente",
-    imagen: "https://i.imgur.com/PltE8gB.jpg",
-  },
-  {
-    id: "2",
-    nombre: "Chicharron de cerdo",
-    precio: 140,
-    cantidad: 2,
-    usuario: "Usuario 1",
-    estado: "En preparación",
-    imagen: "https://i.imgur.com/hp5mn5U.jpg",
-  },
-  {
-    id: "3",
-    nombre: "Silpancho de res",
-    precio: 55,
-    cantidad: 1,
-    usuario: "Usuario 2",
-    estado: "Listo",
-    imagen: "https://i.imgur.com/PltE8gB.jpg",
-  },
-  {
-    id: "4",
-    nombre: "Chicharron de cerdo",
-    precio: 140,
-    cantidad: 2,
-    usuario: "Usuario 1",
-    estado: "Rechazado",
-    imagen: "https://i.imgur.com/hp5mn5U.jpg",
-  },
-];
+import { usePedidoStore, mapApiToPedido } from "@/shared/hooks/use_pedido";
+import { useGetOrderByTableId } from "@/features/order/hooks";
 
 export default function MesaScreen() {
-  const { tableCode } = useLocalSearchParams();
+  const { tableCode, idUsuario, idMesa } = useLocalSearchParams();
+  const { pedidos, agregarPedidos } = usePedidoStore();
+
+  const { data, error, isLoading } = useGetOrderByTableId(Number(idMesa));
+  console.log("data de la mesa", data);
+
+  useEffect(() => {
+    if (!data || !Array.isArray(data)) return;
+    usePedidoStore.getState().limpiarPedidos();
+    const nuevosPedidos = data.map(mapApiToPedido);
+    agregarPedidos(nuevosPedidos);
+  }, [data]);
+
   const totalProductos = pedidos.reduce((acc, item) => acc + item.cantidad, 0);
   const totalPrecio = pedidos.reduce(
     (acc, item) => acc + item.precio * item.cantidad,
@@ -81,11 +55,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     backgroundColor: "#FFF",
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: "bold",
-    marginBottom: 12,
   },
   list: {
     paddingBottom: 80,

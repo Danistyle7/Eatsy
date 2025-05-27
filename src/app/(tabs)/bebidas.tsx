@@ -7,13 +7,16 @@ import { useGetAllDishes } from "@/features/dish/hooks";
 import { getDishCategory } from "@/features/dish/utils";
 import Header from "@/shared/components/ui/header";
 import Section from "@/shared/components/ui/section";
+import { useGetOrderByTableId } from "@/features/order/hooks";
 
 export const BebidaScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [busqueda, setBusqueda] = useState("");
   const [esCliente, setEsCliente] = useState(false);
-
+  const tableId = 16; // Cambia esto por el ID de la mesa que necesites
+  const { data: orderData } = useGetOrderByTableId(tableId);
+  console.log("orderData", orderData);
   const {
     data: dishes,
     isLoading,

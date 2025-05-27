@@ -1,32 +1,38 @@
 import { useState } from "react"; // ✅ DEBE IR ARRIBA
 
 import { useLocalSearchParams, useRouter } from "expo-router";
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, TextInput, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useGetTableByQrCode } from "@/features/table/hooks";
+import { Button } from "@/shared/components/ui/button";
 export default function ConfirmarMesa() {
   const router = useRouter();
   const { tableCode } = useLocalSearchParams();
+  const [isLoading, setIsLoading] = useState(false);
   const [nombre, setNombre] = useState("");
   const qrCode = Array.isArray(tableCode) ? tableCode[0] : (tableCode ?? "");
-  const { data, error, isLoading } = useGetTableByQrCode(qrCode, nombre);
 
-  console;
-  const handleContinue = () => {
-    if (!data || !nombre.trim()) return;
+  const { refetch, data, isFetching, error } = useGetTableByQrCode(
+    qrCode,
+    nombre
+  );
 
+  const handleContinue = async () => {
+    if (!nombre.trim()) return;
+    setIsLoading(true);
+
+    const { data, error } = await refetch();
+
+    setIsLoading(false);
+    if (!data || error) return;
+    console.log("data", data);
     router.replace({
-      pathname: `/${data.id}/menu_usuario`,
+      pathname: `/${data.table.number}/menu_usuario`,
       params: {
-        tableCode: data.id.toString(),
-        idMesa: data.id.toString(),
-        nombre,
+        tableCode: data.table.number.toString(),
+        idMesa: data.table.id.toString(),
+        idUsuario: data.customer.id.toString(),
+        nombreUsuario: data.customer.name_customer,
       },
     });
   };
@@ -49,10 +55,12 @@ export default function ConfirmarMesa() {
         />
         <Ionicons name="person-circle" size={24} color="gray" />
       </View>
-
-      <TouchableOpacity style={styles.button} onPress={handleContinue}>
-        <Text style={styles.buttonText}>Continuar</Text>
-      </TouchableOpacity>
+      <Button
+        title={isLoading ? "Cargando..." : "Continuar"}
+        onPress={handleContinue}
+        disabled={isLoading || !nombre.trim()}
+        className="w-full mt-6"
+      ></Button>
     </View>
   );
 }
