@@ -1,6 +1,5 @@
 import { ORDER_STATUSES } from "./constants";
-import type { OrderStatus } from "./constants";
-import { OrderPanel } from "./types";
+import type { OrderPanel, OrderStatus } from "./types";
 
 export const getOrderStatus = (status: string): OrderStatus => {
   return ORDER_STATUSES[status as keyof typeof ORDER_STATUSES];

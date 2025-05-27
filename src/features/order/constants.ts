@@ -1,4 +1,6 @@
+import { stringToColor } from "@/shared/lib/utils";
 import { OrderParams, OrderResponse } from "./types";
+import { getOrderStatus } from "./utils";
 
 export const ORDER_QUERY_KEYS = {
   all: ["order"],
@@ -32,7 +34,7 @@ export const ORDER_STATUSES = {
   DELIVERED: {
     value: "DELIVERED",
     label: "Entregado",
-    color: "#F7FAFC",
+    color: "#009688",
     next: "PAID",
   },
   CANCELLED: {
@@ -49,4 +51,15 @@ export const ORDER_STATUSES = {
   },
 } as const;
 
-export type OrderStatus = (typeof ORDER_STATUSES)[keyof typeof ORDER_STATUSES];
+export const filters = [
+  { label: "Estado de preparación", value: "status", fn: getOrderStatus },
+  {
+    label: "Por mesas",
+    value: "number",
+    fn: (tableNumber: string) => ({
+      label: `Mesa ${tableNumber}`,
+      value: Number(tableNumber),
+      color: stringToColor(tableNumber),
+    }),
+  },
+] as const;
