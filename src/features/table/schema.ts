@@ -29,7 +29,17 @@ export const tableResponseSchema = tableCreateSchema.extend({
   qrCode: z.string(),
   qrCodeUrl: z.string(),
 });
-
+export const customerResponseSchema = z.object({
+  id: z.number(),
+  name_customer: z.string(),
+  tableId: z.number(),
+  createdAt: z.string(),
+  table: tableResponseSchema,
+});
 export const tableParamsSchema = z.object({
   status: tableStatusSchema.optional(),
+});
+export const scanTableResponseSchema = z.object({
+  table: tableResponseSchema,
+  customer: customerResponseSchema,
 });

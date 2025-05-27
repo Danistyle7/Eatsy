@@ -2,38 +2,22 @@
 import React, { useEffect } from "react";
 import { View, Text, StyleSheet, FlatList } from "react-native";
 import { PedidoItem } from "@/shared/components/ui/pedido-item";
-import type { PedidoItemProps } from "@/shared/components/ui/pedido-item";
 import Header from "@/shared/components/ui/header";
 import { useLocalSearchParams } from "expo-router";
-import { usePedidoStore } from "@/shared/hooks/use_pedido";
+import { usePedidoStore, mapApiToPedido } from "@/shared/hooks/use_pedido";
+import { useGetOrderByTableId } from "@/features/order/hooks";
 
-const statusMap: Record<string, PedidoItemProps["estado"]> = {
-  PENDING: "Pendiente",
-  PREPARING: "En preparación",
-  READY: "Listo",
-  REJECTED: "Rechazado",
-};
-const parseEstado = (status: string): PedidoItemProps["estado"] => {
-  return statusMap[status] || "Pendiente"; // default para valores no contemplados
-};
 export default function MesaScreen() {
-  const { tableCode, idUsuario, data } = useLocalSearchParams();
+  const { tableCode, idUsuario, idMesa } = useLocalSearchParams();
   const { pedidos, agregarPedidos } = usePedidoStore();
 
+  const { data, error, isLoading } = useGetOrderByTableId(Number(idMesa));
+  console.log("data de la mesa", data);
+
   useEffect(() => {
-    const parsedData = data ? JSON.parse(data as string) : null;
-
-    const nuevosPedidos: PedidoItemProps[] =
-      parsedData?.items?.map((item: any) => ({
-        id: item.id_dish.toString(),
-        nombre: item.name_dish,
-        precio: item.price,
-        cantidad: item.quantity,
-        usuario: item.name_customer || "Usuario",
-        estado: parseEstado(item.status),
-        imagen: item.imageUrl || "https://via.placeholder.com/150",
-      })) || [];
-
+    if (!data || !Array.isArray(data)) return;
+    usePedidoStore.getState().limpiarPedidos();
+    const nuevosPedidos = data.map(mapApiToPedido);
     agregarPedidos(nuevosPedidos);
   }, [data]);
 

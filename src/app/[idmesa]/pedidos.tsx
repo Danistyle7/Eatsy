@@ -1,23 +1,74 @@
 // /app/pedido/[id].tsx
+import React, { useState } from "react";
 import { useRouter } from "expo-router";
 import Header from "@/shared/components/ui/header";
-import BotonNaranja from "@/shared/components/ui/button";
 import { View, Text, FlatList } from "react-native";
 import { useCartStore } from "@/shared/hooks/use_cardstore";
 import PedidoItem from "@/shared/components/ui/pedido_detail";
-import { idSchema } from "@/shared/schemas";
 import { useLocalSearchParams } from "expo-router";
 import { useCreateOrder } from "@/features/order/hooks";
-
+import { Button } from "@/shared/components/ui/button";
+import { usePedidoStore } from "@/shared/hooks/use_pedido";
 export default function PedidoScreen() {
-  const { tableCode, idUsuario, idMesa } = useLocalSearchParams();
+  const [loading, setLoading] = useState(false);
+  const { tableCode, idUsuario, idMesa, nombreUsuario } =
+    useLocalSearchParams();
   const createOrder = useCreateOrder();
 
   const router = useRouter();
   const items = useCartStore((state) => state.items);
   const getTotal = useCartStore((state) => state.getTotal); // 👈 obtenemos la función
   const total = getTotal();
+
   console.log("id del usuario:", idUsuario, idMesa);
+
+  const handleConfirmarPedido = () => {
+    setLoading(true);
+
+    const rawOrder = {
+      id_table: Number(idMesa),
+      id_customer: Number(idUsuario),
+      dishes: items.map((item) => ({
+        id: Number(item.id),
+        quantity: item.count,
+      })),
+    };
+
+    const formattedOrder = {
+      tableId: rawOrder.id_table,
+      customerId: rawOrder.id_customer,
+      items: rawOrder.dishes.map((dish) => ({
+        dishId: dish.id,
+        quantity: dish.quantity,
+      })),
+    };
+
+    createOrder.mutate(formattedOrder, {
+      onSuccess: (data) => {
+        console.log("Orden creada correctamente:", data);
+        useCartStore.getState().clearCart();
+
+        const nuevosPedidos = items.map((item) => ({
+          id: item.id.toString(),
+          nombre: item.name.toString(),
+          precio: item.price,
+          cantidad: item.count,
+          usuario: String(nombreUsuario),
+          estado: "Pendiente" as const,
+          imagen: item.imageUrl || "https://via.placeholder.com/150",
+        }));
+
+        usePedidoStore.getState().agregarPedidos(nuevosPedidos);
+        router.push({ pathname: `/${tableCode}/mesa-pedido` });
+      },
+      onError: (error) => {
+        console.error("Error al crear la orden:", error.message);
+      },
+      onSettled: () => {
+        setLoading(false);
+      },
+    });
+  };
   return (
     <View className="flex-1 bg-white">
       <View className="px-4 pt-2">
@@ -49,45 +100,11 @@ export default function PedidoScreen() {
           </Text>
         </View>
         <View className=" items-center p-1">
-          <BotonNaranja
-            titulo="Confirmar pedido"
-            onPress={() => {
-              const rawOrder = {
-                id_table: Number(idMesa),
-                id_customer: Number(idUsuario),
-                dishes: items.map((item) => ({
-                  id: Number(item.id),
-                  quantity: item.count,
-                })),
-              };
-
-              const formattedOrder = {
-                tableId: rawOrder.id_table,
-                customerId: rawOrder.id_customer,
-                items: rawOrder.dishes.map((dish) => ({
-                  dishId: dish.id,
-                  quantity: dish.quantity,
-                })),
-              };
-
-              createOrder.mutate(formattedOrder, {
-                onSuccess: (data) => {
-                  console.log("Orden creada correctamente:", data);
-
-                  useCartStore.getState().clearCart();
-
-                  router.push({
-                    pathname: `/${tableCode}/mesa-pedido`,
-                    params: {
-                      data: JSON.stringify(data),
-                    },
-                  });
-                },
-                onError: (error) => {
-                  console.error("Error al crear la orden:", error.message);
-                },
-              });
-            }}
+          <Button
+            title={loading ? "Confirmando..." : "Confirmar pedido"}
+            onPress={handleConfirmarPedido}
+            disabled={loading || items.length === 0}
+            className="w-full mt-2 mb-4"
           />
         </View>
       </View>

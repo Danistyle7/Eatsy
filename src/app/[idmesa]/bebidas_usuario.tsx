@@ -14,7 +14,7 @@ export const BebidaScreenUsuario = () => {
 
   const [esCliente, setEsCliente] = useState(true);
 
-  const { tableCode } = useLocalSearchParams();
+  const { tableCode, idmesa } = useLocalSearchParams();
 
   const {
     data: bebidas,

@@ -44,7 +44,7 @@ export const orderPanelSchema = z.object({
   quantity: z.number(),
 
   id_table: idSchema,
-  number: z.number(),
+  number: z.number().optional(),
 
   id_customer: idSchema,
   name_customer: z.string(),

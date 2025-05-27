@@ -15,6 +15,7 @@ import type {
   OrderUpdate,
   OrderResponse,
 } from "./types";
+import { TableResponse } from "../table/types";
 
 /**
  * Servicio para operaciones CRUD de platos
@@ -58,6 +59,17 @@ export class OrderService extends BaseService {
       return this.validateResponse(response.data, orderResponseSchema);
     } catch (error) {
       return this.handleError(error, "Error al actualizar el estado");
+    }
+  }
+
+  async getByTableId(id: number): Promise<APIResponse<OrderPanel[]>> {
+    try {
+      const response = await apiClient.get(`/table/only/${id}`, {
+        params: { simple: true },
+      });
+      return this.validateResponse(response.data, z.array(orderPanelSchema));
+    } catch (error) {
+      return this.handleError(error, "Error al obtener los pedidos");
     }
   }
 }

@@ -7,11 +7,7 @@ import { ScrollView, Text, View } from "react-native";
 
 import { TableForm } from "@/features/table/components/table-form";
 import { defaultTable } from "@/features/table/constants";
-import {
-  useGetTableById,
-  useGetTableByQrCode,
-  useUpdateTableById,
-} from "@/features/table/hooks";
+import { useGetTableById, useUpdateTableById } from "@/features/table/hooks";
 import { tableUpdateSchema } from "@/features/table/schema";
 import { TableUpdate } from "@/features/table/types";
 import { Button } from "@/shared/components/ui/button";

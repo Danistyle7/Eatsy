@@ -16,7 +16,7 @@ import { useCartStore } from "../hooks/use_cardstore";
 import { Button } from "./ui/button";
 
 const ModalDetalle = ({ visible, onClose, item, modoCliente }) => {
-  const { idmesa } = useLocalSearchParams();
+  const { idmesa, tableCode } = useLocalSearchParams();
   const route = useRouter();
   const [disponible, setDisponible] = useState(false);
   const updateDishById = useUpdateDishById();
@@ -54,7 +54,7 @@ const ModalDetalle = ({ visible, onClose, item, modoCliente }) => {
     console.log("Pedido realizado del plato:", item.imageUrl);
     addItem(item);
     onClose();
-    route.navigate(`/${idmesa}/pedidos`);
+    route.navigate(`/${tableCode}/pedidos`);
   };
 
   const handleEdit = () => {

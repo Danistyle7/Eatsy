@@ -7,6 +7,7 @@ import {
   tableCreateSchema,
   tableParamsSchema,
   tableResponseSchema,
+  scanTableResponseSchema,
   tableUpdateSchema,
 } from "./schema";
 import type {
@@ -14,6 +15,7 @@ import type {
   TableParams,
   TableResponse,
   TableUpdate,
+  ScanTableResponse,
 } from "./types";
 
 /**
@@ -53,15 +55,16 @@ export class TableService extends BaseService {
   }
 
   async scan(
-    qrCode: TableResponse["qrCode"]
-  ): Promise<APIResponse<TableResponse>> {
+    qrCode: TableResponse["qrCode"],
+    nameCustomer: string
+  ): Promise<APIResponse<ScanTableResponse>> {
     try {
       const response = await apiClient.post("/table/scan", {
         qrCode,
-        nameCustomer: "Israel Samk",
+        nameCustomer,
       });
-      response.data.data = response.data.data.table;
-      return this.validateResponse(response.data, tableResponseSchema);
+
+      return this.validateResponse(response.data, scanTableResponseSchema);
     } catch (error) {
       return this.handleError(error, "Error al escanear mesas");
     }
