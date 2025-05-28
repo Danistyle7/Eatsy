@@ -8,7 +8,6 @@ type DishDeleted = {
 export const setupSocketListeners = () => {
     console.log("[WebSocket] Inicializando listeners...");
 
-    // Eventos de conexión
     socket.on("connect", () => {
         console.log("[WebSocket] ✅ Conectado al servidor");
     });
@@ -33,7 +32,6 @@ export const setupSocketListeners = () => {
         console.log("[WebSocket] 🗑️ Plato eliminado ID:", id);
     });
 
-    // Función de limpieza
     return () => {
         console.log("[WebSocket] Limpiando listeners...");
         socket.off("connect");
@@ -45,7 +43,6 @@ export const setupSocketListeners = () => {
     };
 };
 
-// Opcional: Exportar funciones individuales si las necesitas por separado
 export const setupDishListeners = () => {
     const onCreated = (cb: (dish: DishResponse) => void) => socket.on("dish_created", cb);
     const onUpdated = (cb: (dish: DishResponse) => void) => socket.on("dish_updated", cb);
