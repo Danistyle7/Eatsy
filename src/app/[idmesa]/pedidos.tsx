@@ -17,7 +17,7 @@ export default function PedidoScreen() {
 
   const router = useRouter();
   const items = useCartStore((state) => state.items);
-  const getTotal = useCartStore((state) => state.getTotal); // 👈 obtenemos la función
+  const getTotal = useCartStore((state) => state.getTotal);
   const total = getTotal();
 
   console.log("id del usuario:", idUsuario, idMesa);
@@ -25,21 +25,12 @@ export default function PedidoScreen() {
   const handleConfirmarPedido = () => {
     setLoading(true);
 
-    const rawOrder = {
-      id_table: Number(idMesa),
-      id_customer: Number(idUsuario),
-      dishes: items.map((item) => ({
-        id: Number(item.id),
-        quantity: item.count,
-      })),
-    };
-
     const formattedOrder = {
-      tableId: rawOrder.id_table,
-      customerId: rawOrder.id_customer,
-      items: rawOrder.dishes.map((dish) => ({
-        dishId: dish.id,
-        quantity: dish.quantity,
+      tableId: Number(idMesa),
+      customerId: Number(idUsuario),
+      items: items.map((item) => ({
+        dishId: Number(item.id),
+        quantity: item.count,
       })),
     };
 
