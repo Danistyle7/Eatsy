@@ -1,12 +1,13 @@
 import { useFocusEffect } from "@react-navigation/native";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { ScrollView, Text, View } from "react-native";
-
 import { DISH_TYPES } from "@/features/dish/constants";
 import { useGetAllDishes } from "@/features/dish/hooks";
 import { getDishCategory } from "@/features/dish/utils";
 import Header from "@/shared/components/ui/header";
 import Section from "@/shared/components/ui/section";
+import { setupDishListeners } from "@/shared/lib/socket/socketListeners"; // Ajusta la ruta
+import { DishResponse } from "@/features/dish/types";
 
 export const MenuScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -21,27 +22,61 @@ export const MenuScreen = () => {
     refetch,
   } = useGetAllDishes({ type: DISH_TYPES.FOOD.value });
 
+  // Estado optimizado para manejar los platos con WebSocket
+  const [optimizedDishes, setOptimizedDishes] = useState<DishResponse[]>([]);
+
+  // Sincronizar los datos iniciales cuando cambian
+  useEffect(() => {
+    if (dishes) {
+      setOptimizedDishes(dishes);
+    }
+  }, [dishes]);
+
+  // Configurar listeners del WebSocket
+  useEffect(() => {
+    const { onCreated, onUpdated, onDeleted, cleanup } = setupDishListeners();
+
+    onCreated((newDish) => {
+      setOptimizedDishes(prev => {
+        // Evitar duplicados
+        if (!prev.some(dish => dish.id === newDish.id)) {
+          return [...prev, newDish];
+        }
+        return prev;
+      });
+    });
+
+    onUpdated((updatedDish) => {
+      setOptimizedDishes(prev =>
+        prev.map(dish => dish.id === updatedDish.id ? updatedDish : dish)
+      );
+    });
+
+    onDeleted(({ id }) => {
+      setOptimizedDishes(prev => prev.filter(dish => dish.id !== id));
+    });
+
+    return cleanup;
+  }, []);
+
   useFocusEffect(
     useCallback(() => {
       refetch();
     }, [refetch])
   );
 
-  // control de respuesta de la API
   if (isLoading) return <Text>Cargando...</Text>;
   if (error) return <Text>Error al cargar los platos: {error.message}</Text>;
-  // Asegúrate de que dishes no sea undefined, null o está vacío
-  if (!dishes?.length) return <Text>No hay platos disponibles</Text>;
+  if (!optimizedDishes?.length) return <Text>No hay platos disponibles</Text>;
 
-  // const grouped = Object.groupBy(dishes, (dish) => dish.category);
-  const grouped = dishes.reduce(
+  const grouped = optimizedDishes.reduce(
     (acc, dish) => {
       const cat = dish.category;
       if (!acc[cat]) acc[cat] = [];
       acc[cat].push(dish);
       return acc;
     },
-    {} as Record<string, typeof dishes>
+    {} as Record<string, typeof optimizedDishes>
   );
 
   return (
@@ -51,7 +86,6 @@ export const MenuScreen = () => {
       </View>
 
       <ScrollView className="flex-1 bg-white px-4 pt-2">
-        {/* Secciones dinámicas por cada tipo único */}
         {Object.entries(grouped).map(([category, dishes]) => (
           <Section
             key={category}

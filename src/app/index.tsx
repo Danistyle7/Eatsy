@@ -1,8 +1,17 @@
+import { setupSocketListeners } from "@/shared/lib/socket/socketListeners";
 import { useRouter } from "expo-router";
+import { useEffect } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 
 export default function Home() {
   const router = useRouter();
+
+  useEffect(() => {
+    const cleanup = setupSocketListeners();
+    return () => {
+      cleanup(); 
+    };
+  }, []);
 
   return (
     <View style={styles.container}>
