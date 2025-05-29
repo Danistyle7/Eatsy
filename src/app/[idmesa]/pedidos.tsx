@@ -95,7 +95,7 @@ export default function PedidoScreen() {
             title={loading ? "Confirmando..." : "Confirmar pedido"}
             onPress={handleConfirmarPedido}
             disabled={loading || items.length === 0}
-            className="w-full mt-2 mb-4"
+            className=" mt-2 mb-4 items-center"
           />
         </View>
       </View>
