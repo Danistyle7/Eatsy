@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ScrollView, View } from "react-native";
 import Header from "@/shared/components/ui/header";
-import { useGetAllDishes } from "@/features/dish/hooks";
+import { useGetDishes } from "@/features/dish/hooks";
 import Section from "@/shared/components/ui/section";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback } from "react";
@@ -21,7 +21,7 @@ export const BebidaScreenUsuario = () => {
     isLoading,
     error,
     refetch,
-  } = useGetAllDishes({ type: DISH_TYPES.DRINK.value, isAvailable: esCliente });
+  } = useGetDishes({ type: DISH_TYPES.DRINK.value, isAvailable: esCliente });
 
   useFocusEffect(
     useCallback(() => {

@@ -8,6 +8,7 @@ import {
   orderUpdateSchema,
 } from "./schema";
 import { ORDER_STATUSES } from "./constants";
+import { parseOrder } from "./utils";
 
 export type OrderResponse = z.infer<typeof orderResponseSchema>;
 export type OrderCreate = z.infer<typeof orderCreateSchema>;
@@ -16,3 +17,4 @@ export type OrderPanel = z.infer<typeof orderPanelSchema>;
 export type OrderUpdate = z.infer<typeof orderUpdateSchema>;
 
 export type OrderStatus = (typeof ORDER_STATUSES)[keyof typeof ORDER_STATUSES];
+export type Order = ReturnType<typeof parseOrder>;

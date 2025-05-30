@@ -1,5 +1,5 @@
 import Header from "@/shared/components/ui/header";
-import { useGetAllDishes } from "@/features/dish/hooks";
+import { useGetDishes } from "@/features/dish/hooks";
 import Section from "@/shared/components/ui/section";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
@@ -20,7 +20,7 @@ export const MenuScreenUsuario = () => {
     isLoading,
     error,
     refetch,
-  } = useGetAllDishes({ type: DISH_TYPES.FOOD.value, isAvailable: esCliente });
+  } = useGetDishes({ type: DISH_TYPES.FOOD.value, isAvailable: esCliente });
 
   useFocusEffect(
     useCallback(() => {

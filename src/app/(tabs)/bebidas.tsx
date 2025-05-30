@@ -1,13 +1,14 @@
 import { useFocusEffect } from "@react-navigation/native";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 
 import { DISH_TYPES } from "@/features/dish/constants";
-import { useGetAllDishes } from "@/features/dish/hooks";
+import { useGetDishes } from "@/features/dish/hooks";
 import { getDishCategory } from "@/features/dish/utils";
 import Header from "@/shared/components/ui/header";
 import Section from "@/shared/components/ui/section";
 import { useGetOrderByTableId } from "@/features/order/hooks";
+import { setupDishListeners } from "@/shared/lib/socket/socketListeners";
 
 export const BebidaScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -15,20 +16,29 @@ export const BebidaScreen = () => {
   const [busqueda, setBusqueda] = useState("");
   const [esCliente, setEsCliente] = useState(false);
   const tableId = 16; // Cambia esto por el ID de la mesa que necesites
-  const { data: orderData } = useGetOrderByTableId(tableId);
-  console.log("orderData", orderData);
-  const {
-    data: dishes,
-    isLoading,
-    error,
-    refetch,
-  } = useGetAllDishes({ type: DISH_TYPES.DRINK.value });
+  const { orders } = useGetOrderByTableId(tableId);
+  console.log("orderData", orders);
+  const { isLoading, error, dishes, setDishes } = useGetDishes({
+    type: DISH_TYPES.DRINK.value,
+  });
 
-  useFocusEffect(
-    useCallback(() => {
-      refetch();
-    }, [refetch])
-  );
+  useEffect(() => {
+    const { onCreated, onUpdated, onDeleted, cleanup } = setupDishListeners();
+
+    onCreated((newDish) => setDishes((prev = []) => [...prev, newDish]));
+
+    onUpdated((updatedDish) =>
+      setDishes((prev = [updatedDish]) =>
+        prev.map((dish) => (dish.id === updatedDish.id ? updatedDish : dish))
+      )
+    );
+
+    onDeleted(({ id }) =>
+      setDishes((prev = []) => prev?.filter((dish) => dish.id !== id))
+    );
+
+    return cleanup;
+  }, []);
 
   // control de respuesta de la API
   if (isLoading) return <Text>Cargando...</Text>;
@@ -36,16 +46,16 @@ export const BebidaScreen = () => {
   // Asegúrate de que dishes no sea undefined, null o está vacío
   if (!dishes?.length) return <Text>No hay platos disponibles</Text>;
 
-  // const grouped = Object.groupBy(dishes, (dish) => dish.category);
-  const grouped = dishes.reduce(
-    (acc, dish) => {
-      const cat = dish.category;
-      if (!acc[cat]) acc[cat] = [];
-      acc[cat].push(dish);
-      return acc;
-    },
-    {} as Record<string, typeof dishes>
-  );
+  const grouped = Object.groupBy(dishes, (dish) => dish.category);
+  // const grouped = dishes.reduce(
+  //   (acc, dish) => {
+  //     const cat = dish.category;
+  //     if (!acc[cat]) acc[cat] = [];
+  //     acc[cat].push(dish);
+  //     return acc;
+  //   },
+  //   {} as Record<string, typeof dishes>
+  // );
 
   return (
     <View className="flex-1 bg-white">

@@ -19,7 +19,7 @@ export default function EditDishScreen() {
   const { id: idString } = useLocalSearchParams<{ id: string }>();
   const id = Number(idString);
 
-  const { data: dish, isLoading, error: errorGet } = useGetDishById(id);
+  const { isLoading, error: errorGet, dish } = useGetDishById(id);
   const { mutateAsync: uploadFile, error: errorUpload } = useUploadFile();
   const { mutateAsync: updateDish, error: errorUpdate } = useUpdateDishById();
 

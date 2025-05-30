@@ -1,13 +1,12 @@
-import { useFocusEffect } from "@react-navigation/native";
-import { useCallback, useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
+
 import { DISH_TYPES } from "@/features/dish/constants";
-import { useGetAllDishes } from "@/features/dish/hooks";
+import { useGetDishes } from "@/features/dish/hooks";
 import { getDishCategory } from "@/features/dish/utils";
 import Header from "@/shared/components/ui/header";
 import Section from "@/shared/components/ui/section";
 import { setupDishListeners } from "@/shared/lib/socket/socketListeners"; // Ajusta la ruta
-import { DishResponse } from "@/features/dish/types";
 
 export const MenuScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -15,69 +14,42 @@ export const MenuScreen = () => {
   const [busqueda, setBusqueda] = useState("");
   const [esCliente, setEsCliente] = useState(false);
 
-  const {
-    data: dishes,
-    isLoading,
-    error,
-    refetch,
-  } = useGetAllDishes({ type: DISH_TYPES.FOOD.value });
-
-  // Estado optimizado para manejar los platos con WebSocket
-  const [optimizedDishes, setOptimizedDishes] = useState<DishResponse[]>([]);
-
-  // Sincronizar los datos iniciales cuando cambian
-  useEffect(() => {
-    if (dishes) {
-      setOptimizedDishes(dishes);
-    }
-  }, [dishes]);
-
+  const { isLoading, error, dishes, setDishes } = useGetDishes({
+    type: DISH_TYPES.FOOD.value,
+  });
   // Configurar listeners del WebSocket
   useEffect(() => {
     const { onCreated, onUpdated, onDeleted, cleanup } = setupDishListeners();
 
-    onCreated((newDish) => {
-      setOptimizedDishes(prev => {
-        // Evitar duplicados
-        if (!prev.some(dish => dish.id === newDish.id)) {
-          return [...prev, newDish];
-        }
-        return prev;
-      });
-    });
+    onCreated((newDish) => setDishes((prev = []) => [...prev, newDish]));
 
-    onUpdated((updatedDish) => {
-      setOptimizedDishes(prev =>
-        prev.map(dish => dish.id === updatedDish.id ? updatedDish : dish)
-      );
-    });
+    onUpdated((updatedDish) =>
+      setDishes((prev = [updatedDish]) =>
+        prev.map((dish) => (dish.id === updatedDish.id ? updatedDish : dish))
+      )
+    );
 
-    onDeleted(({ id }) => {
-      setOptimizedDishes(prev => prev.filter(dish => dish.id !== id));
-    });
+    onDeleted(({ id }) =>
+      setDishes((prev = []) => prev.filter((dish) => dish.id !== id))
+    );
 
     return cleanup;
   }, []);
 
-  useFocusEffect(
-    useCallback(() => {
-      refetch();
-    }, [refetch])
-  );
-
   if (isLoading) return <Text>Cargando...</Text>;
   if (error) return <Text>Error al cargar los platos: {error.message}</Text>;
-  if (!optimizedDishes?.length) return <Text>No hay platos disponibles</Text>;
+  if (!dishes?.length) return <Text>No hay platos disponibles</Text>;
 
-  const grouped = optimizedDishes.reduce(
-    (acc, dish) => {
-      const cat = dish.category;
-      if (!acc[cat]) acc[cat] = [];
-      acc[cat].push(dish);
-      return acc;
-    },
-    {} as Record<string, typeof optimizedDishes>
-  );
+  const grouped = Object.groupBy(dishes, (dish) => dish.category);
+  // const grouped = dishes.reduce(
+  //   (acc, dish) => {
+  //     const cat = dish.category;
+  //     if (!acc[cat]) acc[cat] = [];
+  //     acc[cat].push(dish);
+  //     return acc;
+  //   },
+  //   {} as Record<string, typeof dishes>
+  // );
 
   return (
     <View className="flex-1 bg-white">

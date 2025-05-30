@@ -1,19 +1,49 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 
 import { OrderGroup } from "@/features/order/components/order-groups";
 import { filters } from "@/features/order/constants";
 import { useGetOrders, useUpdateOrderById } from "@/features/order/hooks";
+import { Order } from "@/features/order/types";
+import { getOrderStatuses } from "@/features/order/utils";
 import { Button } from "@/shared/components/ui/button";
 import { ApiError } from "@/shared/lib/api/errors";
-import { getOrderStatuses } from "@/features/order/utils";
+import { setupOrderListeners } from "@/shared/lib/socket/socketListeners";
 
 export default function Screen() {
   const orderStatuses = getOrderStatuses();
   const [filter, setFilter] = useState<(typeof filters)[number]>(filters[0]);
 
-  const { data: orders, isLoading, error: errorGet } = useGetOrders();
+  const { isLoading, error: errorGet, orders, setOrders } = useGetOrders();
   const { mutate: updateOrder, isPending: isUpdating } = useUpdateOrderById();
+
+  useEffect(() => {
+    const { onCreated, onUpdated, cleanup } = setupOrderListeners();
+
+    onCreated((newOrder: Order) => {
+      setOrders((prev = []) => [...prev, newOrder]);
+    });
+    onUpdated((updatedOrder: Order) => {
+      setOrders((prev = []) =>
+        prev.map((order) =>
+          order.item.id === updatedOrder.item.id
+            ? { ...order, ...updatedOrder } // TODO: Mandar el table_number del backend
+            : order
+        )
+      );
+    });
+    // onCreated((newOrder) => setOrders((prev = []) => [...prev, newOrder]));
+
+    // onUpdated((updatedOrder) =>
+    //   setOrders((prev = []) =>
+    //     prev.map((order) =>
+    //       order.id_order === updatedOrder.id_order ? updatedOrder : order
+    //     )
+    //   )
+    // );
+
+    return cleanup;
+  }, []);
 
   if (isLoading) return <Text>Cargando...</Text>;
   if (errorGet)
@@ -37,12 +67,14 @@ export default function Screen() {
   );
   const groupedItems =
     filter.value === "status"
-      ? getOrderStatuses().map(({ value, label, color }) => ({
-          value,
-          label,
-          color,
-          items: grouped[value] || [],
-        }))
+      ? getOrderStatuses()
+          .filter(({ value }) => value !== "PAID" && value !== "DELIVERED")
+          .map(({ value, label, color }) => ({
+            value,
+            label,
+            color,
+            items: grouped[value] || [],
+          }))
       : Object.entries(grouped).map(([key, items]) => {
           const { value, label, color } = filter.fn(key);
           return { value, label, color, items: items ?? [] };

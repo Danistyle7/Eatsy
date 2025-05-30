@@ -9,7 +9,7 @@ import {
   View,
 } from "react-native";
 
-import { useGetAllDishes } from "@/features/dish/hooks";
+import { useGetDishes } from "@/features/dish/hooks";
 import { DishParams } from "@/features/dish/types";
 import ModalDetalle from "@/shared/components/modal-detalle";
 import { Button } from "@/shared/components/ui/button";
@@ -34,7 +34,7 @@ const VerTodos = () => {
     ...(esClienteBool ? { isAvailable: true } : {}),
   };
 
-  const { data: dishes, isLoading, error } = useGetAllDishes(params);
+  const { data: dishes, isLoading, error } = useGetDishes(params);
 
   const sampleData = dishes ?? [];
   const [modalVisible, setModalVisible] = useState(false);

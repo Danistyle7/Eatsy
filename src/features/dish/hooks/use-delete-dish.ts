@@ -1,38 +1,36 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { ApiError } from "@/shared/lib/api/errors";
-import { queryClient } from "@/shared/lib/query-client";
 import { DISH_QUERY_KEYS } from "../constants";
 import { dishService } from "../service";
-import type { DishResponse } from "../types";
+import type { DishResponse as Dish } from "../types";
 
-type Context = { previous?: DishResponse[] };
+type Context = { previous?: Dish[] };
 
 export const useDeleteDishById = () => {
-  return useMutation<void, ApiError, DishResponse["id"], Context>({
+  const queryClient = useQueryClient();
+  const queryKey = DISH_QUERY_KEYS.lists();
+  return useMutation<void, ApiError, Dish["id"], Context>({
     mutationFn: async (id) => {
       const result = await dishService.delete(id);
       if (!result.success)
         throw new ApiError(result.error, parseInt(result.code || "500"));
     },
     onMutate: async (id) => {
-      await queryClient.cancelQueries({ queryKey: DISH_QUERY_KEYS.lists() });
-      const previous = queryClient.getQueryData<DishResponse[]>(
-        DISH_QUERY_KEYS.lists()
-      );
+      await queryClient.cancelQueries({ queryKey });
+      const previous = queryClient.getQueryData<Dish[]>(queryKey);
 
-      queryClient.setQueryData(
-        DISH_QUERY_KEYS.lists(),
-        (old: DishResponse[] = []) => old.filter((dish) => dish.id !== id)
+      queryClient.setQueryData(queryKey, (old: Dish[] = []): Dish[] =>
+        old.filter((dish) => dish.id !== id)
       );
 
       return { previous };
     },
     onError: (_, __, context) => {
-      queryClient.setQueryData(DISH_QUERY_KEYS.lists(), context?.previous);
+      queryClient.setQueryData(queryKey, context?.previous);
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: DISH_QUERY_KEYS.lists() });
+      queryClient.invalidateQueries({ queryKey, exact: false });
     },
   });
 };
