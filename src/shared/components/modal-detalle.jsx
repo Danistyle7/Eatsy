@@ -14,6 +14,8 @@ import {
 import { useUpdateDishById } from "@/features/dish/hooks";
 import { useCartStore } from "../hooks/use_cardstore";
 import { Button } from "./ui/button";
+import { getDishCategory } from "@/features/dish/utils";
+
 
 const ModalDetalle = ({ visible, onClose, item, modoCliente }) => {
   const { idmesa } = useLocalSearchParams();
@@ -76,7 +78,7 @@ const ModalDetalle = ({ visible, onClose, item, modoCliente }) => {
               {/* Header */}
               <View style={styles.header}>
                 <View>
-                  <Text style={styles.title}>{item.category}</Text>
+                  <Text style={styles.title}>{getDishCategory(item.category).label}</Text>
                   <Text style={styles.etiqueta}>{item.name}</Text>
                 </View>
 

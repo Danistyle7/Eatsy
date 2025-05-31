@@ -7,6 +7,7 @@ import { useGetAllDishes } from "@/features/dish/hooks";
 import { getDishCategory } from "@/features/dish/utils";
 import Header from "@/shared/components/ui/header";
 import Section from "@/shared/components/ui/section";
+import { useDishesWithWebSocket } from "@/features/dish/hooks/use-socket-dish";
 
 export const BebidaScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -15,7 +16,7 @@ export const BebidaScreen = () => {
   const [esCliente, setEsCliente] = useState(false);
 
   const {
-    data: dishes,
+    data,
     isLoading,
     error,
     refetch,
@@ -26,6 +27,13 @@ export const BebidaScreen = () => {
       refetch();
     }, [refetch])
   );
+
+  const dishes = useDishesWithWebSocket(data, {
+    filterType: "DRINK",
+    isAdmin: true
+  });
+
+  useFocusEffect(useCallback(() => { refetch(); }, [refetch]));
 
   // control de respuesta de la API
   if (isLoading) return <Text>Cargando...</Text>;

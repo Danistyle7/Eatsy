@@ -8,6 +8,9 @@ import { useFocusEffect } from "@react-navigation/native";
 import { useCallback } from "react";
 import { useLocalSearchParams } from "expo-router";
 import { DISH_TYPES } from "@/features/dish/constants";
+import { useDishesWithWebSocket } from "@/features/dish/hooks/use-socket-dish";
+import { getDishCategory } from "@/features/dish/utils";
+
 export const MenuScreenUsuario = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -16,11 +19,16 @@ export const MenuScreenUsuario = () => {
   const { idmesa } = useLocalSearchParams();
 
   const {
-    data: dishes,
+    data: initialDishes,
     isLoading,
     error,
     refetch,
   } = useGetAllDishes({ type: DISH_TYPES.FOOD.value, isAvailable: esCliente });
+
+  const dishes = useDishesWithWebSocket(initialDishes, {
+    filterType: "FOOD",
+    isAdmin: false
+  });
 
   useFocusEffect(
     useCallback(() => {
@@ -82,7 +90,7 @@ export const MenuScreenUsuario = () => {
           return (
             <Section
               key={tipo}
-              title={tipo}
+              title={getDishCategory(tipo).label}
               data={items}
               {...{
                 modalVisible,
