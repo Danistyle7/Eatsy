@@ -8,7 +8,7 @@ import PedidoItem from "@/shared/components/ui/pedido_detail";
 import { useLocalSearchParams } from "expo-router";
 import { useCreateOrder } from "@/features/order/hooks";
 import { Button } from "@/shared/components/ui/button";
-import { usePedidoStore } from "@/shared/hooks/use_pedido";
+
 export default function PedidoScreen() {
   const [loading, setLoading] = useState(false);
   const { tableCode, idUsuario, idMesa, nombreUsuario } =
@@ -39,17 +39,6 @@ export default function PedidoScreen() {
         console.log("Orden creada correctamente:", data);
         useCartStore.getState().clearCart();
 
-        const nuevosPedidos = items.map((item) => ({
-          id: item.id.toString(),
-          nombre: item.name.toString(),
-          precio: item.price,
-          cantidad: item.count,
-          usuario: String(nombreUsuario),
-          estado: "Pendiente" as const,
-          imagen: item.imageUrl || "https://via.placeholder.com/150",
-        }));
-
-        usePedidoStore.getState().agregarPedidos(nuevosPedidos);
         router.push({ pathname: `/${tableCode}/mesa-pedido` });
       },
       onError: (error) => {

@@ -1,32 +1,53 @@
 // screens/MesaScreen.tsx
 import React, { useEffect } from "react";
 import { View, Text, StyleSheet, FlatList } from "react-native";
-import { PedidoItem } from "@/shared/components/ui/pedido-item";
+import {
+  PedidoItem,
+  PedidoItemProps,
+} from "@/shared/components/ui/pedido-item";
 import Header from "@/shared/components/ui/header";
 import { useLocalSearchParams } from "expo-router";
-import { usePedidoStore, mapApiToPedido } from "@/shared/hooks/use_pedido";
+import { setupOrderListeners } from "@/shared/lib/socket/socketListeners";
 import { useGetOrderByTableId } from "@/features/order/hooks";
 
 export default function MesaScreen() {
   const { tableCode, idUsuario, idMesa } = useLocalSearchParams();
-  const { pedidos, agregarPedidos } = usePedidoStore();
 
-  const { data, error, isLoading } = useGetOrderByTableId(Number(idMesa));
-  console.log("data de la mesa", data);
-
-  useEffect(() => {
-    if (!data || !Array.isArray(data)) return;
-    usePedidoStore.getState().limpiarPedidos();
-    const nuevosPedidos = data.map(mapApiToPedido);
-    agregarPedidos(nuevosPedidos);
-  }, [data]);
-
-  const totalProductos = pedidos.reduce((acc, item) => acc + item.cantidad, 0);
-  const totalPrecio = pedidos.reduce(
-    (acc, item) => acc + item.precio * item.cantidad,
-    0
+  const { orders, error, isLoading, setOrder } = useGetOrderByTableId(
+    Number(idMesa)
   );
+  console.log("data de la mesa", orders);
+  useEffect(() => {
+    const { onCreated, onUpdated, cleanup } = setupOrderListeners();
 
+    onCreated((newOrder) => {
+      setOrder((prev = []) => [...prev, newOrder]);
+    });
+
+    onUpdated((updatedOrder) => {
+      setOrder((prev = []) =>
+        prev.map((order) =>
+          order.item.id === updatedOrder.item.id
+            ? { ...order, ...updatedOrder }
+            : order
+        )
+      );
+    });
+
+    return cleanup;
+  }, [setOrder]);
+  // const totalProductos = pedidos.reduce((acc, item) => acc + item.cantidad, 0);
+  // const totalPrecio = pedidos.reduce(
+  //   (acc, item) => acc + item.precio * item.cantidad,
+  //   0
+  // );
+  const totalProductos =
+    orders?.reduce((acc, item) => acc + item.order._base.quantity, 0) ?? 0;
+  const totalPrecio =
+    orders?.reduce(
+      (acc, item) => acc + item.dish.price * item.order._base.quantity,
+      0
+    ) ?? 0;
   return (
     <View style={styles.container}>
       <Header
@@ -37,10 +58,9 @@ export default function MesaScreen() {
       />
 
       <FlatList
-        data={pedidos}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <PedidoItem {...item} />}
-        contentContainerStyle={styles.list}
+        data={orders}
+        renderItem={({ item }) => <PedidoItem item={item} />}
+        keyExtractor={(item) => item.item.id.toString()}
       />
       <View style={styles.footer}>
         <Text style={styles.footerText}>Total: {totalProductos} Productos</Text>
