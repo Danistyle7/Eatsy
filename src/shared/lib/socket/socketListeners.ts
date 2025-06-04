@@ -1,8 +1,18 @@
 import { DishResponse } from "@/features/dish/types";
 import { Order, OrderPanel } from "@/features/order/types";
 import { parseOrder } from "@/features/order/utils";
-import { socketClient } from "./client";
 import { TableResponse } from "@/features/table/types";
+import { socketClient } from "./client";
+
+// Referencias a hooks y funciones de socket
+import { useDishSocket } from "@/features/dish/hooks";
+import { createDishSocket } from "@/features/dish/socket";
+import { useOrderItemSocket } from "@/features/order/hooks";
+import { createOrderItemSocket } from "@/features/order/socket";
+import { useTableSocket } from "@/features/table/hooks";
+import { createTableSocket } from "@/features/table/socket";
+import { useSocketEvent } from "./hooks";
+import { SocketListenerManager } from "./listener-manager";
 
 type DishDeleted = {
   id: number;
@@ -15,6 +25,12 @@ type TableDeleted = {
 /**
  * setupSocketListeners inicializa los listeners de los eventos de socket.io
  * y los maneja de forma correcta.
+ *
+ * @deprecated Este método está en desuso y se recomienda usar
+ * `SocketListenerManager` en su lugar, o su hook correspondiente.
+ *
+ * @see SocketListenerManager
+ * @see useSocketEvent
  */
 export const setupSocketListeners = () => {
   console.log("[WebSocket] Inicializando listeners...");
@@ -88,6 +104,12 @@ export const setupSocketListeners = () => {
 /**
  * setupDishListeners inicializa los listeners de los eventos de socket.io
  * relacionados con "dish" y los maneja de forma correcta.
+ *
+ * @deprecated
+ * Este método está en desuso y se recomienda usar
+ * `createDishSocket()` en su lugar, o su hook correspondiente.
+ * @see createDishSocket
+ * @see useDishSocket
  */
 export const setupDishListeners = () => {
   const onCreated = (cb: (dish: DishResponse) => void) =>
@@ -112,6 +134,12 @@ export const setupDishListeners = () => {
 /**
  * setupTableListeners inicializa los listeners de los eventos de socket.io
  * relacionados con "table" y los maneja de forma correcta.
+ *
+ * @deprecated
+ * Este método está en desuso y se recomienda usar
+ * `createTableSocket()` en su lugar, o su hook correspondiente.
+ * @see createTableSocket
+ * @see useTableSocket
  */
 export const setupTableListeners = () => {
   const onCreated = (cb: (table: TableResponse) => void) =>
@@ -140,6 +168,11 @@ export const setupTableListeners = () => {
 /**
  * setupOrderListeners inicializa los listeners de los eventos de socket.io
  * relacionados con "order" y los maneja de forma correcta.
+ *
+ * @deprecated Este método está en desuso y se recomienda usar
+ * `createOrderItemSocket()` en su lugar, o su hook correspondiente.
+ * @see createOrderItemSocket
+ * @see useOrderItemSocket
  */
 export const setupOrderListeners = () => {
   const onCreated = (cb: (order: Order) => void) =>
