@@ -39,12 +39,12 @@ export const MenuScreenUsuario = () => {
     return cleanup;
   }, []);
 
-  const grouped = Object.groupBy(dishes, (dish) => dish.category);
+  // control de respuesta de la API
   if (isLoading) return <Text>Cargando...</Text>;
   if (error) return <Text>Error al cargar los platos: {error.message}</Text>;
+  // Asegúrate de que dishes no sea undefined, null o está vacío
   if (!dishes?.length) return <Text>No hay platos disponibles</Text>;
-  const router = useRouter();
-  // Función para filtrar por tipo y búsqueda
+  const grouped = Object.groupBy(dishes, (dish) => dish.category);
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
