@@ -2,11 +2,21 @@ import { useEffect, useState } from "react";
 import { DishResponse } from "@/features/dish/types";
 import { setupDishListeners } from "@/shared/lib/socket/socketListeners";
 
+// Referencias a hooks y funciones de socket
+import { useDishSocket } from "@/features/dish/hooks";
+import { createDishSocket } from "@/features/dish/socket";
+
 type UseDishesOptions = {
   filterType: "FOOD" | "DRINK";
   isAdmin?: boolean;
 };
 
+/**
+ * @deprecated
+ * Este hook está en desuso y se recomienda usar `useDishSocket()` en su lugar.
+ * @see useDishSocket
+ * @see createDishSocket
+ */
 export const useDishesWithWebSocket = (
   initialDishes: DishResponse[] | undefined,
   { filterType, isAdmin = false }: UseDishesOptions

@@ -2,10 +2,21 @@ import { useEffect, useState } from "react";
 import { TableResponse, TableStatus } from "@/features/table/types";
 import { setupTableListeners } from "@/shared/lib/socket/socketListeners";
 
+// Referencias a hooks y funciones de socket
+import { useTableSocket } from "@/features/table/hooks";
+import { createTableSocket } from "@/features/table/socket";
+
 type UseTablesOptions = {
   includeDeleted?: boolean; // Opcional: si quieres mostrar mesas "eliminadas"
 };
 
+// deprecated
+/**
+ * @deprecated
+ * Este hook está en desuso y se recomienda usar `useTableSocket()` en su lugar.
+ * @see useTableSocket
+ * @see createTableSocket
+ */
 export const useTablesWithWebSocket = (
   initialTables: TableResponse[] | undefined,
   options: UseTablesOptions = { includeDeleted: false }
