@@ -3,12 +3,15 @@ import { ScrollView, Text, View } from "react-native";
 
 import { OrderGroup } from "@/features/order/components/order-groups";
 import { filters } from "@/features/order/constants";
-import { useGetOrders, useUpdateOrderById } from "@/features/order/hooks";
+import {
+  useGetOrders,
+  useOrderItemSocket,
+  useUpdateOrderById,
+} from "@/features/order/hooks";
 import { Order } from "@/features/order/types";
 import { getOrderStatuses } from "@/features/order/utils";
 import { Button } from "@/shared/components/ui/button";
 import { ApiError } from "@/shared/lib/api/errors";
-import { setupOrderListeners } from "@/shared/lib/socket/socketListeners";
 
 export default function Screen() {
   const orderStatuses = getOrderStatuses();
@@ -18,11 +21,12 @@ export default function Screen() {
   const { mutate: updateOrder, isPending: isUpdating } = useUpdateOrderById();
 
   useEffect(() => {
-    const { onCreated, onUpdated, cleanup } = setupOrderListeners();
+    const { onCreated, onUpdated, cleanup } = useOrderItemSocket();
 
     onCreated((newOrder: Order) => {
       setOrders((prev = []) => [...prev, newOrder]);
     });
+
     onUpdated((updatedOrder: Order) => {
       setOrders((prev = []) =>
         prev.map((order) =>
@@ -32,15 +36,6 @@ export default function Screen() {
         )
       );
     });
-    // onCreated((newOrder) => setOrders((prev = []) => [...prev, newOrder]));
-
-    // onUpdated((updatedOrder) =>
-    //   setOrders((prev = []) =>
-    //     prev.map((order) =>
-    //       order.id_order === updatedOrder.id_order ? updatedOrder : order
-    //     )
-    //   )
-    // );
 
     return cleanup;
   }, []);

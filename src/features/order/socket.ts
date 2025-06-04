@@ -100,7 +100,7 @@ export const createOrderItemSocket = () => {
    * @param callback Recibe el objeto OrderPanel.
    * @returns Función para desuscribirse.
    */
-  const onCreated = (callback: EventCallback<OrderPanel>) => {
+  const onCreated = (callback: EventCallback<Order>) => {
     return socketManager.addListener("order_item_created", callback);
   };
 
@@ -110,7 +110,7 @@ export const createOrderItemSocket = () => {
    *                 con la información actualizada.
    * @returns Función para desuscribirse.
    */
-  const onUpdated = (callback: EventCallback<OrderPanel>) => {
+  const onUpdated = (callback: EventCallback<Order>) => {
     return socketManager.addListener("order_item_updated", callback);
   };
 
