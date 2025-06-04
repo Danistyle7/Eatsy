@@ -13,6 +13,17 @@ export class SocketListenerManager {
     this.socket = socketInstance;
   }
 
+  /**
+   * Agrega un listener para un evento específico.
+   * @param event Nombre del evento.
+   * @param callback Función que se ejecutará cuando se reciba el evento.
+   * @returns Un unsubscriber que se puede llamar para desuscribir el listener.
+   * @example
+   * const unsub = socketManager.addListener("event_name", (data) => {
+   *   console.log("Recibido evento:", data);
+   * });
+   * unsub();
+   */
   addListener<T>(event: string, callback: EventCallback<T>): EventUnsubscriber {
     const handler = (data: T) => callback(data);
     this.listeners.set(event, handler);
@@ -20,6 +31,10 @@ export class SocketListenerManager {
     return () => this.removeListener(event);
   }
 
+  /**
+   * Elimina un listener para un evento específico.
+   * @param event Nombre del evento.
+   */
   removeListener(event: string) {
     const handler = this.listeners.get(event);
     if (handler) {
@@ -28,6 +43,9 @@ export class SocketListenerManager {
     }
   }
 
+  /**
+   * Limpia todos los listeners.
+   */
   cleanup() {
     this.listeners.forEach((_, event) => this.removeListener(event));
   }
