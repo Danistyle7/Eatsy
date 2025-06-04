@@ -70,7 +70,7 @@ export const MenuScreenUsuario = () => {
         {Object.entries(grouped).map(([category, dishes]) => {
           return (
             <Section
-              key={category}
+              key={getDishCategory(category).label}
               title={getDishCategory(category).label}
               data={dishes}
               {...{
