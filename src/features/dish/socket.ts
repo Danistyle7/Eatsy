@@ -7,6 +7,7 @@ type DishDeleted = Pick<DishResponse, "id">;
  * createDishSocket expone métodos para suscribirse a todos los eventos
  * relacionados con "dish" sin tener que repetir el nombre del evento.
  *
+ * @returns
  * Cada método devuelve una función de unsubscribe, que debe invocarse
  * cuando ya no necesites escuchar ese evento. También devuelve una función
  * para limpiar los listeners.

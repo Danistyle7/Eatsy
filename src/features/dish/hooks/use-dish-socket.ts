@@ -9,6 +9,7 @@ import { createDishSocket } from "../socket";
  * Internamente solo inicializa dishSocketFactory() una vez (guardado en useRef),
  * y te devuelve las funciones onCreated, onUpdated y onDeleted.
  *
+ * @remarks
  * Cada función debe usarse dentro de un useEffect (o contexto equivalente)
  * para suscribirse/desuscribirse correctamente.
  *
