@@ -2,11 +2,20 @@ import { DishResponse } from "@/features/dish/types";
 import { Order, OrderPanel } from "@/features/order/types";
 import { parseOrder } from "@/features/order/utils";
 import { socketClient } from "./client";
+import { TableResponse } from "@/features/table/types";
 
 type DishDeleted = {
   id: number;
 };
 
+type TableDeleted = {
+  id: number;
+};
+
+/**
+ * setupSocketListeners inicializa los listeners de los eventos de socket.io
+ * y los maneja de forma correcta.
+ */
 export const setupSocketListeners = () => {
   console.log("[WebSocket] Inicializando listeners...");
 
@@ -34,6 +43,23 @@ export const setupSocketListeners = () => {
     console.log("[WebSocket] 🗑️ Plato eliminado ID:", id);
   });
 
+  // Eventos de mesas
+  socketClient.on("table_created", (table: TableResponse) => {
+    console.log("[WebSocket] 🏷️ Mesa creada:", table);
+  });
+
+  socketClient.on("table_occupied", (table: TableResponse) => {
+    console.log("[WebSocket] 🪑 Mesa ocupada:", table);
+  });
+
+  socketClient.on("table_updated", (table: TableResponse) => {
+    console.log("[WebSocket] 🪑 Mesa editada:", table);
+  });
+
+  socketClient.on("table_deleted", ({ id }: TableDeleted) => {
+    console.log("[WebSocket] 🗑️ Mesa eliminada ID:", id);
+  });
+
   socketClient.on("order_item_created", (orderItem: unknown) => {
     console.log("[WebSocket] 📦 Item de pedido creado:", orderItem);
   });
@@ -50,9 +76,19 @@ export const setupSocketListeners = () => {
     socketClient.off("dish_created");
     socketClient.off("dish_updated");
     socketClient.off("dish_deleted");
+    socketClient.off("table_created");
+    socketClient.off("table_occupied");
+    socketClient.off("table_updated");
+    socketClient.off("table_deleted");
+    socketClient.off("order_item_created");
+    socketClient.off("order_item_updated");
   };
 };
 
+/**
+ * setupDishListeners inicializa los listeners de los eventos de socket.io
+ * relacionados con "dish" y los maneja de forma correcta.
+ */
 export const setupDishListeners = () => {
   const onCreated = (cb: (dish: DishResponse) => void) =>
     socketClient.on("dish_created", cb);
@@ -73,6 +109,38 @@ export const setupDishListeners = () => {
   };
 };
 
+/**
+ * setupTableListeners inicializa los listeners de los eventos de socket.io
+ * relacionados con "table" y los maneja de forma correcta.
+ */
+export const setupTableListeners = () => {
+  const onCreated = (cb: (table: TableResponse) => void) =>
+    socketClient.on("table_created", cb);
+  const onOccupied = (cb: (table: TableResponse) => void) =>
+    socketClient.on("table_occupied", cb);
+  const onDeleted = (cb: ({ id }: TableDeleted) => void) =>
+    socketClient.on("table_deleted", cb);
+  const onUpdated = (cb: ({ id }: TableDeleted) => void) =>
+    socketClient.on("table_updated", cb);
+
+  return {
+    onCreated,
+    onOccupied,
+    onDeleted,
+    onUpdated,
+    cleanup: () => {
+      socketClient.off("table_created");
+      socketClient.off("table_occupied");
+      socketClient.off("table_deleted");
+      socketClient.off("table_updated");
+    },
+  };
+};
+
+/**
+ * setupOrderListeners inicializa los listeners de los eventos de socket.io
+ * relacionados con "order" y los maneja de forma correcta.
+ */
 export const setupOrderListeners = () => {
   const onCreated = (cb: (order: Order) => void) =>
     socketClient.on("order_item_created", (order: OrderPanel) =>
