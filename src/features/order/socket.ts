@@ -1,5 +1,6 @@
 import { Order, OrderPanel } from "@/features/order/types";
 import { socketManager, EventCallback } from "@/shared/lib/socket";
+import { parseOrder } from "./utils";
 
 type OrderDeleted = Pick<Order["order"], "id">;
 
@@ -101,7 +102,10 @@ export const createOrderItemSocket = () => {
    * @returns Función para desuscribirse.
    */
   const onCreated = (callback: EventCallback<Order>) => {
-    return socketManager.addListener("order_item_created", callback);
+    return socketManager.addListener(
+      "order_item_created",
+      (order: OrderPanel) => callback(parseOrder(order))
+    );
   };
 
   /**
@@ -111,7 +115,10 @@ export const createOrderItemSocket = () => {
    * @returns Función para desuscribirse.
    */
   const onUpdated = (callback: EventCallback<Order>) => {
-    return socketManager.addListener("order_item_updated", callback);
+    return socketManager.addListener(
+      "order_item_updated",
+      (order: OrderPanel) => callback(parseOrder(order))
+    );
   };
 
   const cleanup = () => {
