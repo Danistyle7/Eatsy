@@ -19,10 +19,9 @@ export default function Screen() {
 
   const { isLoading, error: errorGet, orders, setOrders } = useGetOrders();
   const { mutate: updateOrder, isPending: isUpdating } = useUpdateOrderById();
+  const { onCreated, onUpdated, cleanup } = useOrderItemSocket();
 
   useEffect(() => {
-    const { onCreated, onUpdated, cleanup } = useOrderItemSocket();
-
     onCreated((newOrder: Order) => {
       setOrders((prev = []) => [...prev, newOrder]);
     });
