@@ -8,6 +8,7 @@ import { DISH_TYPES } from "@/features/dish/constants";
 import { getDishCategory } from "@/features/dish/utils";
 import { createDishSocket } from "@/features/dish/socket";
 import { groupBy } from "@/shared/lib/utils";
+import ModalDetalle from "@/shared/components/modal-detalle";
 export const BebidaScreenUsuario = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -88,6 +89,12 @@ export const BebidaScreenUsuario = () => {
           />
         ))}
       </ScrollView>
+      <ModalDetalle
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        item={selectedItem}
+        modoCliente={esCliente}
+      />
     </View>
   );
 };

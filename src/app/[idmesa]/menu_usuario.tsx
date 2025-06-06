@@ -8,6 +8,8 @@ import { DISH_TYPES } from "@/features/dish/constants";
 import { getDishCategory } from "@/features/dish/utils";
 import { createDishSocket } from "@/features/dish/socket";
 import { groupBy } from "@/shared/lib/utils";
+import ModalDetalle from "@/shared/components/modal-detalle";
+
 export const MenuScreenUsuario = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -19,6 +21,8 @@ export const MenuScreenUsuario = () => {
     type: DISH_TYPES.FOOD.value,
     isAvailable: esCliente,
   });
+
+  console.log(idmesa);
 
   const { onCreated, onUpdated, onDeleted, cleanup } = createDishSocket();
   useEffect(() => {
@@ -90,6 +94,12 @@ export const MenuScreenUsuario = () => {
             />
           );
         })}
+        <ModalDetalle
+          visible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          item={selectedItem}
+          modoCliente={esCliente}
+        />
       </ScrollView>
     </View>
   );
