@@ -6,7 +6,7 @@ import { useGetDishes } from "@/features/dish/hooks";
 import { getDishCategory } from "@/features/dish/utils";
 import Header from "@/shared/components/ui/header";
 import Section from "@/shared/components/ui/section";
-import { setupDishListeners } from "@/shared/lib/socket/socketListeners"; // Ajusta la ruta
+import { createDishSocket } from "@/features/dish/socket";
 import ModalDetalle from "@/shared/components/modal-detalle";
 
 export const MenuScreen = () => {
@@ -19,9 +19,8 @@ export const MenuScreen = () => {
     type: DISH_TYPES.FOOD.value,
   });
   // Configurar listeners del WebSocket
+  const { onCreated, onUpdated, onDeleted, cleanup } = createDishSocket();
   useEffect(() => {
-    const { onCreated, onUpdated, onDeleted, cleanup } = setupDishListeners();
-
     onCreated((newDish) => setDishes((prev = []) => [...prev, newDish]));
 
     onUpdated((updatedDish) =>
