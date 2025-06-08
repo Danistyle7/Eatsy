@@ -1,17 +1,18 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { ApiError } from "@/shared/lib/api/errors";
-import { queryClient } from "@/shared/lib/query-client";
 import { TABLE_QUERY_KEYS } from "../constants";
 import { tableService } from "../service";
-import { TableCreate } from "../types";
+import type { TableCreate, TableResponse as Table } from "../types";
 
-type Context = { previous?: TableCreate[] };
+type Context = { previous?: Table[] };
 
 export const useCreateTable = () => {
-  return useMutation<TableCreate, ApiError, TableCreate, Context>({
-    mutationFn: async (data) => {
-      const result = await tableService.create(data);
+  const queryClient = useQueryClient();
+  const queryKey = TABLE_QUERY_KEYS.lists();
+  return useMutation<Table, ApiError, TableCreate, Context>({
+    mutationFn: async (table) => {
+      const result = await tableService.create(table);
       if (!result.success)
         throw new ApiError(result.error, parseInt(result.code || "500"), {
           code: result.code,
@@ -19,30 +20,32 @@ export const useCreateTable = () => {
       return result.data;
     },
     onMutate: async (newTable) => {
-      await queryClient.cancelQueries({ queryKey: TABLE_QUERY_KEYS.lists() });
-      const previous = queryClient.getQueryData<TableCreate[]>(
-        TABLE_QUERY_KEYS.lists()
-      );
-      queryClient.setQueryData(
-        TABLE_QUERY_KEYS.lists(),
-        (old: TableCreate[] = []) => [...old, { ...newTable, id: Date.now() }]
-      );
+      await queryClient.cancelQueries({ queryKey });
+      const previous = queryClient.getQueryData<Table[]>(queryKey);
+
+      // Fake data for the new table
+      const now = Date.now();
+      const id = now.valueOf();
+      const qrCode = newTable.number.toString();
+      const qrCodeUrl = "www.google.com";
+
+      queryClient.setQueryData(queryKey, (old: Table[] = []): Table[] => [
+        ...old,
+        { ...newTable, id, qrCode, qrCodeUrl }, // Simulate a new table with a unique ID and QR code
+      ]);
       return { previous };
     },
     onError: (_, __, context) => {
-      queryClient.setQueryData(TABLE_QUERY_KEYS.lists(), context?.previous);
+      queryClient.setQueryData(queryKey, context?.previous);
     },
     onSuccess: (newTable) => {
-      queryClient.setQueryData(
-        TABLE_QUERY_KEYS.lists(),
-        (old: TableCreate[] = []) => [...old, newTable]
-      );
+      queryClient.setQueryData(queryKey, (old: Table[] = []): Table[] => [
+        ...old,
+        newTable,
+      ]);
     },
     onSettled: () => {
-      queryClient.invalidateQueries({
-        queryKey: TABLE_QUERY_KEYS.lists(),
-        exact: false,
-      });
+      queryClient.invalidateQueries({ queryKey, exact: false });
     },
   });
 };

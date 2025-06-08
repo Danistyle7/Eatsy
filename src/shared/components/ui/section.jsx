@@ -1,16 +1,11 @@
 import { router } from "expo-router";
 import React from "react";
 import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
-
-import ModalDetalle from "../modal-detalle";
-
 const Section = ({
   title,
   data,
   setModalVisible,
   setSelectedItem,
-  modalVisible,
-  selectedItem,
   esCliente,
 }) => (
   <View style={styles.sectionBox}>
@@ -69,12 +64,12 @@ const Section = ({
       )}
     />
 
-    <ModalDetalle
+    {/* <ModalDetalle
       visible={modalVisible}
       onClose={() => setModalVisible(false)}
       item={selectedItem}
       modoCliente={esCliente}
-    />
+    /> */}
   </View>
 );
 

@@ -1,14 +1,20 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { ApiError } from "@/shared/lib/api/errors";
 import { TABLE_QUERY_KEYS } from "../constants";
 import { tableService } from "../service";
 
-import type { TableParams, TableResponse, ScanTableResponse } from "../types";
+import type {
+  TableParams,
+  TableResponse as Table,
+  ScanTableResponse as ScanTable,
+} from "../types";
 
-export const useGetAllTables = (params?: TableParams) => {
-  return useQuery<TableResponse[], ApiError>({
-    queryKey: TABLE_QUERY_KEYS.lists(params),
+export const useGetTables = (params?: TableParams) => {
+  const queryClient = useQueryClient();
+  const queryKey = TABLE_QUERY_KEYS.lists(params);
+  const query = useQuery<Table[], ApiError>({
+    queryKey,
     queryFn: async () => {
       const result = await tableService.getAll(params);
       if (!result.success)
@@ -16,11 +22,19 @@ export const useGetAllTables = (params?: TableParams) => {
       return result.data;
     },
   });
+  const setTables = (
+    updater: Table[] | ((oldData: Table[] | undefined) => Table[])
+  ) => {
+    queryClient.setQueryData(queryKey, updater);
+  };
+  return { tables: query.data ?? [], setTables, ...query };
 };
 
-export const useGetTableById = (id: TableResponse["id"]) => {
-  return useQuery<TableResponse, ApiError>({
-    queryKey: TABLE_QUERY_KEYS.detail(id),
+export const useGetTableById = (id: Table["id"]) => {
+  const queryClient = useQueryClient();
+  const queryKey = TABLE_QUERY_KEYS.detail(id);
+  const query = useQuery<Table, ApiError>({
+    queryKey,
     queryFn: async () => {
       const result = await tableService.getById(id);
       if (!result.success)
@@ -29,14 +43,22 @@ export const useGetTableById = (id: TableResponse["id"]) => {
     },
     enabled: !!id,
   });
+  const setTable = (
+    updater: Table | ((oldData: Table | undefined) => Table)
+  ) => {
+    queryClient.setQueryData(queryKey, updater);
+  };
+  return { table: query.data || null, setTable, ...query };
 };
 
 export const useGetTableByQrCode = (
-  qrCode: TableResponse["qrCode"],
+  qrCode: Table["qrCode"],
   nameCustomer: string
 ) => {
-  return useQuery<ScanTableResponse, ApiError>({
-    queryKey: TABLE_QUERY_KEYS.scan(qrCode, nameCustomer),
+  const queryClient = useQueryClient();
+  const queryKey = TABLE_QUERY_KEYS.scan(qrCode, nameCustomer);
+  const query = useQuery<ScanTable, ApiError>({
+    queryKey,
     queryFn: async () => {
       const result = await tableService.scan(qrCode, nameCustomer);
       if (!result.success)
@@ -45,4 +67,10 @@ export const useGetTableByQrCode = (
     },
     enabled: false,
   });
+  const setTable = (
+    updater: ScanTable | ((oldData: ScanTable | undefined) => ScanTable)
+  ) => {
+    queryClient.setQueryData(queryKey, updater);
+  };
+  return { table: query.data || null, setTable, ...query };
 };

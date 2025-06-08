@@ -1,5 +1,5 @@
-// src/app/index.tsx
 
+import { setupSocketListeners } from "@/shared/lib/socket/socketListeners";
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -140,6 +140,13 @@ export default function Home() {
       setErrorMsg(err.message || "Falló el login móvil.");
     }
   };
+
+  useEffect(() => {
+    const cleanup = setupSocketListeners();
+    return () => {
+      cleanup(); 
+    };
+  }, []);
 
   return (
     <View style={styles.outer}>

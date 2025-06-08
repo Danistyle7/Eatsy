@@ -3,15 +3,23 @@ import { Image, Text, View } from "react-native";
 import { Button } from "@/shared/components/ui/button";
 import { cn } from "@/shared/lib/utils";
 import { ORDER_STATUSES } from "../constants";
+import { Order } from "../types";
 
 import { FontAwesome6 } from "@expo/vector-icons";
+
+interface OrderCardProps {
+  data: Order;
+  filterValue: string;
+  isUpdating: boolean;
+  onChangeStatus: (id: number, status: string) => void;
+}
 
 export function OrderCard({
   data,
   filterValue,
   isUpdating,
   onChangeStatus,
-}: any) {
+}: OrderCardProps) {
   const { dish, item, table } = data;
 
   return (
@@ -54,9 +62,10 @@ export function OrderCard({
             title="Cancel"
             variant="ghost"
             size="icon"
-            onPress={() =>
-              onChangeStatus(item.id, ORDER_STATUSES.CANCELLED.value)
-            }
+            onPress={() => {
+              if (item.status.value === ORDER_STATUSES.CANCELLED.value) return;
+              onChangeStatus(item.id, ORDER_STATUSES.CANCELLED.value);
+            }}
             disabled={isUpdating}
           >
             <FontAwesome6 name="trash-can" size={16} color="white" />
@@ -66,7 +75,10 @@ export function OrderCard({
             title="Play"
             variant="ghost"
             size="icon"
-            onPress={() => onChangeStatus(item.id, item.status.next)}
+            onPress={() => {
+              if (item.status.value === item.status.next) return;
+              onChangeStatus(item.id, item.status.next);
+            }}
             disabled={isUpdating}
           >
             <FontAwesome6 name="play" size={16} color="white" />

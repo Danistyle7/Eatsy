@@ -12,6 +12,7 @@ import {
 } from "react-native";
 
 import { useUpdateDishById } from "@/features/dish/hooks";
+import { getDishCategory } from "@/features/dish/utils";
 import { useCartStore } from "../hooks/use_cardstore";
 import { Button } from "./ui/button";
 
@@ -76,7 +77,9 @@ const ModalDetalle = ({ visible, onClose, item, modoCliente }) => {
               {/* Header */}
               <View style={styles.header}>
                 <View>
-                  <Text style={styles.title}>{item.category}</Text>
+                  <Text style={styles.title}>
+                    {getDishCategory(item.category).label}
+                  </Text>
                   <Text style={styles.etiqueta}>{item.name}</Text>
                 </View>
 

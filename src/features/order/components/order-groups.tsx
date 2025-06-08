@@ -1,13 +1,13 @@
 import { Text, View } from "react-native";
 
 import { cn } from "@/shared/lib/utils";
-import { parseOrder } from "../utils";
+import { Order } from "../types";
 import { OrderCard } from "./order-card";
 
 interface OrderGroupProps {
   label: string;
   color: string;
-  items: ReturnType<typeof parseOrder>[];
+  items: Order[];
   filterValue: string;
   isUpdating: boolean;
   onChangeStatus: (id: number, status: string) => void;

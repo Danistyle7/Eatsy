@@ -1,16 +1,16 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { ApiError } from "@/shared/lib/api/errors";
-import { queryClient } from "@/shared/lib/query-client";
 import { ORDER_QUERY_KEYS } from "../constants";
 import { orderService } from "../service";
-import type { OrderResponse, OrderUpdate } from "../types";
+import type { OrderResponse as Order, OrderUpdate } from "../types";
 
-type MutationVariables = { id: OrderResponse["id_order"]; data: OrderUpdate };
-type Context = { previous?: OrderResponse };
+type MutationVariables = { id: Order["id_order"]; data: OrderUpdate };
+type Context = { previous?: Order };
 
 export const useUpdateOrderById = () => {
-  return useMutation<OrderResponse, ApiError, MutationVariables, Context>({
+  const queryClient = useQueryClient();
+  return useMutation<Order, ApiError, MutationVariables, Context>({
     mutationFn: async ({ id, data }) => {
       const result = await orderService.update(id, data);
       if (!result.success)
@@ -18,16 +18,12 @@ export const useUpdateOrderById = () => {
       return result.data;
     },
     onMutate: async ({ id, data }) => {
-      await queryClient.cancelQueries({
-        queryKey: ORDER_QUERY_KEYS.detail(id),
-      });
-      const previous = queryClient.getQueryData<OrderResponse>(
-        ORDER_QUERY_KEYS.detail(id)
-      );
+      const queryKey = ORDER_QUERY_KEYS.detail(id);
+      await queryClient.cancelQueries({ queryKey });
+      const previous = queryClient.getQueryData<Order>(queryKey);
 
-      queryClient.setQueryData(
-        ORDER_QUERY_KEYS.detail(id),
-        (old?: OrderResponse) => (old ? { ...old, ...data } : undefined)
+      queryClient.setQueryData(queryKey, (old?: Order) =>
+        old ? { ...old, ...data } : undefined
       );
 
       return { previous };

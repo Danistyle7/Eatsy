@@ -1,20 +1,19 @@
-import React, { useState } from "react";
-import { View, ScrollView, Text } from "react-native";
-import { Link } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { ScrollView, Text, View } from "react-native";
 
-import { useGetAllTables } from "@/features/table/hooks";
-import { FloatingButton } from "@/shared/components/ui/floating-button";
-import { QRModal } from "@/shared/components/ui/qr-modal";
-import { TableListItem } from "@/features/table/components/table-list-item";
+import { TableList } from "@/features/table/components/table-list";
+import { useGetTables } from "@/features/table/hooks";
 import { TableResponse } from "@/features/table/types";
 import { Input } from "@/shared/components/ui";
+import { FloatingButton } from "@/shared/components/ui/floating-button";
+import { QRModal } from "@/shared/components/ui/qr-modal";
 
-export default function TablesScreen() {
+export default function Screen() {
   const [qrValue, setQrValue] = useState<string>("");
   const [modalVisible, setModalVisible] = useState(false);
   const [searchText, setSearchText] = useState<string>("");
 
-  const { data: tables, isLoading, error } = useGetAllTables();
+  const { isLoading, error, tables } = useGetTables();
 
   if (isLoading)
     return <Text className="flex-1 text-center mt-4">Cargando...</Text>;
@@ -59,9 +58,7 @@ export default function TablesScreen() {
           />
         </View>
 
-        {tables.map((table: TableResponse) => (
-          <TableListItem key={table.id} table={table} onScan={handleScan} />
-        ))}
+        <TableList data={tables} onScan={handleScan} />
       </ScrollView>
 
       <QRModal
