@@ -1,10 +1,7 @@
 // screens/MesaScreen.tsx
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, FlatList } from "react-native";
-import {
-  PedidoItem,
-  PedidoItemProps,
-} from "@/shared/components/ui/pedido-item";
+import { PedidoItem } from "@/shared/components/ui/pedido-item";
 import Header from "@/shared/components/ui/header";
 import { useLocalSearchParams, router } from "expo-router";
 import { setupOrderListeners } from "@/shared/lib/socket/socketListeners";
@@ -14,11 +11,10 @@ import ModalMesa from "@/shared/components/ui/modal-mesa";
 import {
   generarReciboDesdeOrders,
   OrderItem,
-  ReciboResultado,
 } from "@/features/order/components/order-recivo";
 
 export default function MesaScreen() {
-  const { tableCode, idUsuario, idMesa } = useLocalSearchParams();
+  const { tableCode, idMesa } = useLocalSearchParams();
   const [modalVisible, setModalVisible] = useState(false);
   const { orders, error, isLoading, setOrder } = useGetOrderByTableId(
     Number(idMesa)
@@ -63,7 +59,6 @@ export default function MesaScreen() {
     router.push({
       pathname: "/menupag/detalle-pedido",
     });
-    console.log("a ver ", usuarios, totalGeneral);
   };
   return (
     <View style={styles.container}>

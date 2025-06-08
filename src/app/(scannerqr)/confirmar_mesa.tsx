@@ -25,7 +25,7 @@ export default function ConfirmarMesa() {
 
     setIsLoading(false);
     if (!data || error) return;
-    console.log("data", data);
+
     router.replace({
       pathname: `/${data.table.number}/menu_usuario`,
       params: {

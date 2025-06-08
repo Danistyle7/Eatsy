@@ -83,14 +83,13 @@ const styles = {
     padding: 6,
     marginLeft: 16,
     marginBottom: 16,
-    borderWidth: 1, // Asegúrate de que el borde tenga un grosor visible
-    borderColor: "black", // Asegúrate de que el color del borde esté correcto,
-    // Sombra personalizada intensa
+    borderWidth: 1,
+    borderColor: "black",
     shadowColor: "rgba(66, 68, 90, 1)",
     shadowOffset: { width: -10, height: 10 },
     shadowOpacity: 0.5,
     shadowRadius: 10,
-    elevation: 5, // Para Android
+    elevation: 5,
   },
   cardImage: {
     width: "100%",

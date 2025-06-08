@@ -15,14 +15,12 @@ export const MenuScreenUsuario = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [busqueda, setBusqueda] = useState("");
   const [esCliente, setEsCliente] = useState(true);
-  const { idmesa, tableCode } = useLocalSearchParams();
+  const { idmesa } = useLocalSearchParams();
 
   const { isLoading, error, dishes, setDishes } = useGetDishes({
     type: DISH_TYPES.FOOD.value,
     isAvailable: esCliente,
   });
-
-  console.log(idmesa);
 
   const { onCreated, onUpdated, onDeleted, cleanup } = createDishSocket();
   useEffect(() => {

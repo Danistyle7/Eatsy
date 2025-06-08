@@ -14,7 +14,7 @@ export const BebidaScreenUsuario = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [busqueda, setBusqueda] = useState("");
   const [esCliente, setEsCliente] = useState(true);
-  const { tableCode, idmesa } = useLocalSearchParams();
+  const { tableCode } = useLocalSearchParams();
 
   const { isLoading, error, dishes, setDishes } = useGetDishes({
     type: DISH_TYPES.DRINK.value,

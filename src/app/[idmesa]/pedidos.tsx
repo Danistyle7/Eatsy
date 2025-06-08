@@ -20,8 +20,6 @@ export default function PedidoScreen() {
   const getTotal = useCartStore((state) => state.getTotal);
   const total = getTotal();
 
-  console.log("id del usuario:", idUsuario, idMesa);
-
   const handleConfirmarPedido = () => {
     setLoading(true);
 
@@ -36,14 +34,11 @@ export default function PedidoScreen() {
 
     createOrder.mutate(formattedOrder, {
       onSuccess: (data) => {
-        console.log("Orden creada correctamente:", data);
         useCartStore.getState().clearCart();
 
         router.push({ pathname: `/${tableCode}/mesa-pedido` });
       },
-      onError: (error) => {
-        console.error("Error al crear la orden:", error.message);
-      },
+      onError: (error) => {},
       onSettled: () => {
         setLoading(false);
       },

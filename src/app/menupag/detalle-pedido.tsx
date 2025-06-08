@@ -8,9 +8,7 @@ const DetallePedido = () => {
   const mensaje = "hola";
 
   const total = 20;
-  const volverInicio = () => {
-    console.log("volver al incio y eliminar todo");
-  };
+  const volverInicio = () => {};
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>

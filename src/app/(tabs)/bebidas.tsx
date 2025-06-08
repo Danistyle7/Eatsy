@@ -6,7 +6,7 @@ import { useGetDishes } from "@/features/dish/hooks";
 import { getDishCategory } from "@/features/dish/utils";
 import Header from "@/shared/components/ui/header";
 import Section from "@/shared/components/ui/section";
-import { useGetOrderByTableId } from "@/features/order/hooks";
+
 import { createDishSocket } from "@/features/dish/socket";
 import ModalDetalle from "@/shared/components/modal-detalle";
 
@@ -15,9 +15,7 @@ export const BebidaScreen = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [busqueda, setBusqueda] = useState("");
   const [esCliente, setEsCliente] = useState(false);
-  const tableId = 16; // Cambia esto por el ID de la mesa que necesites
-  const { orders } = useGetOrderByTableId(tableId);
-  console.log("orderData", orders);
+
   const { isLoading, error, dishes, setDishes } = useGetDishes({
     type: DISH_TYPES.DRINK.value,
   });

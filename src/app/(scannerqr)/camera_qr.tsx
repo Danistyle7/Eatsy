@@ -19,7 +19,6 @@ export default function Scanner() {
     if (!scanned) {
       setScanned(true);
 
-      console.log(`QR escaneado: ${data}`);
       router.replace({
         pathname: "/(scannerqr)/confirmar_mesa",
         params: { tableCode: data },
