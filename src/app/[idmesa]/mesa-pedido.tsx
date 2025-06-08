@@ -62,11 +62,6 @@ export default function MesaScreen() {
 
     router.push({
       pathname: "/menupag/detalle-pedido",
-      params: {
-        recivous: JSON.stringify(usuarios),
-        totalGeneral: JSON.stringify(totalGeneral),
-        mesa: idMesa, // o el número real de mesa
-      },
     });
     console.log("a ver ", usuarios, totalGeneral);
   };
