@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 
 import { TableList } from "@/features/table/components/table-list";
-import { useGetTables } from "@/features/table/hooks";
+import {
+  useGetTables,
+  useTableSocket,
+  useUpdateTableById,
+} from "@/features/table/hooks";
 import { TableResponse } from "@/features/table/types";
 import { Input } from "@/shared/components/ui";
 import { FloatingButton } from "@/shared/components/ui/floating-button";
@@ -13,7 +17,42 @@ export default function Screen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [searchText, setSearchText] = useState<string>("");
 
-  const { isLoading, error, tables } = useGetTables();
+  const { isLoading, error, tables, setTables } = useGetTables();
+  const { onCreated, onUpdated, onDeleted, onOccupied, cleanup } =
+    useTableSocket();
+  const { mutate: updateTable } = useUpdateTableById();
+
+  const tableFiltered = tables.filter(
+    (t) => searchText.length > 0 === searchText.includes(`${t.number}`)
+  );
+
+  useEffect(() => {
+    onCreated((newTable: TableResponse) => {
+      setTables((prev = []) => [...prev, newTable]);
+    });
+
+    onUpdated((updatedTable: TableResponse) => {
+      setTables((prev = []) =>
+        prev.map((table) =>
+          table.id === updatedTable.id ? { ...table, ...updatedTable } : table
+        )
+      );
+    });
+
+    onDeleted(({ id }) => {
+      setTables((prev = []) => prev.filter((table) => table.id !== id));
+    });
+
+    onOccupied((updatedTable: TableResponse) => {
+      setTables((prev = []) =>
+        prev.map((table) =>
+          table.id === updatedTable.id ? { ...table, ...updatedTable } : table
+        )
+      );
+    });
+
+    return cleanup;
+  }, []);
 
   if (isLoading)
     return <Text className="flex-1 text-center mt-4">Cargando...</Text>;
@@ -37,6 +76,17 @@ export default function Screen() {
     setModalVisible(true);
   };
 
+  const handleDelete = ({ id, status }: TableResponse) => {
+    // TODO: Revisar la lógica de eliminación de mesas
+    if (status === "DELETED") {
+      console.warn("No se puede eliminar una mesa que ya está eliminada.");
+      return;
+    }
+    const newStatus = status === "MAINTENANCE" ? "DELETED" : "MAINTENANCE";
+    updateTable({ id, data: { status: newStatus } });
+    setTables((prev = []) => prev.filter((table) => table.id !== id));
+  };
+
   const handleClose = () => {
     setModalVisible(false);
     setTimeout(() => {
@@ -58,7 +108,11 @@ export default function Screen() {
           />
         </View>
 
-        <TableList data={tables} onScan={handleScan} />
+        <TableList
+          data={tableFiltered}
+          onScan={handleScan}
+          onDelete={handleDelete}
+        />
       </ScrollView>
 
       <QRModal
