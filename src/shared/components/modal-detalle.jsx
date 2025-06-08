@@ -72,7 +72,7 @@ const ModalDetalle = ({ visible, onClose, item, modoCliente }) => {
             <Pressable style={styles.modalContainer} onPress={() => {}}>
               {/* Header */}
               <View style={styles.header}>
-                <View>
+                <View style={{ flex: 1, paddingRight: 8 }}>
                   <Text style={styles.title}>
                     {getDishCategory(item.category).label}
                   </Text>
@@ -152,6 +152,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 15,
+    flexShrink: 1,
   },
   etiqueta: {
     fontSize: 22,

@@ -4,7 +4,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { Ionicons } from "@expo/vector-icons";
 import { Button } from "@/shared/components/ui/button";
-
+import { saveUserSession } from "@/storage/user-session";
 type BarCodeScannedEvent = {
   type: string;
   data: string;
@@ -15,13 +15,19 @@ export default function Scanner() {
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
 
-  const handleBarCodeScanned = ({ type, data }: BarCodeScannedEvent) => {
+  const handleBarCodeScanned = async ({ type, data }: BarCodeScannedEvent) => {
     if (!scanned) {
       setScanned(true);
 
+      await saveUserSession({
+        userId: null,
+        userName: null,
+        tableId: null,
+        tableCode: data.toString(),
+      });
+
       router.replace({
         pathname: "/(scannerqr)/confirmar_mesa",
-        params: { tableCode: data },
       });
     }
   };

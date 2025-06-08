@@ -3,19 +3,21 @@ import { useGetDishes } from "@/features/dish/hooks";
 import Section from "@/shared/components/ui/section";
 import React, { useState, useEffect } from "react";
 import { ScrollView, View, Text } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+
 import { DISH_TYPES } from "@/features/dish/constants";
 import { getDishCategory } from "@/features/dish/utils";
 import { createDishSocket } from "@/features/dish/socket";
 import { groupBy } from "@/shared/lib/utils";
 import ModalDetalle from "@/shared/components/modal-detalle";
+import { useTableCode } from "@/storage/hook";
 
 export const MenuScreenUsuario = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [busqueda, setBusqueda] = useState("");
   const [esCliente, setEsCliente] = useState(true);
-  const { idmesa } = useLocalSearchParams();
+
+  const tableCode = useTableCode();
 
   const { isLoading, error, dishes, setDishes } = useGetDishes({
     type: DISH_TYPES.FOOD.value,
@@ -63,7 +65,7 @@ export const MenuScreenUsuario = () => {
           busqueda={busqueda}
           setBusqueda={setBusqueda}
           mostrarAgregar={false}
-          idmesa={idmesa} // 👈 pásalo como prop
+          idmesa={tableCode ?? ""} // 👈 pásalo como prop
         />
       </View>
 
