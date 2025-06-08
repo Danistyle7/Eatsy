@@ -1,5 +1,4 @@
-import { useFocusEffect } from "@react-navigation/native";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 
 import { DISH_TYPES } from "@/features/dish/constants";
@@ -7,8 +6,8 @@ import { useGetDishes } from "@/features/dish/hooks";
 import { getDishCategory } from "@/features/dish/utils";
 import Header from "@/shared/components/ui/header";
 import Section from "@/shared/components/ui/section";
-import { useGetOrderByTableId } from "@/features/order/hooks";
-import { setupDishListeners } from "@/shared/lib/socket/socketListeners";
+
+import { createDishSocket } from "@/features/dish/socket";
 import ModalDetalle from "@/shared/components/modal-detalle";
 
 export const BebidaScreen = () => {
@@ -16,16 +15,12 @@ export const BebidaScreen = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [busqueda, setBusqueda] = useState("");
   const [esCliente, setEsCliente] = useState(false);
-  const tableId = 16; // Cambia esto por el ID de la mesa que necesites
-  const { orders } = useGetOrderByTableId(tableId);
-  console.log("orderData", orders);
+
   const { isLoading, error, dishes, setDishes } = useGetDishes({
     type: DISH_TYPES.DRINK.value,
   });
-
+  const { onCreated, onUpdated, onDeleted, cleanup } = createDishSocket();
   useEffect(() => {
-    const { onCreated, onUpdated, onDeleted, cleanup } = setupDishListeners();
-
     onCreated((newDish) => setDishes((prev = []) => [...prev, newDish]));
 
     onUpdated((updatedDish) =>

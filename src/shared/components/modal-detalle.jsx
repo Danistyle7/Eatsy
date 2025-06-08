@@ -32,7 +32,7 @@ const ModalDetalle = ({ visible, onClose, item, modoCliente }) => {
   if (!item) return null;
   const toggleSwitch = () => {
     const nuevoDisponible = !disponible;
-    console.log("se qu ees a ", nuevoDisponible);
+
     updateDishById.mutate(
       {
         id: item.id,
@@ -41,18 +41,14 @@ const ModalDetalle = ({ visible, onClose, item, modoCliente }) => {
 
       {
         onSuccess: () => {
-          console.log("se actualiza a ", nuevoDisponible);
           setDisponible(nuevoDisponible);
         },
-        onError: () => {
-          console.log("Error actualizando disponibilidad");
-        },
+        onError: () => {},
       }
     );
   };
 
   const pedirPlato = () => {
-    console.log("Pedido realizado del plato:", item.imageUrl);
     addItem(item);
     onClose();
     route.navigate(`/${tableCode}/pedidos`);

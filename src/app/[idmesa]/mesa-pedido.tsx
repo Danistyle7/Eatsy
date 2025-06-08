@@ -1,22 +1,25 @@
 // screens/MesaScreen.tsx
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, FlatList } from "react-native";
-import {
-  PedidoItem,
-  PedidoItemProps,
-} from "@/shared/components/ui/pedido-item";
+import { PedidoItem } from "@/shared/components/ui/pedido-item";
 import Header from "@/shared/components/ui/header";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, router } from "expo-router";
 import { setupOrderListeners } from "@/shared/lib/socket/socketListeners";
 import { useGetOrderByTableId } from "@/features/order/hooks";
+import { Button } from "@/shared/components/ui/button";
+import ModalMesa from "@/shared/components/ui/modal-mesa";
+import {
+  generarReciboDesdeOrders,
+  OrderItem,
+} from "@/features/order/components/order-recivo";
 
 export default function MesaScreen() {
-  const { tableCode, idUsuario, idMesa } = useLocalSearchParams();
-
+  const { tableCode, idMesa } = useLocalSearchParams();
+  const [modalVisible, setModalVisible] = useState(false);
   const { orders, error, isLoading, setOrder } = useGetOrderByTableId(
     Number(idMesa)
   );
-  console.log("data de la mesa", orders);
+
   useEffect(() => {
     const { onCreated, onUpdated, cleanup } = setupOrderListeners();
 
@@ -48,6 +51,15 @@ export default function MesaScreen() {
       (acc, item) => acc + item.dish.price * item.order._base.quantity,
       0
     ) ?? 0;
+  const confirmarRecivo = () => {
+    const { usuarios, totalGeneral } = generarReciboDesdeOrders(
+      orders as OrderItem[]
+    );
+
+    router.push({
+      pathname: "/menupag/detalle-pedido",
+    });
+  };
   return (
     <View style={styles.container}>
       <Header
@@ -61,11 +73,31 @@ export default function MesaScreen() {
         data={orders}
         renderItem={({ item }) => <PedidoItem item={item} />}
         keyExtractor={(item) => item.item.id.toString()}
+        contentContainerStyle={{ paddingBottom: 70 }}
       />
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>Total: {totalProductos} Productos</Text>
-        <Text style={styles.footerText}>Bs. {totalPrecio}</Text>
+      <View style={styles.footer} className="flex-col">
+        <View className="flex-row justify-between">
+          <Text style={styles.footerText}>
+            Total: {totalProductos} Productos
+          </Text>
+          <Text style={styles.footerText}>Bs. {totalPrecio}</Text>
+        </View>
+        <View className="items-center P-1">
+          <Button
+            onPress={() => setModalVisible(true)}
+            title="Generar detalle "
+          />
+        </View>
       </View>
+
+      <ModalMesa
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        onConfirm={() => {
+          setModalVisible(false);
+          confirmarRecivo();
+        }}
+      />
     </View>
   );
 }
@@ -87,8 +119,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#f2f2f2",
     padding: 12,
     borderRadius: 8,
-    flexDirection: "row",
-    justifyContent: "space-between",
   },
   footerText: {
     fontSize: 16,
