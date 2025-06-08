@@ -9,6 +9,7 @@ import Header from "@/shared/components/ui/header";
 import Section from "@/shared/components/ui/section";
 import { useGetOrderByTableId } from "@/features/order/hooks";
 import { setupDishListeners } from "@/shared/lib/socket/socketListeners";
+import ModalDetalle from "@/shared/components/modal-detalle";
 
 export const BebidaScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -84,6 +85,12 @@ export const BebidaScreen = () => {
           />
         ))}
       </ScrollView>
+      <ModalDetalle
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        item={selectedItem}
+        modoCliente={esCliente}
+      />
     </View>
   );
 };
