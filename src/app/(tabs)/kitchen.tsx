@@ -23,14 +23,19 @@ export default function Screen() {
 
   useEffect(() => {
     onCreated((newOrder: Order) => {
+      console.log("Nueva orden recibida:", newOrder);
       setOrders((prev = []) => [...prev, newOrder]);
     });
 
     onUpdated((updatedOrder: Order) => {
+      console.log("Orden actualizada:", updatedOrder);
       setOrders((prev = []) =>
         prev.map((order) =>
           order.item.id === updatedOrder.item.id
-            ? { ...order, ...updatedOrder } // TODO: Mandar el table_number del backend
+            ? {
+                ...order,
+                item: { ...updatedOrder.item },
+              } // TODO: Mandar el table_number del backend
             : order
         )
       );
