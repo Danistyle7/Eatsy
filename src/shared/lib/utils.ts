@@ -59,3 +59,19 @@ export function stringToColor(str: string): string {
   }
   return color;
 }
+export function groupBy<T, K extends string | number | symbol>(
+  array: T[],
+  KeyGetter: (items: T) => K
+): Record<K, T[]> {
+  return array.reduce(
+    (result, item) => {
+      const key = KeyGetter(item);
+      if (!result[key]) {
+        result[key] = [];
+      }
+      result[key].push(item);
+      return result;
+    },
+    {} as Record<K, T[]>
+  );
+}

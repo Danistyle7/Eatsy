@@ -7,6 +7,7 @@ import { getDishCategory } from "@/features/dish/utils";
 import Header from "@/shared/components/ui/header";
 import Section from "@/shared/components/ui/section";
 import { setupDishListeners } from "@/shared/lib/socket/socketListeners"; // Ajusta la ruta
+import ModalDetalle from "@/shared/components/modal-detalle";
 
 export const MenuScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -73,6 +74,12 @@ export const MenuScreen = () => {
           />
         ))}
       </ScrollView>
+      <ModalDetalle
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        item={selectedItem}
+        modoCliente={esCliente}
+      />
     </View>
   );
 };
