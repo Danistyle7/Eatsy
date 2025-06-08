@@ -5,9 +5,12 @@ import { View, Text, TextInput, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useGetTableByQrCode } from "@/features/table/hooks";
 import { Button } from "@/shared/components/ui/button";
+import { saveUserSession } from "@/storage/user-session";
+import { useTableCode } from "@/storage/hook";
 export default function ConfirmarMesa() {
   const router = useRouter();
-  const { tableCode } = useLocalSearchParams();
+  const tableCode = useTableCode();
+
   const [isLoading, setIsLoading] = useState(false);
   const [nombre, setNombre] = useState("");
   const qrCode = Array.isArray(tableCode) ? tableCode[0] : (tableCode ?? "");
@@ -26,15 +29,15 @@ export default function ConfirmarMesa() {
     setIsLoading(false);
     if (!data || error) return;
 
-    router.replace({
-      pathname: `/${data.table.number}/menu_usuario`,
-      params: {
-        tableCode: data.table.number.toString(),
-        idMesa: data.table.id.toString(),
-        idUsuario: data.customer.id.toString(),
-        nombreUsuario: data.customer.name_customer,
-      },
+    // Guardar datos en AsyncStorage
+    await saveUserSession({
+      userId: data.customer.id.toString(),
+      userName: data.customer.name_customer,
+      tableId: data.table.id.toString(),
+      tableCode: data.table.number.toString(),
     });
+
+    router.replace(`/${data.table.number}/menu_usuario`);
   };
 
   return (

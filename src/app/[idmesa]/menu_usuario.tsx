@@ -9,13 +9,15 @@ import ModalDetalle from "@/shared/components/modal-detalle";
 import Header from "@/shared/components/ui/header";
 import Section from "@/shared/components/ui/section";
 import { groupBy } from "@/shared/lib/utils";
+import { useTableCode } from "@/storage/hook";
 
 export const MenuScreenUsuario = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [busqueda, setBusqueda] = useState("");
   const [esCliente, setEsCliente] = useState(true);
-  const { idmesa } = useLocalSearchParams();
+
+  const tableCode = useTableCode();
 
   const { isLoading, error, dishes, setDishes } = useGetDishes({
     type: DISH_TYPES.FOOD.value,
@@ -64,7 +66,7 @@ export const MenuScreenUsuario = () => {
           busqueda={busqueda}
           setBusqueda={setBusqueda}
           mostrarAgregar={false}
-          idmesa={idmesa} // 👈 pásalo como prop
+          idmesa={tableCode ?? ""} // 👈 pásalo como prop
         />
       </View>
 

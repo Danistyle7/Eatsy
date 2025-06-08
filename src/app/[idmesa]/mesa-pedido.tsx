@@ -14,9 +14,12 @@ import { Button } from "@/shared/components/ui/button";
 import Header from "@/shared/components/ui/header";
 import ModalMesa from "@/shared/components/ui/modal-mesa";
 import { PedidoItem } from "@/shared/components/ui/pedido-item";
+import { useTableCode, useTableId } from "@/storage/hook";
 
 export default function MesaScreen() {
-  const { tableCode, idMesa } = useLocalSearchParams();
+  const tableCode = useTableCode();
+  const idMesa = useTableId();
+
   const [modalVisible, setModalVisible] = useState(false);
   const { orders, error, isLoading, setOrder } = useGetOrderByTableId(
     Number(idMesa)
@@ -70,7 +73,7 @@ export default function MesaScreen() {
         titulo="Estado de pedidos"
         mostrarBusqueda={false}
         mostrarAgregar={false}
-        idmesa={tableCode}
+        idmesa={tableCode ?? ""}
       />
 
       <FlatList

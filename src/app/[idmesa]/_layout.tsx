@@ -10,8 +10,6 @@ import { Button } from "@/shared/components/ui/button";
 import { usePedidoStore } from "@/shared/hooks/use_pedido";
 
 export default function TabLayout() {
-  const { tableCode, idUsuario, idMesa, nombreUsuario } =
-    useLocalSearchParams();
   return (
     <Tabs
       screenOptions={{
@@ -53,7 +51,6 @@ export default function TabLayout() {
             <MaterialIcons name="restaurant-menu" size={size} color={color} />
           ),
         }}
-        initialParams={{ tableCode, idUsuario }}
       />
       <Tabs.Screen
         name="bebidas_usuario"
@@ -63,7 +60,6 @@ export default function TabLayout() {
             <MaterialIcons name="local-drink" size={size} color={color} />
           ),
         }}
-        initialParams={{ tableCode, idUsuario, idMesa }}
       />
       <Tabs.Screen
         name="pedidos"
@@ -77,7 +73,6 @@ export default function TabLayout() {
             />
           ),
         }}
-        initialParams={{ tableCode, idUsuario, idMesa, nombreUsuario }}
       />
       <Tabs.Screen
         name="mesa-pedido"
@@ -87,7 +82,6 @@ export default function TabLayout() {
             <FontAwesome5 name="concierge-bell" size={size} color={color} />
           ),
         }}
-        initialParams={{ tableCode, idUsuario, idMesa }}
       />
     </Tabs>
   );

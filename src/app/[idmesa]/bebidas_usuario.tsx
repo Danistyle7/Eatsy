@@ -10,13 +10,13 @@ import Header from "@/shared/components/ui/header";
 import Section from "@/shared/components/ui/section";
 import { groupBy } from "@/shared/lib/utils";
 
+import { useTableCode } from "@/storage/hook";
 export const BebidaScreenUsuario = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [busqueda, setBusqueda] = useState("");
   const [esCliente, setEsCliente] = useState(true);
-  const { tableCode } = useLocalSearchParams();
-
+  const tableCode = useTableCode();
   const { isLoading, error, dishes, setDishes } = useGetDishes({
     type: DISH_TYPES.DRINK.value,
     isAvailable: esCliente,
@@ -64,7 +64,7 @@ export const BebidaScreenUsuario = () => {
           busqueda={busqueda}
           setBusqueda={setBusqueda}
           mostrarAgregar={false}
-          idmesa={tableCode}
+          idmesa={tableCode ?? ""}
         />
       </View>
       <ScrollView

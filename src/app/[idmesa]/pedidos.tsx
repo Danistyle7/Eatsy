@@ -8,11 +8,14 @@ import PedidoItem from "@/shared/components/ui/pedido_detail";
 import { useLocalSearchParams } from "expo-router";
 import { useCreateOrder } from "@/features/order/hooks";
 import { Button } from "@/shared/components/ui/button";
-
+import { useTableCode, useUserId, useTableId } from "@/storage/hook";
 export default function PedidoScreen() {
+  const tableCode = useTableCode();
+  const idUsuario = useUserId();
+  const idMesa = useTableId();
   const [loading, setLoading] = useState(false);
-  const { tableCode, idUsuario, idMesa, nombreUsuario } =
-    useLocalSearchParams();
+
+  useLocalSearchParams();
   const createOrder = useCreateOrder();
 
   const router = useRouter();
@@ -52,7 +55,7 @@ export default function PedidoScreen() {
           titulo="Pedidos"
           mostrarBusqueda={false}
           mostrarAgregar={false}
-          idmesa={tableCode}
+          idmesa={tableCode ?? ""}
         />
       </View>
 
