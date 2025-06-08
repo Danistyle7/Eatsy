@@ -7,6 +7,7 @@ import { useGetTableByQrCode } from "@/features/table/hooks";
 import { Button } from "@/shared/components/ui/button";
 import { saveUserSession } from "@/storage/user-session";
 import { useTableCode } from "@/storage/hook";
+import { Alert } from "react-native";
 export default function ConfirmarMesa() {
   const router = useRouter();
   const tableCode = useTableCode();
@@ -14,32 +15,47 @@ export default function ConfirmarMesa() {
   const [isLoading, setIsLoading] = useState(false);
   const [nombre, setNombre] = useState("");
   const qrCode = Array.isArray(tableCode) ? tableCode[0] : (tableCode ?? "");
-
+  const [errorMessage, setErrorMessage] = useState("");
   const { refetch, data, isFetching, error } = useGetTableByQrCode(
     qrCode,
     nombre
   );
-
+  console.log(error);
   const handleContinue = async () => {
     if (!nombre.trim()) return;
     setIsLoading(true);
 
-    const { data, error } = await refetch();
+    try {
+      const result = await refetch();
+      // Aquí ajusta según la estructura de result:
+      const data = result.data;
+      const error = result.error;
 
-    setIsLoading(false);
-    if (!data || error) return;
+      if (!data || error) {
+        setErrorMessage(
+          "Código QR no válido. Por favor, escanea un código válido."
+        );
+        setIsLoading(false);
+        setTimeout(() => {
+          router.replace("/");
+        }, 3000); // espera 3s para mostrar el mensaje antes de regresar
+        return;
+      }
 
-    // Guardar datos en AsyncStorage
-    await saveUserSession({
-      userId: data.customer.id.toString(),
-      userName: data.customer.name_customer,
-      tableId: data.table.id.toString(),
-      tableCode: data.table.number.toString(),
-    });
+      await saveUserSession({
+        userId: data.customer.id.toString(),
+        userName: data.customer.name_customer,
+        tableId: data.table.id.toString(),
+        tableCode: data.table.number.toString(),
+      });
 
-    router.replace(`/${data.table.number}/menu_usuario`);
+      setIsLoading(false);
+      router.replace(`/${data.table.number}/menu_usuario`);
+    } catch (e) {
+      setErrorMessage("Error al procesar. Intenta de nuevo.");
+      setIsLoading(false);
+    }
   };
-
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Escanea el código{"\n"}QR de tu mesa</Text>
