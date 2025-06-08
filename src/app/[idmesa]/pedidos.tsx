@@ -70,6 +70,7 @@ export default function PedidoScreen() {
           data={items}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => <PedidoItem item={item} />}
+          contentContainerStyle={{ paddingBottom: 90 }}
         />
       )}
       <View className="absolute bottom-0 left-0 right-0 bg-white shadow-md border-t border-gray-300 items-center ">
