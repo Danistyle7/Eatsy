@@ -54,7 +54,15 @@ export const BebidaScreenUsuario = () => {
   // Asegúrate de que dishes no sea undefined, null o está vacío
   if (!dishes.length) return <Text>No hay platos disponibles</Text>;
 
-  const grouped = groupBy(dishes, (dish) => dish.category);
+  if (!dishes?.length) return <Text>No hay platos disponibles</Text>;
+  const search = busqueda.trim().toLowerCase();
+
+  const filteredDishes = dishes.filter((dish) => {
+    const name = dish.name?.toLowerCase() || "";
+    const description = dish.description?.toLowerCase() || "";
+    return name.includes(search) || description.includes(search);
+  });
+  const grouped = groupBy(filteredDishes, (dish) => dish.category);
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>

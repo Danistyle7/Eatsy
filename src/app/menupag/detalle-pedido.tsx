@@ -2,20 +2,31 @@ import React from "react";
 import { View, Text, ScrollView } from "react-native";
 import { Button } from "@/shared/components/ui/button";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useLocalSearchParams } from "expo-router";
+import { useRouter } from "expo-router";
+import { useTableCode } from "@/storage/hook";
+import { clearUserSession } from "@/storage/user-session";
 const DetallePedido = () => {
-  const { tableCode, idUsuario, idMesa } = useLocalSearchParams();
-  const mensaje = "hola";
+  const router = useRouter();
+
+  const tableCode = useTableCode();
 
   const total = 20;
-  const volverInicio = () => {};
+
+  const volverInicio = async () => {
+    try {
+      await clearUserSession(); // Limpia los datos guardados en AsyncStorage
+      router.replace("/");
+    } catch (error) {
+      console.error("Error al limpiar sesión y volver al inicio:", error);
+    }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <ScrollView className="bg-white ">
         <View className="items-center ">
           <Text className="text-2xl text-[#F97316]">
-            Detalle de Mesa:{total}
+            Detalle de Mesa:{tableCode}
           </Text>
         </View>
       </ScrollView>
