@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, Text, View } from "react-native";
+import {
+  NativeSyntheticEvent,
+  ScrollView,
+  Text,
+  TextInputSubmitEditingEventData,
+  View,
+} from "react-native";
 
 import { TableList } from "@/features/table/components/table-list";
 import {
@@ -11,8 +17,10 @@ import { TableResponse } from "@/features/table/types";
 import { Input } from "@/shared/components/ui";
 import { FloatingButton } from "@/shared/components/ui/floating-button";
 import { QRModal } from "@/shared/components/ui/qr-modal";
+import { useRouter } from "expo-router";
 
 export default function Screen() {
+  const router = useRouter();
   const [qrValue, setQrValue] = useState<string>("");
   const [modalVisible, setModalVisible] = useState(false);
   const [searchText, setSearchText] = useState<string>("");
@@ -22,8 +30,8 @@ export default function Screen() {
     useTableSocket();
   const { mutate: updateTable } = useUpdateTableById();
 
-  const tableFiltered = tables.filter(
-    (t) => searchText.length > 0 === searchText.includes(`${t.number}`)
+  const tableFiltered = tables.filter((t) =>
+    searchText.length > 0 ? `mesa ${t.number}`.includes(searchText) : true
   );
 
   useEffect(() => {
@@ -67,8 +75,18 @@ export default function Screen() {
       <Text className="flex-1 text-center mt-4">No hay mesas disponibles</Text>
     );
 
-  const handleSearch = () => {
-    console.log("Filtrar mesas por:", searchText);
+  const handleSearch = (
+    e: NativeSyntheticEvent<TextInputSubmitEditingEventData>
+  ) => {
+    setSearchText(e.nativeEvent.text.toLowerCase().trim());
+  };
+
+  const handleDetail = (table: TableResponse) => {
+    router.push(`/table/${table.id}/orders`);
+  };
+
+  const handleEdit = (table: TableResponse) => {
+    router.push(`/table/${table.id}/edit`);
   };
 
   const handleScan = (table: TableResponse) => {
@@ -102,14 +120,14 @@ export default function Screen() {
           <Input
             placeholder="Buscar por número de mesa"
             className="flex-1 bg-gray-100 shadow-sm"
-            value={searchText}
-            onChangeText={setSearchText}
             onSubmitEditing={handleSearch}
           />
         </View>
 
         <TableList
           data={tableFiltered}
+          onDetail={handleDetail}
+          onEdit={handleEdit}
           onScan={handleScan}
           onDelete={handleDelete}
         />

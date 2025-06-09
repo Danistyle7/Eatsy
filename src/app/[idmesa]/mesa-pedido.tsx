@@ -1,17 +1,19 @@
-// screens/MesaScreen.tsx
+import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, FlatList } from "react-native";
-import { PedidoItem } from "@/shared/components/ui/pedido-item";
-import Header from "@/shared/components/ui/header";
-import { useLocalSearchParams, router } from "expo-router";
-import { setupOrderListeners } from "@/shared/lib/socket/socketListeners";
-import { useGetOrderByTableId } from "@/features/order/hooks";
-import { Button } from "@/shared/components/ui/button";
-import ModalMesa from "@/shared/components/ui/modal-mesa";
+import { FlatList, StyleSheet, Text, View } from "react-native";
+
 import {
   generarReciboDesdeOrders,
   OrderItem,
 } from "@/features/order/components/order-recivo";
+import {
+  useGetOrderByTableId,
+  useOrderItemSocket,
+} from "@/features/order/hooks";
+import { Button } from "@/shared/components/ui/button";
+import Header from "@/shared/components/ui/header";
+import ModalMesa from "@/shared/components/ui/modal-mesa";
+import { PedidoItem } from "@/shared/components/ui/pedido-item";
 
 export default function MesaScreen() {
   const { tableCode, idMesa } = useLocalSearchParams();
@@ -19,10 +21,9 @@ export default function MesaScreen() {
   const { orders, error, isLoading, setOrder } = useGetOrderByTableId(
     Number(idMesa)
   );
+  const { onCreated, onUpdated, cleanup } = useOrderItemSocket();
 
   useEffect(() => {
-    const { onCreated, onUpdated, cleanup } = setupOrderListeners();
-
     onCreated((newOrder) => {
       setOrder((prev = []) => [...prev, newOrder]);
     });
@@ -44,13 +45,15 @@ export default function MesaScreen() {
   //   (acc, item) => acc + item.precio * item.cantidad,
   //   0
   // );
-  const totalProductos =
-    orders?.reduce((acc, item) => acc + item.order._base.quantity, 0) ?? 0;
-  const totalPrecio =
-    orders?.reduce(
-      (acc, item) => acc + item.dish.price * item.order._base.quantity,
-      0
-    ) ?? 0;
+  const totalProductos = orders.reduce(
+    (acc, { item }) => acc + item.quantity,
+    0
+  );
+  const totalPrecio = orders.reduce(
+    (acc, { dish, item }) => acc + dish.price * item.quantity,
+    0
+  );
+
   const confirmarRecivo = () => {
     const { usuarios, totalGeneral } = generarReciboDesdeOrders(
       orders as OrderItem[]
@@ -60,6 +63,7 @@ export default function MesaScreen() {
       pathname: "/menupag/detalle-pedido",
     });
   };
+
   return (
     <View style={styles.container}>
       <Header

@@ -23,12 +23,10 @@ export default function Screen() {
 
   useEffect(() => {
     onCreated((newOrder: Order) => {
-      console.log("Nueva orden recibida:", newOrder);
       setOrders((prev = []) => [...prev, newOrder]);
     });
 
     onUpdated((updatedOrder: Order) => {
-      console.log("Orden actualizada:", updatedOrder);
       setOrders((prev = []) =>
         prev.map((order) =>
           order.item.id === updatedOrder.item.id

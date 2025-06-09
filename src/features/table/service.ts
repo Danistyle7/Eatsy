@@ -4,18 +4,18 @@ import { BaseService } from "@/shared/lib/api/base-service";
 import apiClient from "@/shared/lib/api/client";
 import type { APIResponse } from "@/shared/lib/api/types/api-response";
 import {
+  scanTableResponseSchema,
   tableCreateSchema,
   tableParamsSchema,
   tableResponseSchema,
-  scanTableResponseSchema,
   tableUpdateSchema,
 } from "./schema";
 import type {
+  ScanTableResponse,
   TableCreate,
   TableParams,
   TableResponse,
   TableUpdate,
-  ScanTableResponse,
 } from "./types";
 
 /**
@@ -92,6 +92,15 @@ export class TableService extends BaseService {
       return { success: true, data: undefined };
     } catch (error) {
       return this.handleError(error, "Error al eliminar mesa");
+    }
+  }
+
+  async pay(id: TableResponse["id"]): Promise<APIResponse<void>> {
+    try {
+      await apiClient.put(`/table/pay/${id}`);
+      return { success: true, data: undefined };
+    } catch (error) {
+      return this.handleError(error, "Error al pagar mesa");
     }
   }
 }

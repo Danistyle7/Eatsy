@@ -47,5 +47,27 @@ export const useGetOrderByTableId = (id: Order["table"]["id"]) => {
   ) => {
     queryClient.setQueryData<Order[]>(queryKey, updater);
   };
-  return { orders: query.data || null, setOrder, ...query };
+  return { orders: query.data || [], setOrder, ...query };
+};
+
+export const useGetOrdersReadyByTableId = (id: Order["table"]["id"]) => {
+  const queryClient = useQueryClient();
+  const queryKey = ORDER_QUERY_KEYS.lists({ tableId: id, status: "READY" });
+  const query = useQuery<Order[], ApiError>({
+    queryKey,
+    queryFn: async () => {
+      const result = await orderService.getReadyByTableId(id);
+      if (!result.success)
+        throw new ApiError(result.error, parseInt(result.code || "500"));
+      return result.data.map(parseOrder);
+    },
+    staleTime: 0, // Los datos se consideran "viejos" de inmediato
+    refetchOnMount: "always", // Siempre vuelve a hacer fetch al montar
+  });
+  const setOrder = (
+    updater: Order[] | ((oldData: Order[] | undefined) => Order[])
+  ) => {
+    queryClient.setQueryData<Order[]>(queryKey, updater);
+  };
+  return { orders: query.data || [], setOrder, ...query };
 };

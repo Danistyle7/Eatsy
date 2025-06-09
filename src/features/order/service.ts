@@ -72,6 +72,17 @@ export class OrderService extends BaseService {
       return this.handleError(error, "Error al obtener los pedidos");
     }
   }
+
+  async getReadyByTableId(
+    id: TableResponse["id"]
+  ): Promise<APIResponse<OrderPanel[]>> {
+    try {
+      const response = await apiClient.get(`/table/check/${id}`);
+      return this.validateResponse(response.data, z.array(orderPanelSchema));
+    } catch (error) {
+      return this.handleError(error, "Error al verificar mesa");
+    }
+  }
 }
 
 export const orderService = new OrderService();

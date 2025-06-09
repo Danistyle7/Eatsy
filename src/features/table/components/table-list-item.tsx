@@ -14,6 +14,7 @@ import {
 
 export interface TableListItemProps extends ViewProps {
   table: TableResponse;
+  onDetail?: (table: TableResponse) => void;
   onEdit?: (table: TableResponse) => void;
   onDelete?: (table: TableResponse) => void;
   onScan?: (table: TableResponse) => void;
@@ -24,6 +25,7 @@ export const TableListItem = forwardRef<View, TableListItemProps>(
   (
     {
       table,
+      onDetail = () => {},
       onEdit = () => {},
       onDelete = () => {},
       onScan = () => {},
@@ -38,27 +40,32 @@ export const TableListItem = forwardRef<View, TableListItemProps>(
         key={listKey}
         ref={ref}
         style={style}
-        className="flex-row bg-white px-4 py-2 border border-[#F97316] rounded-xl justify-between mb-2"
+        className="flex-row bg-white border border-[#F97316] rounded-xl mb-2"
         {...rest}
       >
-        <View className="flex-row gap-2 items-center">
-          <Text className="text-lg font-semibold text-gray-800">
-            Mesa {table.number}
-          </Text>
-          <Text>{getTableStatus(table.status).icon}</Text>
-        </View>
+        <Button
+          title="Ver Detalles"
+          onPress={() => onDetail(table)}
+          variant="ghost"
+          className="flex-1 items-start justify-between h-auto"
+        >
+          <View className="flex-row gap-2 items-center">
+            <Text className="text-lg font-semibold text-gray-800">
+              Mesa {table.number}
+            </Text>
+            <Text>{getTableStatus(table.status).icon}</Text>
+          </View>
+        </Button>
 
-        <View className="flex-row gap-2">
-          <Link href={`/table/${table.id}/edit`} asChild>
-            <Button
-              title="Editar"
-              size="icon"
-              variant="ghost"
-              onPress={() => onEdit(table)}
-            >
-              <AntDesign name="edit" size={24} color="black" />
-            </Button>
-          </Link>
+        <View className="flex-row gap-2 align-center items-center me-4">
+          <Button
+            title="Editar"
+            size="icon"
+            variant="ghost"
+            onPress={() => onEdit(table)}
+          >
+            <AntDesign name="edit" size={24} color="black" />
+          </Button>
 
           <Button
             title="Ver QR"

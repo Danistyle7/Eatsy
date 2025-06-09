@@ -9,6 +9,7 @@ import type {
   TableResponse as Table,
   ScanTableResponse as ScanTable,
 } from "../types";
+import { Order } from "@/features/order/types";
 
 export const useGetTables = (params?: TableParams) => {
   const queryClient = useQueryClient();
@@ -27,7 +28,7 @@ export const useGetTables = (params?: TableParams) => {
   ) => {
     queryClient.setQueryData(queryKey, updater);
   };
-  return { tables: query.data ?? [], setTables, ...query };
+  return { tables: query.data || [], setTables, ...query };
 };
 
 export const useGetTableById = (id: Table["id"]) => {
@@ -74,3 +75,19 @@ export const useGetTableByQrCode = (
   };
   return { table: query.data || null, setTable, ...query };
 };
+
+export interface PayResponse {
+  updatedOrder: UpdatedOrder;
+  updatedTable: Table;
+}
+
+const order: Order["order"] | null = null;
+export interface UpdatedOrder {
+  id: number;
+  code: string;
+  status: string;
+  total: number;
+  createdAt: string;
+  updatedAt: string;
+  tableId: number;
+}

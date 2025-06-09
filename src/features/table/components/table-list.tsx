@@ -6,6 +6,7 @@ import { TableListItem } from "./table-list-item";
 
 interface TableListProps {
   data: TableResponse[];
+  onDetail?: (table: TableResponse) => void;
   onEdit?: (table: TableResponse) => void;
   onScan?: (table: TableResponse) => void;
   onDelete?: (table: TableResponse) => void;

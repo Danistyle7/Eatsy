@@ -38,3 +38,34 @@ export const useUpdateTableById = () => {
     },
   });
 };
+
+export const usePayTable = () => {
+  const queryClient = useQueryClient();
+  return useMutation<void, ApiError, Table["id"], Context>({
+    mutationFn: async (id) => {
+      const result = await tableService.pay(id);
+      if (!result.success)
+        throw new ApiError(result.error, parseInt(result.code || "500"));
+      return result.data;
+    },
+    onMutate: async (id) => {
+      const queryKey = TABLE_QUERY_KEYS.detail(id);
+      await queryClient.cancelQueries({ queryKey });
+      const previous = queryClient.getQueryData<Table>(queryKey);
+
+      queryClient.setQueryData(TABLE_QUERY_KEYS.detail(id), (old?: Table) =>
+        old ? { ...old, status: "PAID" } : undefined
+      );
+
+      return { previous };
+    },
+    onError: (_, id, context) => {
+      queryClient.setQueryData(TABLE_QUERY_KEYS.detail(id), context?.previous);
+    },
+    onSettled: (data, _, id) => {
+      queryClient.invalidateQueries({ queryKey: TABLE_QUERY_KEYS.detail(id) });
+      if (data)
+        queryClient.invalidateQueries({ queryKey: TABLE_QUERY_KEYS.lists() });
+    },
+  });
+};

@@ -1,14 +1,14 @@
-import Header from "@/shared/components/ui/header";
-import { useGetDishes } from "@/features/dish/hooks";
-import Section from "@/shared/components/ui/section";
-import React, { useState, useEffect } from "react";
-import { ScrollView, View, Text } from "react-native";
 import { useLocalSearchParams } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { ScrollView, Text, View } from "react-native";
+
 import { DISH_TYPES } from "@/features/dish/constants";
+import { useDishSocket, useGetDishes } from "@/features/dish/hooks";
 import { getDishCategory } from "@/features/dish/utils";
-import { createDishSocket } from "@/features/dish/socket";
-import { groupBy } from "@/shared/lib/utils";
 import ModalDetalle from "@/shared/components/modal-detalle";
+import Header from "@/shared/components/ui/header";
+import Section from "@/shared/components/ui/section";
+import { groupBy } from "@/shared/lib/utils";
 
 export const MenuScreenUsuario = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -22,7 +22,7 @@ export const MenuScreenUsuario = () => {
     isAvailable: esCliente,
   });
 
-  const { onCreated, onUpdated, onDeleted, cleanup } = createDishSocket();
+  const { onCreated, onUpdated, onDeleted, cleanup } = useDishSocket();
   useEffect(() => {
     onCreated((newDish) => {
       setDishes((prev) => [...(prev ?? []), newDish]);
@@ -53,6 +53,7 @@ export const MenuScreenUsuario = () => {
   if (error) return <Text>Error al cargar los platos: {error.message}</Text>;
   // Asegúrate de que dishes no sea undefined, null o está vacío
   if (!dishes?.length) return <Text>No hay platos disponibles</Text>;
+
   const grouped = groupBy(dishes, (dish) => dish.category);
 
   return (
