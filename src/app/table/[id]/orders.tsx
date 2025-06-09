@@ -1,4 +1,4 @@
-import { Link, useLocalSearchParams } from "expo-router";
+import { Link, useLocalSearchParams, useRouter } from "expo-router";
 
 import { useGetOrdersReadyByTableId } from "@/features/order/hooks";
 import { Modal, ScrollView, Text, View } from "react-native";
@@ -8,6 +8,7 @@ import { Button } from "@/shared/components/ui/button";
 import { useState } from "react";
 
 export default function Screen() {
+  const router = useRouter();
   const { id: idString } = useLocalSearchParams<{ id: string }>();
   const id = Number(idString);
   if (isNaN(id)) return <Text>Invalid table ID</Text>;
@@ -33,7 +34,6 @@ export default function Screen() {
   if (isLoading) return <Text>Cargando...</Text>;
   if (error) return <Text>Error: {error.message}</Text>;
   if (!table) return <Text>Mesa no encontrada</Text>;
-  if (!orders || orders.length === 0) return <Text>No hay pedidos</Text>;
 
   const grouped = groupBy(orders, (order) => order.customer.id);
   const total = Object.values(grouped).reduce(
@@ -46,9 +46,14 @@ export default function Screen() {
     0
   );
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     setModalVisible(false);
-    console.log("Confirmar");
+    try {
+      await payTable(id);
+      router.push("/tables");
+    } catch (error) {
+      console.error("Error al pagar la mesa:", error);
+    }
   };
 
   return (
