@@ -28,6 +28,7 @@ export const tableResponseSchema = tableCreateSchema.extend({
   id: idSchema,
   qrCode: z.string(),
   qrCodeUrl: z.string(),
+  isNotification: z.boolean().optional(),
 });
 export const customerResponseSchema = z.object({
   id: z.number(),

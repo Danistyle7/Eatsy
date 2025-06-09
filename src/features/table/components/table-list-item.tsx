@@ -30,7 +30,6 @@ export const TableListItem = forwardRef<View, TableListItemProps>(
       onDelete = () => {},
       onScan = () => {},
       listKey,
-      style,
       ...rest
     },
     ref
@@ -39,9 +38,11 @@ export const TableListItem = forwardRef<View, TableListItemProps>(
       <View
         key={listKey}
         ref={ref}
-        style={style}
         className="flex-row bg-white border border-[#F97316] rounded-xl mb-2"
         {...rest}
+        style={{
+          backgroundColor: table.isNotification ? "#2563EB" : "#FFFFFF",
+        }}
       >
         <Button
           title="Ver Detalles"
