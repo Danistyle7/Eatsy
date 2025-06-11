@@ -1,11 +1,6 @@
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
-
-import {
-  generarReciboDesdeOrders,
-  OrderItem,
-} from "@/features/order/components/order-recivo";
 import {
   useGetOrderByTableId,
   useOrderItemSocket,
@@ -15,6 +10,7 @@ import Header from "@/shared/components/ui/header";
 import ModalMesa from "@/shared/components/ui/modal-mesa";
 import { PedidoItem } from "@/shared/components/ui/pedido-item";
 import { useTableCode, useTableId } from "@/storage/hook";
+import { orderService } from "@/features/order/service";
 
 export default function MesaScreen() {
   const tableCode = useTableCode();
@@ -24,8 +20,11 @@ export default function MesaScreen() {
   const { orders, error, isLoading, setOrder } = useGetOrderByTableId(
     Number(idMesa)
   );
-  const { onCreated, onUpdated, cleanup } = useOrderItemSocket();
 
+  const [loading, setLoading] = React.useState(false);
+  const [localError, setLocalError] = React.useState<string | null>(null);
+
+  const { onCreated, onUpdated, cleanup } = useOrderItemSocket();
   useEffect(() => {
     onCreated((newOrder) => {
       setOrder((prev = []) => [...prev, newOrder]);
@@ -57,14 +56,33 @@ export default function MesaScreen() {
     0
   );
 
-  const confirmarRecivo = () => {
-    const { usuarios, totalGeneral } = generarReciboDesdeOrders(
-      orders as OrderItem[]
-    );
+  const confirmarRecivo = async () => {
+    if (!idMesa) return;
 
-    router.push({
-      pathname: "/menupag/detalle-pedido",
-    });
+    setLoading(true);
+    setLocalError(null);
+
+    try {
+      const response = await orderService.getReadyByTableId(Number(idMesa));
+
+      if (!response.success) {
+        setLoading(false);
+        return;
+      }
+      console.log("que hay", response);
+      // Actualizas la lista en el hook para que se refleje
+
+      router.push({
+        pathname: "/menupag/detalle-pedido",
+        params: {
+          recibo: JSON.stringify({ data: response.data }),
+        },
+      });
+    } catch (e) {
+      setLocalError("Error al obtener los pedidos");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

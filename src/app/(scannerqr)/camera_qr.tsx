@@ -5,6 +5,7 @@ import { CameraView, useCameraPermissions } from "expo-camera";
 import { Ionicons } from "@expo/vector-icons";
 import { Button } from "@/shared/components/ui/button";
 import { saveUserSession } from "@/storage/user-session";
+import { clearUserSession } from "@/storage/user-session";
 type BarCodeScannedEvent = {
   type: string;
   data: string;
@@ -18,7 +19,7 @@ export default function Scanner() {
   const handleBarCodeScanned = async ({ type, data }: BarCodeScannedEvent) => {
     if (!scanned) {
       setScanned(true);
-
+      await clearUserSession();
       await saveUserSession({
         userId: null,
         userName: null,

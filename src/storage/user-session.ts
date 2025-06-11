@@ -55,15 +55,9 @@ export const getUserSession = async (): Promise<UserSession | null> => {
     return null;
   }
 };
-
 export const clearUserSession = async (): Promise<void> => {
   try {
-    await AsyncStorage.multiRemove([
-      KEYS.userId,
-      KEYS.userName,
-      KEYS.tableId,
-      KEYS.tableCode,
-    ]);
+    await AsyncStorage.clear(); // 🔥 Esto borra absolutamente todo
   } catch (e) {
     console.error("Error limpiando sesión:", e);
   }

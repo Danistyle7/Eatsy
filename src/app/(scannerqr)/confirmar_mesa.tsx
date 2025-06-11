@@ -1,13 +1,12 @@
 import { useState } from "react"; // ✅ DEBE IR ARRIBA
 
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { View, Text, TextInput, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useGetTableByQrCode } from "@/features/table/hooks";
 import { Button } from "@/shared/components/ui/button";
 import { saveUserSession } from "@/storage/user-session";
 import { useTableCode } from "@/storage/hook";
-import { Alert } from "react-native";
 export default function ConfirmarMesa() {
   const router = useRouter();
   const tableCode = useTableCode();
@@ -20,7 +19,7 @@ export default function ConfirmarMesa() {
     qrCode,
     nombre
   );
-  console.log(error);
+
   const handleContinue = async () => {
     if (!nombre.trim()) return;
     setIsLoading(true);
