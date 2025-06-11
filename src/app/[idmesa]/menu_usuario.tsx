@@ -9,13 +9,15 @@ import ModalDetalle from "@/shared/components/modal-detalle";
 import Header from "@/shared/components/ui/header";
 import Section from "@/shared/components/ui/section";
 import { groupBy } from "@/shared/lib/utils";
+import { useTableCode } from "@/storage/hook";
 
 export const MenuScreenUsuario = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [busqueda, setBusqueda] = useState("");
   const [esCliente, setEsCliente] = useState(true);
-  const { idmesa } = useLocalSearchParams();
+
+  const tableCode = useTableCode();
 
   const { isLoading, error, dishes, setDishes } = useGetDishes({
     type: DISH_TYPES.FOOD.value,
@@ -53,8 +55,14 @@ export const MenuScreenUsuario = () => {
   if (error) return <Text>Error al cargar los platos: {error.message}</Text>;
   // Asegúrate de que dishes no sea undefined, null o está vacío
   if (!dishes?.length) return <Text>No hay platos disponibles</Text>;
+  const search = busqueda.trim().toLowerCase();
 
-  const grouped = groupBy(dishes, (dish) => dish.category);
+  const filteredDishes = dishes.filter((dish) => {
+    const name = dish.name?.toLowerCase() || "";
+    const description = dish.description?.toLowerCase() || "";
+    return name.includes(search) || description.includes(search);
+  });
+  const grouped = groupBy(filteredDishes, (dish) => dish.category);
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
@@ -64,7 +72,7 @@ export const MenuScreenUsuario = () => {
           busqueda={busqueda}
           setBusqueda={setBusqueda}
           mostrarAgregar={false}
-          idmesa={idmesa} // 👈 pásalo como prop
+          idmesa={tableCode ?? ""} // 👈 pásalo como prop
         />
       </View>
 

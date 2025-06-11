@@ -10,13 +10,13 @@ import Header from "@/shared/components/ui/header";
 import Section from "@/shared/components/ui/section";
 import { groupBy } from "@/shared/lib/utils";
 
+import { useTableCode } from "@/storage/hook";
 export const BebidaScreenUsuario = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [busqueda, setBusqueda] = useState("");
   const [esCliente, setEsCliente] = useState(true);
-  const { tableCode } = useLocalSearchParams();
-
+  const tableCode = useTableCode();
   const { isLoading, error, dishes, setDishes } = useGetDishes({
     type: DISH_TYPES.DRINK.value,
     isAvailable: esCliente,
@@ -54,7 +54,15 @@ export const BebidaScreenUsuario = () => {
   // Asegúrate de que dishes no sea undefined, null o está vacío
   if (!dishes.length) return <Text>No hay platos disponibles</Text>;
 
-  const grouped = groupBy(dishes, (dish) => dish.category);
+  if (!dishes?.length) return <Text>No hay platos disponibles</Text>;
+  const search = busqueda.trim().toLowerCase();
+
+  const filteredDishes = dishes.filter((dish) => {
+    const name = dish.name?.toLowerCase() || "";
+    const description = dish.description?.toLowerCase() || "";
+    return name.includes(search) || description.includes(search);
+  });
+  const grouped = groupBy(filteredDishes, (dish) => dish.category);
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
@@ -64,7 +72,7 @@ export const BebidaScreenUsuario = () => {
           busqueda={busqueda}
           setBusqueda={setBusqueda}
           mostrarAgregar={false}
-          idmesa={tableCode}
+          idmesa={tableCode ?? ""}
         />
       </View>
       <ScrollView

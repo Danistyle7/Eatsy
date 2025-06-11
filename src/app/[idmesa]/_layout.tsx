@@ -7,11 +7,10 @@ import { Link, Tabs, useLocalSearchParams, router } from "expo-router";
 import { StyleSheet, View } from "react-native";
 import { useCartStore } from "@/shared/hooks/use_cardstore";
 import { Button } from "@/shared/components/ui/button";
-import { usePedidoStore } from "@/shared/hooks/use_pedido";
+
+import { clearUserSession } from "@/storage/user-session";
 
 export default function TabLayout() {
-  const { tableCode, idUsuario, idMesa, nombreUsuario } =
-    useLocalSearchParams();
   return (
     <Tabs
       screenOptions={{
@@ -35,9 +34,9 @@ export default function TabLayout() {
           <View style={styles.headerRightContainer}>
             <Button
               title="Inicio"
-              onPress={() => {
+              onPress={async () => {
+                await clearUserSession(); // Esperar a que se limpie la sesión
                 useCartStore.getState().clearCart();
-                usePedidoStore.getState().limpiarPedidos();
                 router.replace("/");
               }}
             />
@@ -53,7 +52,6 @@ export default function TabLayout() {
             <MaterialIcons name="restaurant-menu" size={size} color={color} />
           ),
         }}
-        initialParams={{ tableCode, idUsuario }}
       />
       <Tabs.Screen
         name="bebidas_usuario"
@@ -63,7 +61,6 @@ export default function TabLayout() {
             <MaterialIcons name="local-drink" size={size} color={color} />
           ),
         }}
-        initialParams={{ tableCode, idUsuario, idMesa }}
       />
       <Tabs.Screen
         name="pedidos"
@@ -77,7 +74,6 @@ export default function TabLayout() {
             />
           ),
         }}
-        initialParams={{ tableCode, idUsuario, idMesa, nombreUsuario }}
       />
       <Tabs.Screen
         name="mesa-pedido"
@@ -87,7 +83,6 @@ export default function TabLayout() {
             <FontAwesome5 name="concierge-bell" size={size} color={color} />
           ),
         }}
-        initialParams={{ tableCode, idUsuario, idMesa }}
       />
     </Tabs>
   );

@@ -5,16 +5,16 @@ import Header from "@/shared/components/ui/header";
 import { View, Text, FlatList } from "react-native";
 import { useCartStore } from "@/shared/hooks/use_cardstore";
 import PedidoItem from "@/shared/components/ui/pedido_detail";
-import { useLocalSearchParams } from "expo-router";
+
 import { useCreateOrder } from "@/features/order/hooks";
 import { Button } from "@/shared/components/ui/button";
-
+import { useTableCode, useUserId, useTableId } from "@/storage/hook";
 export default function PedidoScreen() {
+  const tableCode = useTableCode();
+  const idUsuario = useUserId();
+  const idMesa = useTableId();
   const [loading, setLoading] = useState(false);
-  const { tableCode, idUsuario, idMesa, nombreUsuario } =
-    useLocalSearchParams();
   const createOrder = useCreateOrder();
-
   const router = useRouter();
   const items = useCartStore((state) => state.items);
   const getTotal = useCartStore((state) => state.getTotal);
@@ -35,7 +35,6 @@ export default function PedidoScreen() {
     createOrder.mutate(formattedOrder, {
       onSuccess: (data) => {
         useCartStore.getState().clearCart();
-
         router.push({ pathname: `/${tableCode}/mesa-pedido` });
       },
       onError: (error) => {},
@@ -52,7 +51,7 @@ export default function PedidoScreen() {
           titulo="Pedidos"
           mostrarBusqueda={false}
           mostrarAgregar={false}
-          idmesa={tableCode}
+          idmesa={tableCode ?? ""}
         />
       </View>
 
