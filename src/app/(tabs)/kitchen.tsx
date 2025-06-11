@@ -19,7 +19,7 @@ export default function Screen() {
 
   const { isLoading, error: errorGet, orders, setOrders } = useGetOrders();
   const { mutate: updateOrder, isPending: isUpdating } = useUpdateOrderById();
-  const { onCreated, onUpdated, cleanup } = useOrderItemSocket();
+  const { onCreated, onUpdated, onDeleted, cleanup } = useOrderItemSocket();
 
   useEffect(() => {
     onCreated((newOrder: Order) => {
@@ -37,6 +37,10 @@ export default function Screen() {
             : order
         )
       );
+    });
+
+    onDeleted((id) => {
+      setOrders((prev = []) => prev.filter((order) => order.item.id !== id));
     });
 
     return cleanup;

@@ -121,14 +121,26 @@ export const createOrderItemSocket = () => {
     );
   };
 
+  // order_item_deleted
+  /**
+   * Escucha el evento "order_item_deleted".
+   * @param callback Recibe el objeto OrderPanel.
+   * @returns Función para desuscribirse.
+   */
+  const onDeleted = (callback: EventCallback<number>) => {
+    return socketManager.addListener("order_item_deleted", callback);
+  };
+
   const cleanup = () => {
     socketManager.removeListener("order_item_created");
     socketManager.removeListener("order_item_updated");
+    socketManager.removeListener("order_item_deleted");
   };
 
   return {
     onCreated,
     onUpdated,
+    onDeleted,
     cleanup,
   };
 };
