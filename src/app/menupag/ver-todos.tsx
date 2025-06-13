@@ -102,10 +102,11 @@ const VerTodos = () => {
       <View style={{ flex: 1 }}>
         {/* Botón y Header fijos arriba */}
         <View style={{ paddingHorizontal: 16, paddingTop: 10 }}>
-          <Link href=".." asChild>
-            <Button title="Atras" />
-          </Link>
-
+          <View className="items-start">
+            <Link href=".." asChild>
+              <Button title="Atras" />
+            </Link>
+          </View>
           <Header
             titulo={titleStr}
             mostrarAgregar={false}

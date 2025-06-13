@@ -11,6 +11,8 @@ import ModalMesa from "@/shared/components/ui/modal-mesa";
 import { PedidoItem } from "@/shared/components/ui/pedido-item";
 import { useTableCode, useTableId } from "@/storage/hook";
 import { orderService } from "@/features/order/service";
+import { OrderStatus } from "@/features/order/types";
+import { ORDER_STATUSES } from "@/features/order/constants";
 
 export default function MesaScreen() {
   const tableCode = useTableCode();
@@ -42,6 +44,17 @@ export default function MesaScreen() {
 
     return cleanup;
   }, [setOrder]);
+
+  const todasOrdenesCompletas =
+    orders.length > 0 &&
+    orders.every(
+      ({ order }) =>
+        order._base.status === ORDER_STATUSES.READY.value ||
+        order._base.status === ORDER_STATUSES.CANCELLED.value
+      // ||
+      // order._base.status === ORDER_STATUSES.DELIVERED.value
+    );
+
   // const totalProductos = pedidos.reduce((acc, item) => acc + item.cantidad, 0);
   // const totalPrecio = pedidos.reduce(
   //   (acc, item) => acc + item.precio * item.cantidad,
@@ -111,6 +124,7 @@ export default function MesaScreen() {
           <Button
             onPress={() => setModalVisible(true)}
             title="Generar detalle "
+            disabled={!todasOrdenesCompletas}
           />
         </View>
       </View>

@@ -7,14 +7,16 @@ import { useGetTableByQrCode } from "@/features/table/hooks";
 import { Button } from "@/shared/components/ui/button";
 import { saveUserSession } from "@/storage/user-session";
 import { useTableCode } from "@/storage/hook";
+import ModalAlerta from "@/shared/components/modal-alerta";
 export default function ConfirmarMesa() {
   const router = useRouter();
   const tableCode = useTableCode();
-
+  const [modalVisible, setModalVisible] = useState(false);
+  const [mensajeAlerta, setMensajeAlerta] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [nombre, setNombre] = useState("");
   const qrCode = Array.isArray(tableCode) ? tableCode[0] : (tableCode ?? "");
-  const [errorMessage, setErrorMessage] = useState("");
+
   const { refetch, data, isFetching, error } = useGetTableByQrCode(
     qrCode,
     nombre
@@ -28,16 +30,16 @@ export default function ConfirmarMesa() {
       const result = await refetch();
       // Aquí ajusta según la estructura de result:
       const data = result.data;
-      const error = result.error;
-
-      if (!data || error) {
-        setErrorMessage(
-          "Código QR no válido. Por favor, escanea un código válido."
-        );
-        setIsLoading(false);
-        setTimeout(() => {
-          router.replace("/");
-        }, 3000); // espera 3s para mostrar el mensaje antes de regresar
+      const errorr = result.error;
+      const fullMessage = errorr?.message;
+      const apiError = fullMessage?.split(": ").pop();
+      if (apiError) {
+        console.log("API Error capturadosss:", apiError);
+        setModalVisible(true);
+        setMensajeAlerta(apiError);
+        return;
+      }
+      if (!data || errorr) {
         return;
       }
 
@@ -51,9 +53,12 @@ export default function ConfirmarMesa() {
       setIsLoading(false);
       router.replace(`/${data.table.number}/menu_usuario`);
     } catch (e) {
-      setErrorMessage("Error al procesar. Intenta de nuevo.");
+      console.error("Error de red:", e);
       setIsLoading(false);
     }
+  };
+  const confirmarModalAlerta = () => {
+    router.replace("/");
   };
   return (
     <View style={styles.container}>
@@ -79,6 +84,11 @@ export default function ConfirmarMesa() {
         disabled={isLoading || !nombre.trim()}
         className="w-full mt-6"
       ></Button>
+      <ModalAlerta
+        visible={modalVisible}
+        message={mensajeAlerta}
+        onConfirm={confirmarModalAlerta}
+      />
     </View>
   );
 }
