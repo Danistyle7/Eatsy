@@ -6,12 +6,15 @@ import { Ionicons } from "@expo/vector-icons";
 import { Button } from "@/shared/components/ui/button";
 import { saveUserSession } from "@/storage/user-session";
 import { clearUserSession } from "@/storage/user-session";
+import ModalAlerta from "@/shared/components/modal-alerta";
 type BarCodeScannedEvent = {
   type: string;
   data: string;
 };
 
 export default function Scanner() {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [mensajeAlerta, setMensajeAlerta] = useState("");
   const router = useRouter();
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
@@ -19,18 +22,29 @@ export default function Scanner() {
   const handleBarCodeScanned = async ({ type, data }: BarCodeScannedEvent) => {
     if (!scanned) {
       setScanned(true);
+      const tableCode = data.toString();
+      if (!tableCode.startsWith("TABLECOD")) {
+        setModalVisible(true);
+        setMensajeAlerta("Código inválido. Intente nuevamente.");
+        setScanned(false); // permite volver a escanear
+        return;
+      }
+
       await clearUserSession();
       await saveUserSession({
         userId: null,
         userName: null,
         tableId: null,
-        tableCode: data.toString(),
+        tableCode,
       });
 
       router.replace({
         pathname: "/(scannerqr)/confirmar_mesa",
       });
     }
+  };
+  const confirmarModalAlerta = () => {
+    router.replace("/");
   };
 
   if (!permission) return <View />;
@@ -60,6 +74,12 @@ export default function Scanner() {
           <Text style={styles.scanText}>Manten la camara enfocada</Text>
         </View>
       </CameraView>
+
+      <ModalAlerta
+        visible={modalVisible}
+        message={mensajeAlerta}
+        onConfirm={confirmarModalAlerta}
+      />
     </View>
   );
 }

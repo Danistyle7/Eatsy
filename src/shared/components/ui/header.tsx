@@ -11,6 +11,7 @@ type HeaderProps = {
   mostrarBusqueda?: boolean;
   mostrarAgregar?: boolean;
   idmesa?: string | string[];
+  nombre?: string;
 };
 
 const Header: React.FC<HeaderProps> = ({
@@ -20,6 +21,7 @@ const Header: React.FC<HeaderProps> = ({
   mostrarBusqueda = true,
   mostrarAgregar = true,
   idmesa,
+  nombre,
 }) => {
   const idMesaTexto = Array.isArray(idmesa) ? idmesa[0] : idmesa;
   return (
@@ -36,9 +38,18 @@ const Header: React.FC<HeaderProps> = ({
           <FontAwesome5 name="fish" size={35} color="#EF6C00" />
         </View>
         {idMesaTexto ? (
-          <Text style={{ fontSize: 16, fontWeight: "bold", color: "#EF6C00" }}>
-            Mesa: {idMesaTexto}
-          </Text>
+          <View>
+            <Text
+              style={{ fontSize: 16, fontWeight: "bold", color: "#EF6C00" }}
+            >
+              Mesa: {idMesaTexto}
+            </Text>
+            <Text
+              style={{ fontSize: 16, fontWeight: "bold", color: "#EF6C00" }}
+            >
+              {nombre}
+            </Text>
+          </View>
         ) : (
           <FontAwesome5 name="user-circle" size={35} color="#EF6C00" />
         )}
