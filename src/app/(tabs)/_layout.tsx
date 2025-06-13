@@ -23,7 +23,7 @@ export default function TabLayout() {
           backgroundColor: "#ffffff",
         },
         headerTitleStyle: {
-          color: "#2D3748",
+          color: "#F97316",
           fontWeight: "bold",
         },
         tabBarLabelPosition: "below-icon",

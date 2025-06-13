@@ -49,7 +49,14 @@ export default function Screen() {
   if (isLoading) return <Text>Cargando...</Text>;
   if (errorGet)
     return <Text>Error al cargar los platos: {errorGet.message}</Text>;
-  if (!orders?.length) return <Text>No hay ordenes disponibles</Text>;
+  if (!orders?.length)
+    return (
+      <View className="flex-1 items-center justify-center">
+        <Text className="font-semibold text-[#F97316] mb-2 text-3xl">
+          No hay pedidos disponibles
+        </Text>
+      </View>
+    );
 
   const orderStatusValues = orderStatuses.map(({ value }) => value);
   const grouped = Object.groupBy(
