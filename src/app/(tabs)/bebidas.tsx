@@ -41,8 +41,15 @@ export const BebidaScreen = () => {
   if (error) return <Text>Error al cargar los platos: {error.message}</Text>;
   // Asegúrate de que dishes no sea undefined, null o está vacío
   if (!dishes?.length) return <Text>No hay platos disponibles</Text>;
+  const search = busqueda.trim().toLowerCase();
 
-  const grouped = Object.groupBy(dishes, (dish) => dish.category);
+  const filteredDishes = dishes.filter((dish) => {
+    const name = dish.name?.toLowerCase() || "";
+    const description = dish.description?.toLowerCase() || "";
+    return name.includes(search) || description.includes(search);
+  });
+
+  const grouped = Object.groupBy(filteredDishes, (dish) => dish.category);
   // const grouped = dishes.reduce(
   //   (acc, dish) => {
   //     const cat = dish.category;
@@ -64,22 +71,28 @@ export const BebidaScreen = () => {
       </View>
 
       <ScrollView className="flex-1 bg-white px-4 pt-2">
-        {/* Secciones dinámicas por cada tipo único */}
-        {Object.entries(grouped).map(([category, dishes]) => (
-          <Section
-            key={category}
-            title={getDishCategory(category).label}
-            data={dishes}
-            {...{
-              modalVisible,
-              setModalVisible,
-              selectedItem,
-              setSelectedItem,
-            }}
-            esCliente={esCliente}
-          />
-        ))}
+        {filteredDishes.length === 0 ? (
+          <Text className="text-center text-gray-500 mt-10">
+            No hay coincidencias con tu búsqueda.
+          </Text>
+        ) : (
+          Object.entries(grouped).map(([category, dishes]) => (
+            <Section
+              key={category}
+              title={getDishCategory(category).label}
+              data={dishes}
+              {...{
+                modalVisible,
+                setModalVisible,
+                selectedItem,
+                setSelectedItem,
+              }}
+              esCliente={esCliente}
+            />
+          ))
+        )}
       </ScrollView>
+
       <ModalDetalle
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
