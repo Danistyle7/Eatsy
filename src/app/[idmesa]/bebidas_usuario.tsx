@@ -56,6 +56,7 @@ export const BebidaScreenUsuario = () => {
   if (!dishes.length) return <Text>No hay platos disponibles</Text>;
 
   if (!dishes?.length) return <Text>No hay platos disponibles</Text>;
+
   const search = busqueda.trim().toLowerCase();
 
   const filteredDishes = dishes.filter((dish) => {
@@ -77,31 +78,29 @@ export const BebidaScreenUsuario = () => {
           nombre={userName ?? ""}
         />
       </View>
-      <ScrollView
-        style={{
-          flex: 1,
-          backgroundColor: "white",
-          paddingHorizontal: 16,
-          paddingTop: 8,
-        }}
-      >
-        {/* Secciones dinámicas por cada tipo único */}
-
-        {Object.entries(grouped).map(([category, dishes]) => (
-          <Section
-            key={category}
-            title={getDishCategory(category).label}
-            data={dishes}
-            {...{
-              modalVisible,
-              setModalVisible,
-              selectedItem,
-              setSelectedItem,
-            }}
-            esCliente={esCliente}
-          />
-        ))}
+      <ScrollView className="flex-1 bg-white px-4 pt-2">
+        {filteredDishes.length === 0 ? (
+          <Text className="text-center text-gray-500 mt-10">
+            No hay coincidencias con tu búsqueda.
+          </Text>
+        ) : (
+          Object.entries(grouped).map(([category, dishes]) => (
+            <Section
+              key={category}
+              title={getDishCategory(category).label}
+              data={dishes}
+              {...{
+                modalVisible,
+                setModalVisible,
+                selectedItem,
+                setSelectedItem,
+              }}
+              esCliente={esCliente}
+            />
+          ))
+        )}
       </ScrollView>
+
       <ModalDetalle
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
