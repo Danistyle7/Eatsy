@@ -8,11 +8,17 @@ import PedidoItem from "@/shared/components/ui/pedido_detail";
 
 import { useCreateOrder } from "@/features/order/hooks";
 import { Button } from "@/shared/components/ui/button";
-import { useTableCode, useUserId, useTableId } from "@/storage/hook";
+import {
+  useTableCode,
+  useUserId,
+  useTableId,
+  useUserName,
+} from "@/storage/hook";
 export default function PedidoScreen() {
   const tableCode = useTableCode();
   const idUsuario = useUserId();
   const idMesa = useTableId();
+  const userName = useUserName();
   const [loading, setLoading] = useState(false);
   const createOrder = useCreateOrder();
   const router = useRouter();
@@ -52,6 +58,7 @@ export default function PedidoScreen() {
           mostrarBusqueda={false}
           mostrarAgregar={false}
           idmesa={tableCode ?? ""}
+          nombre={userName ?? ""}
         />
       </View>
 

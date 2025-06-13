@@ -51,6 +51,7 @@ export default function ConfirmarMesa() {
       });
 
       setIsLoading(false);
+      console.log(data, "datos usuario");
       router.replace(`/${data.table.number}/menu_usuario`);
     } catch (e) {
       console.error("Error de red:", e);

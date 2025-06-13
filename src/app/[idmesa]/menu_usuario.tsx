@@ -9,7 +9,7 @@ import ModalDetalle from "@/shared/components/modal-detalle";
 import Header from "@/shared/components/ui/header";
 import Section from "@/shared/components/ui/section";
 import { groupBy } from "@/shared/lib/utils";
-import { useTableCode } from "@/storage/hook";
+import { useTableCode, useUserName } from "@/storage/hook";
 
 export const MenuScreenUsuario = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -18,6 +18,7 @@ export const MenuScreenUsuario = () => {
   const [esCliente, setEsCliente] = useState(true);
 
   const tableCode = useTableCode();
+  const userName = useUserName();
 
   const { isLoading, error, dishes, setDishes } = useGetDishes({
     type: DISH_TYPES.FOOD.value,
@@ -73,6 +74,7 @@ export const MenuScreenUsuario = () => {
           setBusqueda={setBusqueda}
           mostrarAgregar={false}
           idmesa={tableCode ?? ""} // 👈 pásalo como prop
+          nombre={userName ?? ""}
         />
       </View>
 

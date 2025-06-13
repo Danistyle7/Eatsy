@@ -9,15 +9,14 @@ import { Button } from "@/shared/components/ui/button";
 import Header from "@/shared/components/ui/header";
 import ModalMesa from "@/shared/components/ui/modal-mesa";
 import { PedidoItem } from "@/shared/components/ui/pedido-item";
-import { useTableCode, useTableId } from "@/storage/hook";
+import { useTableCode, useTableId, useUserName } from "@/storage/hook";
 import { orderService } from "@/features/order/service";
-import { OrderStatus } from "@/features/order/types";
 import { ORDER_STATUSES } from "@/features/order/constants";
-
+import { useTableSocket } from "@/features/table/hooks";
 export default function MesaScreen() {
   const tableCode = useTableCode();
   const idMesa = useTableId();
-
+  const userName = useUserName();
   const [modalVisible, setModalVisible] = useState(false);
   const { orders, error, isLoading, setOrder } = useGetOrderByTableId(
     Number(idMesa)
@@ -26,6 +25,7 @@ export default function MesaScreen() {
   const [loading, setLoading] = React.useState(false);
   const [localError, setLocalError] = React.useState<string | null>(null);
 
+  const { onUpdated: onMesaUpdated } = useTableSocket();
   const { onCreated, onUpdated, cleanup } = useOrderItemSocket();
   useEffect(() => {
     onCreated((newOrder) => {
@@ -45,6 +45,33 @@ export default function MesaScreen() {
     return cleanup;
   }, [setOrder]);
 
+  useEffect(() => {
+    const unsubMesaUpdated = onMesaUpdated(async (mesaActualizada) => {
+      if (
+        mesaActualizada.id === Number(idMesa) &&
+        mesaActualizada.isNotification === true
+      ) {
+        try {
+          const response = await orderService.getReadyByTableId(Number(idMesa));
+          if (!response.success) return;
+
+          router.push({
+            pathname: "/menupag/detalle-pedido",
+            params: {
+              recibo: JSON.stringify({ data: response.data }),
+            },
+          });
+        } catch (e) {
+          console.error("Error al obtener pedidos desde socket:", e);
+        }
+      }
+    });
+
+    return () => {
+      unsubMesaUpdated();
+    };
+  }, [idMesa]);
+
   const todasOrdenesCompletas =
     orders.length > 0 &&
     orders.every(
@@ -52,7 +79,7 @@ export default function MesaScreen() {
         order._base.status === ORDER_STATUSES.READY.value ||
         order._base.status === ORDER_STATUSES.CANCELLED.value
       // ||
-      // order._base.status === ORDER_STATUSES.DELIVERED.value
+      // order._base.status === ORDER_STATUSES.DELIVERED.valu
     );
 
   // const totalProductos = pedidos.reduce((acc, item) => acc + item.cantidad, 0);
@@ -82,7 +109,6 @@ export default function MesaScreen() {
         setLoading(false);
         return;
       }
-      console.log("que hay", response);
       // Actualizas la lista en el hook para que se refleje
 
       router.push({
@@ -105,6 +131,7 @@ export default function MesaScreen() {
         mostrarBusqueda={false}
         mostrarAgregar={false}
         idmesa={tableCode ?? ""}
+        nombre={userName ?? ""}
       />
 
       <FlatList
